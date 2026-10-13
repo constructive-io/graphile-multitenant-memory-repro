@@ -3,4 +3,4 @@ node_modules/
 *.heapsnapshot
 results/tmp/
 .crystal-state.json
-results/smoke/
+results/smoke*/

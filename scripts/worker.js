@@ -48,6 +48,7 @@ try {
       for(let i=0;i<60;i++) await load(tenantName(i),'smoke',1);
       const memory=await collectMemory();
       result.rounds.push({round:round+1,completedBuilds:(round+1)*60,size:server.cache.entries.size,stats:{...server.cache.stats},memory,heapDelta:memory.heapUsed-result.baseline.heapUsed});
+      console.log(JSON.stringify({scenario,round:round+1,heapMiB:memory.heapUsed/2**20,liveInstances:server.cache.entries.size}));
       assert.equal(server.cache.entries.size,10);
       assert.equal(server.cache.stats.builds-server.cache.stats.releases,10);
     }

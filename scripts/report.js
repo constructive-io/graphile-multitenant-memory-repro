@@ -10,10 +10,10 @@ const mib=n=>fmt(n/2**20);
 const grouped=kind=>{const groups=new Map();for(const r of samples.filter(r=>r.scenario===kind)){if(!groups.has(r.value))groups.set(r.value,[]);groups.get(r.value).push(r);}return [...groups].sort((a,b)=>a[0]-b[0]);};
 const med=(rows,f)=>median(rows.map(f));
 const first=samples[0], env=first.environment;
-const lines=['# Stock Graphile memory measurements','',`Generated from ${samples.length} fresh-process raw measurements in this directory. Values are medians; MiB = 2^20 bytes.`, '',
+const lines=[env.crystal?'# Crystal checkout memory measurements':'# Stock Graphile memory measurements','',`Generated from ${samples.length} fresh-process raw measurements in this directory. Values are medians; MiB = 2^20 bytes.`, '',
 `Node ${env.node}; V8 ${env.v8}; ${env.postgres}.`, '',
 `PostGraphile ${env.dependencies.postgraphile.version}; Grafast ${env.dependencies.grafast.version}; Grafserv ${env.dependencies.grafserv.version}; pg ${env.dependencies.pg.version}.`, '',
-`Source commits: ${[...new Set(samples.map(r=>r.environment.gitSha))].map(s=>'`'+s+'`').join(', ')}. Raw JSON also records dirty status and resolved package paths.`, '',
+`Source commits: ${[...new Set(samples.map(r=>r.environment.gitSha))].map(s=>'`'+s+'`').join(', ')}. Raw JSON also records sourceDirty, overall gitDirty (including generated results), and resolved package paths.`, '',
 'Every point has a discarded five-request warmup instance. Memory collection waits 5.5 seconds and forces GC three times. Peak RSS is the process lifetime high-water mark, including warmup. Clients execute in separate processes and exit before sampling.',''];
 function table(headers,rows){lines.push('| '+headers.join(' | ')+' |','| '+headers.map(()=>'---').join(' | ')+' |',...rows.map(r=>'| '+r.join(' | ')+' |'),'');}
 lines.push('## A: unrelated tenant schemas','');
@@ -49,7 +49,7 @@ for(const [n,rows] of d) {
   table(['Constructor','Count','Shallow MiB','Union retained MiB'],constructors.map(name=>[name,med(analyses,x=>x.constructors.find(s=>s.label===name)?.count??0),mib(med(analyses,x=>x.constructors.find(s=>s.label===name)?.shallowBytes??0)),mib(med(analyses,x=>x.constructors.find(s=>s.label===name)?.unionRetainedBytes??0))]));
 }
 lines.push('Catalog-row and build-object signatures are evidence of post-build survival where present; they do not prove every retained object can safely be removed. Constructor totals union only outermost same-constructor dominated subtrees. Different rows overlap and MUST NOT be summed. Analysis uses a declared strong-edge model, excludes weak/non-root shortcut edges, and does not reproduce all V8 ephemeron semantics. Snapshot hashes and full constructor summaries are in the analysis JSON. D after-release memory is snapshot-perturbed and is excluded from formal release comparisons.', '', '## Coverage and comparison limits','',
-'- Stock Amber only, no Graphile implementation patches or community plugins. No Benjie development branch was supplied or benchmarked.',
+'- Amber preset only, no harness-applied Graphile implementation patches or community plugins. Checkout provenance distinguishes source builds from registry stock. No Benjie development branch was supplied or benchmarked.',
 '- A/D cover catalog retention and build-state survival. B combines this with runtime instance costs and release behavior. C covers one bounded nested operation family; it does not characterize all mutation, subscription or polymorphic plan workloads.',
 '- RLS and cross-schema correctness are tested independently and exercised by each discarded warmup. Lower memory obtained by dropping required dependencies would fail the intended comparison.',
 '- Historical ~0.4 MB/co-tenant/instance and 103→27 MiB figures are sanity references only. The user-authorized PR #1823 methodology used a larger unrelated-schema fixture, different software versions/scales, seven repeats and a narrower makeSchema timer. This harness uses ten tables per tenant, three repeats, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Its scoped-plugin comparison is not a stock result tested here.',

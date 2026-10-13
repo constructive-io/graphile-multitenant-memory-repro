@@ -40,5 +40,6 @@ export async function environment(pool) {
     nodeEnv:process.env.NODE_ENV,graphileEnv:process.env.GRAPHILE_ENV,quietMs:QUIET_MS,gcPasses:3,
     postgres:(await pool.query('SELECT version() AS version')).rows[0].version,
     gitSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
-    gitDirty:execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim().length>0,dependencies:dependencies(),crystal };
+    gitDirty:execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim().length>0,
+    sourceDirty:execFileSync('git',['status','--porcelain','--','src','scripts','test','package.json','pnpm-lock.yaml','compose.yaml'],{encoding:'utf8'}).trim().length>0,dependencies:dependencies(),crystal };
 }
