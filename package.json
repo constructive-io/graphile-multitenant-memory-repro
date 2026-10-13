@@ -1,10 +1,25 @@
 {
   "name": "graphile-multitenant-memory-repro",
+  "version": "1.0.0",
   "private": true,
+  "type": "module",
+  "license": "MIT",
+  "packageManager": "pnpm@11.19.0",
+  "engines": { "node": ">=24" },
   "scripts": {
-    "test": "node --test"
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:fixture": "node scripts/fixture.js",
+    "start": "node src/server.js",
+    "test": "node --test --test-concurrency=1",
+    "bench:a": "node scripts/bench.js a",
+    "bench:b": "node scripts/bench.js b",
+    "bench:c": "node scripts/bench.js c",
+    "bench:d": "node scripts/bench.js d",
+    "bench:all": "node scripts/bench.js all",
+    "report": "node scripts/report.js",
+    "crystal:link": "node scripts/crystal.js link",
+    "crystal:stock": "node scripts/crystal.js stock"
   },
-  "engines": {
-    "node": ">=20"
-  }
+  "dependencies": { "express": "4.22.3", "pg": "8.23.1", "postgraphile": "5.1.5" }
 }

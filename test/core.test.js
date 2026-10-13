@@ -1,0 +1,44 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { TenantLRU } from '../src/lru.js';
+import { assertSyntheticDatabase, tenantName } from '../src/config.js';
+import { readFileSync } from 'node:fs';
+const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
+test('private manifest, exact minimal dependencies, and database guard', () => {
+  const p = JSON.parse(readFileSync(new URL('../package.json', import.meta.url)));
+  assert.equal(p.private, true);
+  assert.equal(p.license, 'MIT');
+  assert.deepEqual(Object.keys(p.dependencies).sort(), ['express','pg','postgraphile']);
+  for (const v of Object.values(p.dependencies)) assert.match(v, /^\d+\.\d+\.\d+$/);
+  assert.throws(() => assertSyntheticDatabase('postgres://bench_admin:x@remote/graphile_memory_bench'));
+  assert.throws(() => assertSyntheticDatabase('postgres://bench_admin:x@localhost/production'));
+  assert.throws(() => assertSyntheticDatabase('postgres://bench_admin:x@localhost/graphile_memory_bench?host=remote'));
+  assert.throws(() => assertSyntheticDatabase('socket://bench_admin:x@localhost/graphile_memory_bench'));
+  assert.throws(() => tenantName(-1));
+});
+test('coalesces concurrent first builds and waits for leases plus asynchronous release', async () => {
+  const released = [];
+  const cache = new TenantLRU(1, async key => { await pause(5); return { key, release: async () => { await pause(10); released.push(key); } }; });
+  const leases = await Promise.all(Array.from({ length: 10 }, () => cache.acquire('a')));
+  assert.equal(cache.stats.builds, 1);
+  let completed = false;
+  const waiting = cache.acquire('b').then(lease => { completed = true; return lease; });
+  await pause(10);
+  assert.equal(completed, false);
+  for (const lease of leases) lease.done();
+  const b = await waiting;
+  assert.deepEqual(released, ['a']);
+  b.done();
+  await cache.close();
+  assert.deepEqual(released, ['a','b']);
+  assert.equal(cache.entries.size, 0);
+  await assert.rejects(cache.acquire('c'), /closed/);
+});
+test('failed build does not poison future builds or close', async () => {
+  let attempt = 0;
+  const cache = new TenantLRU(1, async () => { if (!attempt++) throw new Error('synthetic failure'); return { release: async () => {} }; });
+  await assert.rejects(cache.acquire('a'), /synthetic/);
+  await cache.use('a', async () => {});
+  assert.equal(cache.stats.builds, 1);
+  await cache.close();
+});
