@@ -6,11 +6,13 @@ const git=(cwd,args)=>execFileSync('git',['-C',cwd,...args],{encoding:'utf8'}).t
 if(mode==='link') {
   if(existsSync(stateFile))throw new Error('Already linked; restore stock before switching');
   const checkout=realpathSync(resolve(process.argv[3]??''));
+  const profile=process.argv[4]??'checkout';
+  if(!['checkout','common-base','pr2','pr3'].includes(profile))throw new Error('Profile must be checkout, common-base, pr2 or pr3');
   const target=join(checkout,'postgraphile/postgraphile');
   if(JSON.parse(readFileSync(join(target,'package.json'))).name!=='postgraphile')throw new Error('Not a Crystal checkout');
   if(!existsSync(join(target,'dist/index.js')))throw new Error('Build Crystal first; dist/index.js is missing');
   if(!lstatSync(link).isSymbolicLink())throw new Error('Expected pnpm symlink; refusing to replace a directory');
-  const state={checkout,sha:git(checkout,['rev-parse','HEAD']),dirty:git(checkout,['status','--porcelain']).length>0,originalLink:readlinkSync(link),linkedAt:new Date().toISOString()};
+  const state={checkout,profile,sha:git(checkout,['rev-parse','HEAD']),dirty:git(checkout,['status','--porcelain']).length>0,originalLink:readlinkSync(link),linkedAt:new Date().toISOString()};
   writeFileSync(stateFile,JSON.stringify(state,null,2)+'\n');
   unlinkSync(link);symlinkSync(target,link,'dir');
   try {

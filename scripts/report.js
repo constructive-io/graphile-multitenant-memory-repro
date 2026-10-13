@@ -14,6 +14,7 @@ const lines=[env.crystal?'# Crystal checkout memory measurements':'# Stock Graph
 `Node ${env.node}; V8 ${env.v8}; ${env.postgres}.`, '',
 `PostGraphile ${env.dependencies.postgraphile.version}; Grafast ${env.dependencies.grafast.version}; Grafserv ${env.dependencies.grafserv.version}; pg ${env.dependencies.pg.version}.`, '',
 `Source commits: ${[...new Set(samples.map(r=>r.environment.gitSha))].map(s=>'`'+s+'`').join(', ')}. Raw JSON also records sourceDirty, overall gitDirty (including generated results), and resolved package paths.`, '',
+`Profile: ${env.comparisonProfile??(env.crystal?'checkout':'stock')}. Crystal SHA: ${env.crystal?.sha??'not linked'}.`, '',
 'Every point has a discarded five-request warmup instance. Memory collection waits 5.5 seconds and forces GC three times. Peak RSS is the process lifetime high-water mark, including warmup. Clients execute in separate processes and exit before sampling.',''];
 function table(headers,rows){lines.push('| '+headers.join(' | ')+' |','| '+headers.map(()=>'---').join(' | ')+' |',...rows.map(r=>'| '+r.join(' | ')+' |'),'');}
 lines.push('## A: unrelated tenant schemas','');
@@ -23,7 +24,7 @@ if(a.length) {
   assert.equal(hashes.size,1,'Target SDL differs with N');
   table(['Other tenants N','Total tenants','Repeats','Heap MiB','Baseline MiB','Increment MiB','RSS MiB','Peak RSS MiB','Build ms','After release heap MiB'],a.map(([n,r])=>[n,n+1,r.length,mib(med(r,x=>x.retained.heapUsed)),mib(med(r,x=>x.baseline.heapUsed)),mib(med(r,x=>x.heapDelta)),mib(med(r,x=>x.retained.rss)),mib(med(r,x=>x.retained.peakRssBytes)),fmt(med(r,x=>x.buildMs)),mib(med(r,x=>x.afterRelease.heapUsed))]));
   lines.push(`Target SDL SHA-256 is invariant: \`${[...hashes][0]}\`. The measured target is built but unqueried; the discarded warmup validates the same catalog through real queries.`, '');
-  if(a.length>1){const [low,lr]=a[0],[high,hr]=a.at(-1);lines.push(`From N=${low} to N=${high}, live target heap changes by ${mib(med(hr,x=>x.retained.heapUsed)-med(lr,x=>x.retained.heapUsed))} MiB (${mib((med(hr,x=>x.retained.heapUsed)-med(lr,x=>x.retained.heapUsed))/(high-low))} MiB per added co-tenant). This measures the progressive-introspection problem area; it does not test a proposed fix.`, '');}
+  if(a.length>1){const [low,lr]=a[0],[high,hr]=a.at(-1);lines.push(`From N=${low} to N=${high}, process heap with the target live changes by ${mib(med(hr,x=>x.retained.heapUsed)-med(lr,x=>x.retained.heapUsed))} MiB (${mib((med(hr,x=>x.retained.heapUsed)-med(lr,x=>x.retained.heapUsed))/(high-low))} MiB per added co-tenant). This measures the progressive-introspection problem area. Use the separate same-base comparison to attribute differences between candidate implementations.`, '');}
 }
 lines.push('## B: simultaneous live instances','');
 const b=grouped('b');
@@ -31,14 +32,14 @@ table(['Instances M','Repeats','Heap MiB','Increment MiB','Increment per instanc
 lines.push('The catalog stays at 60 tenants. Every instance is built by a real Host-routed request and runs one identical bounded correctness query. Increment per instance divides the process delta by M; it includes shared and per-instance runtime costs.', '', '### Fixed-capacity rotation','');
 const rotations=samples.filter(x=>x.scenario==='rotation');
 if(rotations.length) {
-  table(['Completed tenant builds','Live instances','Repeats','Heap MiB','Increment MiB','Released instances'],rotations[0].rounds.map((_,i)=>[rotations[0].rounds[i].completedBuilds,10,rotations.length,mib(med(rotations,x=>x.rounds[i].memory.heapUsed)),mib(med(rotations,x=>x.rounds[i].heapDelta)),med(rotations,x=>x.rounds[i].stats.releases)]));
+  table(['Completed tenant builds','Live instances','Repeats','Heap MiB','Increment MiB','Released instances'],rotations[0].rounds.map((_,i)=>[rotations[0].rounds[i].completedBuilds,10,rotations.length,mib(med(rotations,x=>x.rounds[i].memory.heapUsed)),mib(med(rotations,x=>x.rounds[i].heapDelta)),med(rotations,x=>x.rounds[i].stats.releases-x.statsBefore.releases)]));
   const tail=[2,3,4].map(i=>med(rotations,x=>x.rounds[i].memory.heapUsed));
   lines.push(`Over the final three complete passes, median heap spans ${mib(Math.min(...tail))}–${mib(Math.max(...tail))} MiB; last minus third pass is ${mib(tail[2]-tail[0])} MiB over 120 additional builds. This finite experiment measures settling/drift; it is not proof of indefinite boundedness.`, '');
 }
 lines.push('## C: retained distinct cached operations','');
 const c=grouped('c');
 table(['New operations K','Repeats','Verified total plans','Heap MiB','Plan baseline MiB','Increment MiB','KiB per new operation','Forced-GC median ms','RSS MiB','Peak RSS MiB'],c.map(([k,r])=>[k,r.length,med(r,x=>x.cacheAfter.plans),mib(med(r,x=>x.retained.heapUsed)),mib(med(r,x=>x.planBaseline.heapUsed)),mib(med(r,x=>x.heapDelta)),fmt(med(r,x=>x.heapPerPlan)/1024),fmt(med(r,x=>median(x.retained.gcPausesMs))),mib(med(r,x=>x.retained.rss)),mib(med(r,x=>x.retained.peakRssBytes))]));
-lines.push('Each K adds exactly K successful, distinct OperationPlan objects on top of one warmup plan. Replay preserves counts. Both the operations cache and HTTP parsing cache have capacity K+100. The delta includes ASTs, parsing, plans, SQL/JIT and cache overhead. This is the plan-memory-overhaul problem area; it is not a pure plan-object retained-size measurement. GC numbers are explicit full-collection wall times, not automatic-GC percentiles.', '', '## D: isolated build-only snapshots','');
+lines.push('Each K adds exactly K successful, distinct OperationPlan objects on top of one warmup plan. Replay preserves counts. Both the operations cache and HTTP parsing cache have capacity K+100. The delta includes ASTs, parsing, plans, SQL strings/generated JavaScript and cache overhead. This is the plan-memory-overhaul problem area; it is not a pure plan-object retained-size measurement. GC numbers are explicit full-collection wall times, not automatic-GC percentiles.', '', '## D: isolated build-only snapshots','');
 const d=grouped('d');
 for(const [n,rows] of d) {
   const analyses=rows.map(r=>JSON.parse(readFileSync(`${dir}/${r.file}.analysis.json`)));
@@ -49,10 +50,10 @@ for(const [n,rows] of d) {
   table(['Constructor','Count','Shallow MiB','Union retained MiB'],constructors.map(name=>[name,med(analyses,x=>x.constructors.find(s=>s.label===name)?.count??0),mib(med(analyses,x=>x.constructors.find(s=>s.label===name)?.shallowBytes??0)),mib(med(analyses,x=>x.constructors.find(s=>s.label===name)?.unionRetainedBytes??0))]));
 }
 lines.push('Catalog-row and build-object signatures are evidence of post-build survival where present; they do not prove every retained object can safely be removed. Constructor totals union only outermost same-constructor dominated subtrees. Different rows overlap and MUST NOT be summed. Analysis uses a declared strong-edge model, excludes weak/non-root shortcut edges, and does not reproduce all V8 ephemeron semantics. Snapshot hashes and full constructor summaries are in the analysis JSON. D after-release memory is snapshot-perturbed and is excluded from formal release comparisons.', '', '## Coverage and comparison limits','',
-'- Amber preset only, no harness-applied Graphile implementation patches or community plugins. Checkout provenance distinguishes source builds from registry stock. No Benjie development branch was supplied or benchmarked.',
+'- Registry stock and the common-base control use Amber only. The explicit PR2/PR3 comparison profiles enable the candidate scoped configuration; PR3 additionally installs its own exported scoped preset. No installed implementation is patched by the harness. Checkout provenance distinguishes these groups. No separate Benjie development branch was supplied or benchmarked.',
 '- A/D cover catalog retention and build-state survival. B combines this with runtime instance costs and release behavior. C covers one bounded nested operation family; it does not characterize all mutation, subscription or polymorphic plan workloads.',
 '- RLS and cross-schema correctness are tested independently and exercised by each discarded warmup. Lower memory obtained by dropping required dependencies would fail the intended comparison.',
-'- Historical ~0.4 MB/co-tenant/instance and 103→27 MiB figures are sanity references only. The user-authorized PR #1823 methodology used a larger unrelated-schema fixture, different software versions/scales, seven repeats and a narrower makeSchema timer. This harness uses ten tables per tenant, three repeats, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Its scoped-plugin comparison is not a stock result tested here.',
+'- Historical ~0.4 MB/co-tenant/instance and 103→27 MiB figures are sanity references only. This harness uses ten tables per tenant, three repeats, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Cross-version results are not a causal optimization comparison; compare candidates against their exact common base.',
 '- RSS allocator behavior is separate from retained JS heap. A high RSS after release does not establish a JS leak. A finite rotation plateau also cannot rule out slower growth.', '', '## Raw files','',...samples.map(r=>`- [${r.file}](./${r.file})`),'');
 writeFileSync(`${dir}/REPORT.md`,lines.join('\n'));
 console.log(`${dir}/REPORT.md`);

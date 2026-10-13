@@ -19,9 +19,10 @@ function load(tenant,kind,count) {
     child.on('error',reject);child.on('exit',code=>code===0?resolve():reject(new Error(`Load process ${code}: ${error}`)));
   });
 }
-const info=tenant=>server.cache.use(tenant,i=>({sdlHash:i.sdlHash,buildMs:i.buildMs}));
+const info=tenant=>server.cache.use(tenant,i=>({sdlHash:i.sdlHash,buildMs:i.buildMs,comparisonActivation:i.comparisonActivation}));
 try {
   await load('tenant_000','smoke',5);
+  result.comparisonActivation=(await info('tenant_000')).comparisonActivation;
   await server.cache.clear();
   result.baseline=await collectMemory();
   result.statsBefore={...server.cache.stats};

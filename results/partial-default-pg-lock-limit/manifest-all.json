@@ -1,0 +1,25 @@
+{
+  "startedAt": "2026-10-13T04:04:11.093Z",
+  "scenario": "all",
+  "repeats": 3,
+  "selected": [
+    "a",
+    "b",
+    "rotation",
+    "c",
+    "d"
+  ],
+  "points": [
+    "a-1-r1.json",
+    "a-1-r2.json",
+    "a-1-r3.json",
+    "a-20-r1.json",
+    "a-20-r2.json",
+    "a-20-r3.json",
+    "a-60-r1.json",
+    "a-60-r2.json",
+    "a-60-r3.json"
+  ],
+  "status": "failed",
+  "error": "error: out of shared memory"
+}

@@ -1,9 +1,15 @@
 # Graphile multitenant memory benchmark
 
-A private, standalone, synthetic reproduction for planning issue #2228. Only stock
-PostGraphile's Amber preset is used. No Graphile patch, community plugin, production
-database, application code, or real tenant data is included. All implementation and
+A private, standalone, synthetic reproduction for planning issue #2228. The stock
+baseline uses only PostGraphile's Amber preset. Explicit, separate comparison
+profiles support Crystal PR #2 and PR #3 against their common base. No Graphile
+implementation is patched by this harness, and no application plugin, production
+database, application code, or real tenant data is included. All harness code and
 SQL in this repository were written independently for this benchmark.
+
+Completed stock evidence: [findings](results/STOCK-SUMMARY.md),
+[full tables and raw results](results/stock-2026-10-13/REPORT.md), and
+[reproduction record](results/REPRODUCTION.md).
 
 ## Quick start
 
@@ -84,7 +90,9 @@ BENCH_RUN=stock pnpm bench:c
 BENCH_RUN=stock pnpm bench:d
 pnpm report stock
 # Or run everything serially:
-BENCH_RUN=stock pnpm bench:all
+BENCH_RUN=stock-full pnpm bench:all
+# Verify the exact requested full matrix after bench:all:
+node scripts/verify-results.js stock-full
 ```
 
 | Scenario | Question | Default matrix |
@@ -138,7 +146,7 @@ before execution and verifies the actual LRU capacity. Setting a similarly named
 preset option is ineffective in these versions. Grafserv's separate parse/validate
 cache also grows to K+100 so replay does not replace AST identities. Thus heap per
 plan is **incremental process heap per cached operation**, including AST, parsing,
-execution plan, SQL/JIT and cache overhead; it is not a pure `OperationPlan` shallow
+execution plan, SQL strings/generated JavaScript and cache overhead; it is not a pure `OperationPlan` shallow
 size. The probe only reads library objects; it never patches or clears their caches.
 
 D snapshots occur only in separate processes, after the ordinary memory sample.
@@ -180,13 +188,59 @@ A linked checkout can use different transitive versions: compare that provenance
 The stock command restores the previous pnpm link. No specific Benjie development
 branch has been supplied, so no result here claims to test his proposed fixes.
 
+### Explicit Crystal PR alternatives
+
+The user additionally selected [Crystal PR #2](https://github.com/constructive-io/crystal/pull/2)
+and [Crystal PR #3](https://github.com/constructive-io/crystal/pull/3). Their fixed
+heads and actual common merge-base are recorded under `results/comparison-provenance/`.
+Build each unmodified checkout separately with its identical upstream lockfile.
+Run the common base first, followed by each candidate, serially:
+
+```sh
+pnpm crystal:link /absolute/path/to/common-base common-base
+NODE_ENV=production GRAPHILE_ENV=production pnpm test
+BENCH_RUN=crystal-common-base pnpm bench:all
+node scripts/verify-results.js crystal-common-base
+pnpm report crystal-common-base
+pnpm crystal:stock
+
+pnpm crystal:link /absolute/path/to/pr2 pr2
+NODE_ENV=production GRAPHILE_ENV=production pnpm test
+BENCH_RUN=crystal-pr2 pnpm bench:all
+node scripts/verify-results.js crystal-pr2
+pnpm report crystal-pr2
+pnpm crystal:stock
+
+pnpm crystal:link /absolute/path/to/pr3 pr3
+NODE_ENV=production GRAPHILE_ENV=production pnpm test
+BENCH_RUN=crystal-pr3 pnpm bench:all
+node scripts/verify-results.js crystal-pr3
+pnpm report crystal-pr3
+pnpm crystal:stock
+node scripts/compare.js crystal-common-base crystal-pr2 crystal-pr3
+```
+
+`common-base` adds no option or preset. `pr2` sets
+`gather.pgScopedIntrospection.main=true`. `pr3` sets the same option and adds the
+candidate's exported `PgScopedIntrospectionPreset`; configuration alone does not
+activate PR3. Both use the default `catalogTypes=all` and no capability extensions.
+Runtime assertions verify the resolved preset and save activation metadata. The
+candidates are never stacked. SQL, queries, warmup, GC, matrix and repetitions stay
+identical, and the comparison verifier requires matching dependency versions and
+SDL hashes. Their shared scoped algorithm does not change Grafast plan-memory design.
+
+The common-base control is necessary: today's registry stock resolves different
+transitive versions from these source checkouts. Do not treat registry-to-candidate
+differences alone as the optimization's effect. The caller-owned `pg` pool stays
+at the harness's pinned 8.23.1 in all groups.
+
 ## Interpretation and references
 
 A and the introspection evidence in D address the motivation for progressive
 introspection. B shows how per-instance catalog/runtime retention compounds and
 whether lifecycle release limits it. C addresses the motivation for plan-memory
-work. These are measurements of current stock behavior, not evidence that any
-particular future implementation fixes it. Necessary cross-schema dependencies
+work. Stock results establish current behavior; the separate common-base comparison
+tests the two explicitly selected scoped-introspection candidates. Necessary cross-schema dependencies
 must keep working; lower memory obtained by dropping them is not a valid result.
 
 Historical figures of roughly 0.4 MB per co-tenant per instance, or 103→27 MiB for

@@ -1,0 +1,1 @@
+{"base":{"ref":"main","repo":"constructive-io/crystal","sha":"3ecd1d7920de38dc5ae6ee61763e8223b3b53908"},"head":{"ref":"agent/scoped-introspection","repo":"constructive-io/crystal","sha":"434a1f6deddda7786fa2497ad30ca01d598135a1"},"number":2,"state":"open","title":"Add opt-in schema-scoped PostgreSQL introspection","url":"https://github.com/constructive-io/crystal/pull/2"}

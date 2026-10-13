@@ -5,11 +5,13 @@ import { grafserv } from 'postgraphile/grafserv/express/v4';
 import { printSchema, lexicographicSortSchema } from 'postgraphile/graphql';
 import { createHash } from 'node:crypto';
 import { validTenant } from './config.js';
+import { comparisonPresets, comparisonOptions, verifyComparisonPreset } from './comparison.js';
 export async function buildInstance(tenant, pool, operationsCacheMaxLength = 100) {
   if (!validTenant(tenant)) throw new Error('Invalid tenant');
   const start = performance.now();
   const pgl = postgraphile({
-    extends: [PostGraphileAmberPreset],
+    extends: [PostGraphileAmberPreset, ...comparisonPresets],
+    ...comparisonOptions,
     pgServices: [makePgService({ pool, schemas: [tenant], pubsub: false,
       pgSettings(ctx) {
         const identity = ctx.expressv4?.req.benchIdentity;
@@ -20,6 +22,7 @@ export async function buildInstance(tenant, pool, operationsCacheMaxLength = 100
     grafserv: { graphiql: false, websockets: false, watch: false, graphqlPath: '/graphql', parseAndValidateCacheSize: operationsCacheMaxLength, allowedRequestContentTypes: ['application/json'] },
   });
   try {
+    const comparisonActivation = verifyComparisonPreset(pgl.getResolvedPreset());
     const schema = await pgl.getSchema();
     schema.extensions.grafast ??= {};
     schema.extensions.grafast.operationsCacheMaxLength = operationsCacheMaxLength;
@@ -30,6 +33,6 @@ export async function buildInstance(tenant, pool, operationsCacheMaxLength = 100
     const handler = serv.createHandler();
     const buildMs = performance.now() - start;
     const sdlHash = createHash('sha256').update(printSchema(lexicographicSortSchema(schema))).digest('hex');
-    return { pgl, serv, schema, handler, sdlHash, buildMs, release: () => pgl.release() };
+    return { pgl, serv, schema, handler, sdlHash, buildMs, comparisonActivation, release: () => pgl.release() };
   } catch (e) { await pgl.release(); throw e; }
 }

@@ -12,11 +12,11 @@ are saved alongside this file. Direct dependencies and the entire pnpm lockfile
 are pinned. No implementation patches are installed.
 
 Only official Graphile documents/npm sources and independently authored synthetic
-fixtures informed implementation. The subsequently authorized PR #1823 was read
-only for measurement methodology comparison, at head
-`6a9b3d853f6a9fde9be7cd86cf3b8aca5089b8be`. Its code, fixture, harness, plugins and
-internal documents were not copied. Numerical comparability differences are
-explained in the generated report. No other application repository was inspected.
+fixtures informed the stock implementation. An initially mentioned application PR
+was read only for methodology before the user corrected the comparison scope to
+Crystal PR #2 and PR #3. No application code, fixture, harness, plugin or internal
+document was copied. Only the explicitly selected Crystal source alternatives are
+used in separate comparison checkouts; they never alter the stock dependency graph.
 
 Preflight smoke samples remain local under the ignored `results/smoke/` directory;
 they were taken before final review fixes and are not acceptance measurements.

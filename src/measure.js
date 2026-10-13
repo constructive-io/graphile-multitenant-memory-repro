@@ -3,6 +3,7 @@ import { createRequire } from 'node:module';
 import { realpathSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import os from 'node:os';
+import { comparisonProfile } from './comparison.js';
 export const QUIET_MS = 5500;
 export async function collectMemory() {
   if (!global.gc) throw new Error('Use --expose-gc');
@@ -34,7 +35,15 @@ export function dependencies() {
 }
 export async function environment(pool) {
   let crystal=null;
-  try { crystal=JSON.parse(readFileSync('.crystal-state.json','utf8')); } catch {}
+  try { crystal=JSON.parse(readFileSync('.crystal-state.json','utf8')); }
+  catch(error) { if(error.code!=='ENOENT')throw error; }
+  if(crystal) {
+    const sha=execFileSync('git',['-C',crystal.checkout,'rev-parse','HEAD'],{encoding:'utf8'}).trim();
+    const dirty=execFileSync('git',['-C',crystal.checkout,'status','--porcelain'],{encoding:'utf8'}).trim().length>0;
+    if(sha!==crystal.sha||dirty!==crystal.dirty)throw new Error('Linked Crystal checkout changed; restore stock and relink before measuring');
+    if((crystal.profile??'checkout')!==comparisonProfile)throw new Error('Crystal profile changed during worker startup');
+    if(['common-base','pr2','pr3'].includes(comparisonProfile)&&dirty)throw new Error('Comparison checkouts must have clean tracked source');
+  }
   return { recordedAt:new Date().toISOString(),node:process.version,v8:process.versions.v8,platform:process.platform,arch:process.arch,
     cpus:os.cpus().length,cpuModel:os.cpus()[0]?.model,totalMemory:os.totalmem(),nodeOptions:process.env.NODE_OPTIONS??'',
     nodeEnv:process.env.NODE_ENV,graphileEnv:process.env.GRAPHILE_ENV,quietMs:QUIET_MS,gcPasses:3,
@@ -42,5 +51,5 @@ export async function environment(pool) {
     postgresSettings:(await pool.query("SELECT name, setting, unit FROM pg_settings WHERE name IN ('max_locks_per_transaction','shared_buffers','max_connections') ORDER BY name")).rows,
     gitSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
     gitDirty:execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim().length>0,
-    sourceDirty:execFileSync('git',['status','--porcelain','--','src','scripts','test','package.json','pnpm-lock.yaml','compose.yaml'],{encoding:'utf8'}).trim().length>0,dependencies:dependencies(),crystal };
+    sourceDirty:execFileSync('git',['status','--porcelain','--','src','scripts','test','package.json','pnpm-lock.yaml','compose.yaml'],{encoding:'utf8'}).trim().length>0,dependencies:dependencies(),crystal,comparisonProfile };
 }
