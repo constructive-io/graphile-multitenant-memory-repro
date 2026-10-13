@@ -18,8 +18,14 @@ for(const [kind,points] of Object.entries(scenarios)) {
 }
 mkdirSync(dir,{recursive:true});
 const selected=scenario==='all'?['a','b','rotation','c','d']:scenario==='b'?['b','rotation']:[scenario];
+function workerEnvironment() {
+  // Heap snapshots must not inherit credentials or application settings from the host.
+  const env={PATH:process.env.PATH,NODE_ENV:'production',GRAPHILE_ENV:'production'};
+  for(const key of ['BENCH_PG_PORT','BENCH_DATABASE_URL']) if(process.env[key])env[key]=process.env[key];
+  return env;
+}
 function child(script,args) { return new Promise((res,rej)=>{
-  const cp=spawn(process.execPath,['--expose-gc','--max-old-space-size=10000',script,...args],{stdio:'inherit',env:{...process.env,NODE_ENV:'production',GRAPHILE_ENV:'production'}});
+  const cp=spawn(process.execPath,['--expose-gc','--max-old-space-size=10000',script,...args],{stdio:'inherit',env:workerEnvironment()});
   cp.on('error',rej);cp.on('exit',(code,signal)=>code===0?res():rej(new Error(`${script} exited ${code}, signal ${signal}`)));
 }); }
 const manifest={startedAt:new Date().toISOString(),scenario,repeats,selected,points:[],status:'running'};

@@ -119,7 +119,9 @@ production, so measuring immediately after release would include pending cleanup
 A and D measure a rebuilt target before any query. B warms each retained instance
 with the same correctness query. C first measures one rebuilt, query-warmed instance,
 then subtracts that baseline from the K-plan stage. Warmup and baseline are saved.
-The measured server process does not retain client responses, query arrays, schema
+Measured workers inherit only PATH, the explicit benchmark database overrides and
+production mode settings; host credentials and unrelated environment variables are
+not inherited. The measured server process does not retain client responses, query arrays, schema
 arrays, build history, or prior instances. The parent fixture generator and HTTP
 load processes exit before memory collection.
 
