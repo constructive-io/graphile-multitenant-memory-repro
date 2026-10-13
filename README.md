@@ -8,6 +8,7 @@ SQL in this repository were written independently for this benchmark.
 ## Quick start
 
 Requires Node 24+, pnpm 11.19.0 and Docker Compose. The pinned PostgreSQL 17.7 image
+sets `max_locks_per_transaction=512` for the 151-schema DDL transaction,
 binds only `127.0.0.1:55432`, uses a named volume, and creates the dedicated
 `graphile_memory_bench` database. The example password is deliberately synthetic.
 
@@ -67,7 +68,7 @@ After DDL commits, notify the **affected exposed tenant**:
 NOTIFY bench_schema_changed, 'tenant_000';
 ```
 
-The next request rebuilds that tenant. If a hidden shared type changes, notify every
+After the notification is received, the next request rebuilds that tenant. If a hidden shared type changes, notify every
 affected tenant. Tests exercise NOTIFY, changed SDL, and request-safe invalidation.
 Automatic DDL dependency discovery is outside this small server's scope.
 

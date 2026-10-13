@@ -1,0 +1,22 @@
+$ node --test --test-concurrency=1
+✔ private manifest, exact minimal dependencies, and database guard (1.691852ms)
+✔ coalesces concurrent first builds and waits for leases plus asynchronous release (41.951333ms)
+✔ failed build does not poison future builds or close (0.521991ms)
+✔ dominator graph handles shared children, cycles and unreachable nodes (1.461507ms)
+✔ constructor union excludes nested retained size, preserves siblings (0.519511ms)
+✔ dominator results agree with independent deletion reachability on generated graphs (8.293239ms)
+▶ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction
+  ✔ lazy coalescing and concurrent tenant/user isolation (589.257682ms)
+  ✔ transaction-local settings do not survive in the shared pool (2.744717ms)
+  ✔ distinct plan counts grow and replay reuses plans (139.119307ms)
+  ✔ NOTIFY drains, releases, and rebuilds after DDL (148.151873ms)
+  ✔ client abort cannot release a running operation early (543.561961ms)
+✔ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction (2471.688681ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3060.349214

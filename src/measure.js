@@ -39,6 +39,7 @@ export async function environment(pool) {
     cpus:os.cpus().length,cpuModel:os.cpus()[0]?.model,totalMemory:os.totalmem(),nodeOptions:process.env.NODE_OPTIONS??'',
     nodeEnv:process.env.NODE_ENV,graphileEnv:process.env.GRAPHILE_ENV,quietMs:QUIET_MS,gcPasses:3,
     postgres:(await pool.query('SELECT version() AS version')).rows[0].version,
+    postgresSettings:(await pool.query("SELECT name, setting, unit FROM pg_settings WHERE name IN ('max_locks_per_transaction','shared_buffers','max_connections') ORDER BY name")).rows,
     gitSha:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),
     gitDirty:execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim().length>0,
     sourceDirty:execFileSync('git',['status','--porcelain','--','src','scripts','test','package.json','pnpm-lock.yaml','compose.yaml'],{encoding:'utf8'}).trim().length>0,dependencies:dependencies(),crystal };

@@ -2,6 +2,7 @@ name: graphile-memory-repro
 services:
   postgres:
     image: postgres:17.7-bookworm@sha256:86e0b703649d7a792bd9243ee28afc9d8f7c6b2b5638077c9d6882d4d472bbfd
+    command: ["postgres", "-c", "max_locks_per_transaction=512"]
     environment:
       POSTGRES_USER: bench_admin
       POSTGRES_PASSWORD: synthetic-local-only
