@@ -27,5 +27,5 @@ if(mode==='link') {
   const state=JSON.parse(readFileSync(stateFile));
   if(!lstatSync(link).isSymbolicLink()||realpathSync(link)!==join(state.checkout,'postgraphile/postgraphile'))throw new Error('Link changed unexpectedly');
   unlinkSync(link);symlinkSync(state.originalLink,link,'dir');unlinkSync(stateFile);
-  console.log(execFileSync(process.execPath,['scripts/provenance.js'],{encoding:'utf8'}));
+  process.stdout.write(execFileSync(process.execPath,['scripts/provenance.js'],{encoding:'utf8'}));
 } else throw new Error('Use crystal:link /absolute/path/to/crystal or crystal:stock');

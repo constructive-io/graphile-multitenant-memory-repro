@@ -1,15 +1,18 @@
 # Graphile multitenant memory benchmark
 
 A private, standalone, synthetic reproduction for planning issue #2228. The stock
-baseline uses only PostGraphile's Amber preset. Explicit, separate comparison
-profiles support Crystal PR #2 and PR #3 against their common base. No Graphile
+baseline uses only PostGraphile's Amber preset. A separate controlled comparison
+tests Crystal PR #2 against its common base. No Graphile
 implementation is patched by this harness, and no application plugin, production
 database, application code, or real tenant data is included. All harness code and
 SQL in this repository were written independently for this benchmark.
 
-Completed stock evidence: [findings](results/STOCK-SUMMARY.md),
-[full tables and raw results](results/stock-2026-10-13/REPORT.md), and
-[reproduction record](results/REPRODUCTION.md).
+Completed evidence comprises 126 formal fresh-process samples and 18 separate
+snapshot analyses: stock, common base and PR2 each complete the full three-repeat
+matrix. See the [stock findings](results/STOCK-SUMMARY.md),
+[comparison findings](results/COMPARISON-SUMMARY.md),
+[comparison tables](results/COMPARISON.md), and
+[reproduction record](results/REPRODUCTION.md). Raw JSON is linked from each report.
 
 ## Quick start
 
@@ -131,15 +134,17 @@ then subtracts that baseline from the K-plan stage. Warmup and baseline are save
 Measured workers inherit only PATH, the explicit benchmark database overrides and
 production mode settings; host credentials and unrelated environment variables are
 not inherited. The measured server process does not retain client responses, query arrays, schema
-arrays, build history, or prior instances. The parent fixture generator and HTTP
-load processes exit before memory collection.
+arrays, build history, or prior instances. Fixture generation finishes and closes
+its PostgreSQL pool before workers start. HTTP load children exit before collection;
+the lightweight parent orchestrator remains outside the measured process.
 
 `heapUsed` is live JS heap after forced GC. `rss` is current resident process memory;
 `peakRssBytes` is the OS process high-water mark, including earlier warmup. RSS that
 remains high after release is not by itself evidence of a JS leak. GC pauses are
 wall times of each explicit full `global.gc()` call; they are not all automatic GC
 pauses or production latency percentiles. Reports use medians, retaining all raw
-samples. Small negative release deltas and JIT/global-cache drift can occur.
+samples. Forced-GC tables take each process's median of three calls, then the median
+of the three process medians. Small negative release deltas and JIT/global-cache drift can occur.
 
 C sets the supported `schema.extensions.grafast.operationsCacheMaxLength` property
 before execution and verifies the actual LRU capacity. Setting a similarly named
@@ -188,44 +193,48 @@ A linked checkout can use different transitive versions: compare that provenance
 The stock command restores the previous pnpm link. No specific Benjie development
 branch has been supplied, so no result here claims to test his proposed fixes.
 
-### Explicit Crystal PR alternatives
+### Controlled scoped-introspection comparison
 
-The user additionally selected [Crystal PR #2](https://github.com/constructive-io/crystal/pull/2)
-and [Crystal PR #3](https://github.com/constructive-io/crystal/pull/3). Their fixed
-heads and actual common merge-base are recorded under `results/comparison-provenance/`.
-Build each unmodified checkout separately with its identical upstream lockfile.
-Run the common base first, followed by each candidate, serially:
+The user selected [Crystal PR #2](https://github.com/constructive-io/crystal/pull/2)
+as the sole representative of the scoped algorithm shared with
+[PR #3](https://github.com/constructive-io/crystal/pull/3). Their fixed heads and
+actual common merge-base are recorded under `results/comparison-provenance/`.
+PR3 has a different integration path but no performance matrix is run for it.
+Build the unmodified common-base and PR2 checkouts with their identical upstream
+lockfile, then run both groups serially:
 
 ```sh
 pnpm crystal:link /absolute/path/to/common-base common-base
-NODE_ENV=production GRAPHILE_ENV=production pnpm test
+node scripts/preflight.js crystal-common-base
 BENCH_RUN=crystal-common-base pnpm bench:all
 node scripts/verify-results.js crystal-common-base
 pnpm report crystal-common-base
 pnpm crystal:stock
 
 pnpm crystal:link /absolute/path/to/pr2 pr2
-NODE_ENV=production GRAPHILE_ENV=production pnpm test
+node scripts/preflight.js crystal-pr2
 BENCH_RUN=crystal-pr2 pnpm bench:all
 node scripts/verify-results.js crystal-pr2
 pnpm report crystal-pr2
 pnpm crystal:stock
 
-pnpm crystal:link /absolute/path/to/pr3 pr3
-NODE_ENV=production GRAPHILE_ENV=production pnpm test
-BENCH_RUN=crystal-pr3 pnpm bench:all
-node scripts/verify-results.js crystal-pr3
-pnpm report crystal-pr3
-pnpm crystal:stock
-node scripts/compare.js crystal-common-base crystal-pr2 crystal-pr3
+node scripts/compare.js crystal-common-base crystal-pr2
 ```
 
+Choose new run directory names when repeating measurements. `preflight.js` runs the
+correctness suite and saves a per-run receipt tied to the current clean source SHA;
+it also records the tested clean Crystal SHA and resolved dependency versions.
+The comparison checks this receipt and requires tests to precede measurements.
+Historical receipts are retained for the
+original accepted runs. Do not reuse their SHA labels for measurements of later code.
+
 `common-base` adds no option or preset. `pr2` sets
-`gather.pgScopedIntrospection.main=true`. `pr3` sets the same option and adds the
-candidate's exported `PgScopedIntrospectionPreset`; configuration alone does not
-activate PR3. Both use the default `catalogTypes=all` and no capability extensions.
-Runtime assertions verify the resolved preset and save activation metadata. The
-candidates are never stacked. SQL, queries, warmup, GC, matrix and repetitions stay
+`gather.pgScopedIntrospection.main=true`, with default `catalogTypes=all` and no
+capability extensions. The optional `pr3` adapter adds the candidate's exported
+`PgScopedIntrospectionPreset`; configuration alone would not activate PR3. That
+adapter was prepared before the user removed duplicate performance work. It is not
+used in the measured comparison. Runtime assertions verify the resolved preset and
+save activation metadata. SQL, queries, warmup, GC, matrix and repetitions stay
 identical, and the comparison verifier requires matching dependency versions and
 SDL hashes. Their shared scoped algorithm does not change Grafast plan-memory design.
 
@@ -240,7 +249,7 @@ A and the introspection evidence in D address the motivation for progressive
 introspection. B shows how per-instance catalog/runtime retention compounds and
 whether lifecycle release limits it. C addresses the motivation for plan-memory
 work. Stock results establish current behavior; the separate common-base comparison
-tests the two explicitly selected scoped-introspection candidates. Necessary cross-schema dependencies
+tests the selected scoped-introspection representative. Necessary cross-schema dependencies
 must keep working; lower memory obtained by dropping them is not a valid result.
 
 Historical figures of roughly 0.4 MB per co-tenant per instance, or 103→27 MiB for

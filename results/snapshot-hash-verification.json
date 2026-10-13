@@ -1,0 +1,114 @@
+{
+  "status": "passed",
+  "recordedAt": "2026-10-13T05:46:08.744676+00:00",
+  "snapshots": [
+    {
+      "group": "stock-2026-10-13",
+      "file": "d-1-r1.json.heapsnapshot",
+      "bytes": 33019097,
+      "sha256": "02d4f94eeefa8fca4e6508233fb9ba059bb0bfad637e3d04a2e8da808f14ab3e"
+    },
+    {
+      "group": "stock-2026-10-13",
+      "file": "d-1-r2.json.heapsnapshot",
+      "bytes": 33012446,
+      "sha256": "c3cee3277c76ef3985ec42894ee13abd6fb4a167be215e28d79bbccd4ee8a299"
+    },
+    {
+      "group": "stock-2026-10-13",
+      "file": "d-1-r3.json.heapsnapshot",
+      "bytes": 33039267,
+      "sha256": "253cdf08e82b51233c9003d9423de2167d3f3ac53ce5a67e6acb0987eeca8b5d"
+    },
+    {
+      "group": "stock-2026-10-13",
+      "file": "d-150-r1.json.heapsnapshot",
+      "bytes": 136929775,
+      "sha256": "32713cf055e6564c726e6b830fab6989346b4d38a46a496642749bc6d8894b06"
+    },
+    {
+      "group": "stock-2026-10-13",
+      "file": "d-150-r2.json.heapsnapshot",
+      "bytes": 136423508,
+      "sha256": "a71b6351d62756390839f398cff4902f3703bf6cf96ac6ea6e01467f7123fc9e"
+    },
+    {
+      "group": "stock-2026-10-13",
+      "file": "d-150-r3.json.heapsnapshot",
+      "bytes": 136423652,
+      "sha256": "beac6fe6c96bec3462a511f25acced9a538151fc6040b1ccc40f73eb1ce82207"
+    },
+    {
+      "group": "crystal-common-base",
+      "file": "d-1-r1.json.heapsnapshot",
+      "bytes": 33193610,
+      "sha256": "bebb8f4c73c267aed88c711b3cac1c23501f3f46a0dbdbeb3abdca0ce43e48c0"
+    },
+    {
+      "group": "crystal-common-base",
+      "file": "d-1-r2.json.heapsnapshot",
+      "bytes": 33189330,
+      "sha256": "529cade9e6fb42b1d71b96868b62378716ebe6ba0adef9f564150dcbdfc2e4a7"
+    },
+    {
+      "group": "crystal-common-base",
+      "file": "d-1-r3.json.heapsnapshot",
+      "bytes": 33197236,
+      "sha256": "49b121f5b347617d1a47ada5af8fdb6059086709b025118109057cb376c96211"
+    },
+    {
+      "group": "crystal-common-base",
+      "file": "d-150-r1.json.heapsnapshot",
+      "bytes": 136841806,
+      "sha256": "a79db12075456f85c6017049827341ea01d4422e94fd49b4b0090e2a3f4d29e8"
+    },
+    {
+      "group": "crystal-common-base",
+      "file": "d-150-r2.json.heapsnapshot",
+      "bytes": 136749802,
+      "sha256": "7102e0f436640eb80bff354efaa60f16f415a8686b1bd7ed6d955e5297a51753"
+    },
+    {
+      "group": "crystal-common-base",
+      "file": "d-150-r3.json.heapsnapshot",
+      "bytes": 137803577,
+      "sha256": "1baedd35160b08aef66d6c5b4ca797ed007b64dbaf2a661829df592f986fb820"
+    },
+    {
+      "group": "crystal-pr2",
+      "file": "d-1-r1.json.heapsnapshot",
+      "bytes": 32474218,
+      "sha256": "dcbdaece85022ac9237c2713062e869d32adfed02901056d84942c58df499a4e"
+    },
+    {
+      "group": "crystal-pr2",
+      "file": "d-1-r2.json.heapsnapshot",
+      "bytes": 32477007,
+      "sha256": "76ef49e4baac0b4b90c82adfc97637adb4f2c8a1ad8556f1f862dbf6d18ce126"
+    },
+    {
+      "group": "crystal-pr2",
+      "file": "d-1-r3.json.heapsnapshot",
+      "bytes": 32464822,
+      "sha256": "46bd55a66d71aa13213827abfb48d3bee7a58c33ab95cfe1cf7750c99c2cba08"
+    },
+    {
+      "group": "crystal-pr2",
+      "file": "d-150-r1.json.heapsnapshot",
+      "bytes": 32489476,
+      "sha256": "5e8764c703796e3ab8b71161b7d1af814261f1c45509b523a45a8acc0ba484f5"
+    },
+    {
+      "group": "crystal-pr2",
+      "file": "d-150-r2.json.heapsnapshot",
+      "bytes": 32510276,
+      "sha256": "500443e37cdcd4b5bc6607307ac31eed74045b5ec6cc6adeb0ecacdd98cb51f1"
+    },
+    {
+      "group": "crystal-pr2",
+      "file": "d-150-r3.json.heapsnapshot",
+      "bytes": 32472697,
+      "sha256": "4b121db2d593156359c00f9c6a264bf5c66153ee04841be835e634faa4b408fe"
+    }
+  ]
+}

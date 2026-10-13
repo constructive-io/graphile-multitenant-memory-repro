@@ -77,3 +77,48 @@ not be assumed identical to today's registry resolution.
 `crystal-stock-restoration.json`. The separate clean clone used only registry stock
 for formal measurements. A specific Benjie development/fix branch has not been
 provided and was not run.
+
+## Controlled scoped-introspection inputs
+
+The selected performance comparison uses the actual common base
+`3ecd1d7920de38dc5ae6ee61763e8223b3b53908` and PR2 head
+`434a1f6deddda7786fa2497ad30ca01d598135a1`. Independent source clones were built
+without tracked modifications; all root manifests, Yarn configuration and upstream
+lockfiles match. Exact inputs, build steps and source-state checks are under
+`comparison-provenance/`.
+
+The common base, PR2 and PR3 each passed the 12-test correctness suite before the
+final scope was narrowed. PR3 has build/correctness evidence only: no performance
+sample was taken for it. PR2 represents their identical scoped algorithm; the PRs
+differ in integration. No PR3 performance result is inferred from PR2.
+
+The common-base and PR2 matrices execute from another clean remote benchmark clone
+at `62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba`. All source builds finished before
+these measurements. Every worker rechecks the linked checkout's HEAD and tracked
+cleanliness, and every instance verifies the intended resolved preset activation.
+The root pg client stays at 8.23.1 in both groups. Their Graphile and GraphQL versions
+match each other and differ from the published registry dependency graph as noted
+above; optimization comparisons therefore use the common-base control.
+
+The effective cgroup memory limit is 16 GiB; `os.totalMemory()` in raw samples
+describes host memory. Cgroup observations include earlier source builds and cannot
+attribute limit/reclaim counters to individual measured workers. The saved
+observations show no OOM or OOM-kill events. Process RSS/peak RSS tables describe the
+measured Node process, not total cgroup memory.
+
+Both comparison groups subsequently completed their full 42-worker matrices and
+six snapshot analyses each. Together with stock, acceptance comprises **126 formal
+fresh-process samples and 18 isolated snapshot analyses**. The two-group verifier
+also checks matching source SHA, dependency versions, environment, matrix, database
+settings, resolved activation and target SDL. It reports 84 accepted comparison
+workers and zero PR3 performance samples in `comparison-verification.json`.
+`comparison-provenance/final-scope.json` records the narrowed scope. The earlier
+three-group orchestration wrapper was stopped at the completed common-base boundary;
+neither a measured worker nor a required matrix was interrupted by that change.
+The PR2 matrix ran afterward, sequentially, and the registry symlink was restored.
+
+Postprocessing was repeated on all three full result directories after copying raw
+JSON and analyses into the primary clone. Snapshot files themselves were excluded.
+The historical runtime commits remain recorded rather than being relabeled as the
+later reporting commit. Initial incomplete stock attempts remain clearly separated
+under `PARTIAL-RUNS.md`; no partial sample contributes to accepted tables.

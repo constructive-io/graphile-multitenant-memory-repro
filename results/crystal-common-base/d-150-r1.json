@@ -1,0 +1,162 @@
+{
+  "scenario": "d",
+  "value": 150,
+  "totalTenants": 151,
+  "capacity": 1,
+  "environment": {
+    "recordedAt": "2026-10-13T05:09:08.579Z",
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "platform": "linux",
+    "arch": "x64",
+    "cpus": 5,
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "totalMemory": 18882699264,
+    "nodeOptions": "",
+    "nodeEnv": "production",
+    "graphileEnv": "production",
+    "quietMs": 5500,
+    "gcPasses": 3,
+    "postgres": "PostgreSQL 17.7 (Debian 17.7-3.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "postgresSettings": [
+      {
+        "name": "max_connections",
+        "setting": "100",
+        "unit": null
+      },
+      {
+        "name": "max_locks_per_transaction",
+        "setting": "512",
+        "unit": null
+      },
+      {
+        "name": "shared_buffers",
+        "setting": "16384",
+        "unit": "8kB"
+      }
+    ],
+    "gitSha": "62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba",
+    "gitDirty": true,
+    "sourceDirty": false,
+    "dependencies": {
+      "postgraphile": {
+        "version": "5.1.5",
+        "path": "/workspace/graphile-crystal-common-base/postgraphile/postgraphile"
+      },
+      "grafast": {
+        "version": "1.1.3",
+        "path": "/workspace/graphile-crystal-common-base/grafast/grafast"
+      },
+      "grafserv": {
+        "version": "1.0.2",
+        "path": "/workspace/graphile-crystal-common-base/grafast/grafserv"
+      },
+      "graphile-build": {
+        "version": "5.1.1",
+        "path": "/workspace/graphile-crystal-common-base/graphile-build/graphile-build"
+      },
+      "graphile-build-pg": {
+        "version": "5.1.4",
+        "path": "/workspace/graphile-crystal-common-base/graphile-build/graphile-build-pg"
+      },
+      "@dataplan/pg": {
+        "version": "1.1.2",
+        "path": "/workspace/graphile-crystal-common-base/grafast/dataplan-pg"
+      },
+      "pg-introspection": {
+        "version": "1.0.1",
+        "path": "/workspace/graphile-crystal-common-base/utils/pg-introspection"
+      },
+      "graphql": {
+        "version": "16.13.2",
+        "path": "/workspace/graphile-crystal-common-base/node_modules/graphql"
+      },
+      "pg": {
+        "version": "8.23.1",
+        "path": "/workspace/graphile-memory-comparison/node_modules/.pnpm/pg@8.23.1/node_modules/pg"
+      },
+      "express": {
+        "version": "4.22.3",
+        "path": "/workspace/graphile-memory-comparison/node_modules/.pnpm/express@4.22.3_supports-color@7.2.0/node_modules/express"
+      }
+    },
+    "crystal": {
+      "checkout": "/workspace/graphile-crystal-common-base",
+      "profile": "common-base",
+      "sha": "3ecd1d7920de38dc5ae6ee61763e8223b3b53908",
+      "dirty": false,
+      "originalLink": ".pnpm/postgraphile@5.1.5_70a8db00ec8e159a782a203bfef66a07/node_modules/postgraphile",
+      "linkedAt": "2026-10-13T04:44:21.084Z"
+    },
+    "comparisonProfile": "common-base"
+  },
+  "warmup": {
+    "instances": 1,
+    "requests": 5
+  },
+  "comparisonActivation": {
+    "profile": "common-base",
+    "scoped": false,
+    "pluginPresent": false,
+    "catalogTypes": null,
+    "capabilityExtensions": []
+  },
+  "baseline": {
+    "rss": 262946816,
+    "heapTotal": 168476672,
+    "heapUsed": 30131848,
+    "external": 4147747,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 280207360,
+    "gcPausesMs": [
+      14.55983599999945,
+      13.21546600000056,
+      11.430808999999499
+    ]
+  },
+  "statsBefore": {
+    "builds": 1,
+    "releases": 1,
+    "peakSize": 1
+  },
+  "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+  "buildMs": 571.213248,
+  "retained": {
+    "rss": 349048832,
+    "heapTotal": 95248384,
+    "heapUsed": 91231872,
+    "external": 20566050,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 349048832,
+    "gcPausesMs": [
+      41.02485800000068,
+      39.46303700000135,
+      39.95777300000009
+    ]
+  },
+  "heapDelta": 61100024,
+  "snapshot": "/workspace/graphile-memory-comparison/results/crystal-common-base/d-150-r1.json.heapsnapshot",
+  "statsLoaded": {
+    "builds": 2,
+    "releases": 1,
+    "peakSize": 1
+  },
+  "afterRelease": {
+    "rss": 681050112,
+    "heapTotal": 35266560,
+    "heapUsed": 28042784,
+    "external": 4141240,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 763305984,
+    "gcPausesMs": [
+      13.372048999997787,
+      12.492620000000898,
+      11.891632999999274
+    ]
+  },
+  "statsAfter": {
+    "builds": 2,
+    "releases": 2,
+    "peakSize": 1
+  }
+}

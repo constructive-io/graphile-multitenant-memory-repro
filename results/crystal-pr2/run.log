@@ -1,0 +1,79 @@
+$ node scripts/bench.js all
+Preparing a=1; 3 sequential fresh processes
+{"scenario":"a","value":1,"heapMiB":32.57066345214844,"deltaMiB":3.9093093872070312,"buildMs":451.2473229999996,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":1,"heapMiB":32.58824157714844,"deltaMiB":3.9070205688476562,"buildMs":477.5853269999998,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":1,"heapMiB":32.59661102294922,"deltaMiB":3.9160995483398438,"buildMs":476.7160960000001,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+Preparing a=20; 3 sequential fresh processes
+{"scenario":"a","value":20,"heapMiB":32.57395935058594,"deltaMiB":3.90869140625,"buildMs":398.396248,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":20,"heapMiB":32.583282470703125,"deltaMiB":3.9146575927734375,"buildMs":473.5628109999998,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":20,"heapMiB":32.585060119628906,"deltaMiB":3.9140167236328125,"buildMs":455.6274079999994,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+Preparing a=60; 3 sequential fresh processes
+{"scenario":"a","value":60,"heapMiB":32.740081787109375,"deltaMiB":4.067588806152344,"buildMs":469.7887700000001,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":60,"heapMiB":32.58935546875,"deltaMiB":3.9182357788085938,"buildMs":478.522954,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":60,"heapMiB":32.84184265136719,"deltaMiB":4.173423767089844,"buildMs":397.4393060000002,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+Preparing a=150; 3 sequential fresh processes
+{"scenario":"a","value":150,"heapMiB":32.58607482910156,"deltaMiB":3.9066543579101562,"buildMs":519.1790250000004,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":150,"heapMiB":32.580650329589844,"deltaMiB":3.908203125,"buildMs":480.6287819999998,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"scenario":"a","value":150,"heapMiB":32.59257507324219,"deltaMiB":3.9151535034179688,"buildMs":485.53325400000085,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+Preparing b=1; 3 sequential fresh processes
+{"scenario":"b","value":1,"heapMiB":33.141021728515625,"deltaMiB":4.4739837646484375,"buildMs":395.9259740000007}
+{"scenario":"b","value":1,"heapMiB":33.150962829589844,"deltaMiB":4.4803924560546875,"buildMs":466.86333099999956}
+{"scenario":"b","value":1,"heapMiB":33.155731201171875,"deltaMiB":4.484214782714844,"buildMs":475.26483200000075}
+Preparing b=10; 3 sequential fresh processes
+{"scenario":"b","value":10,"heapMiB":69.81945037841797,"deltaMiB":41.150230407714844,"buildMs":4580.120373999996}
+{"scenario":"b","value":10,"heapMiB":69.8163833618164,"deltaMiB":41.14411926269531,"buildMs":4156.070571}
+{"scenario":"b","value":10,"heapMiB":69.76364135742188,"deltaMiB":41.09124755859375,"buildMs":4025.8518870000025}
+Preparing b=50; 3 sequential fresh processes
+{"scenario":"b","value":50,"heapMiB":221.30059814453125,"deltaMiB":192.63323974609375,"buildMs":19707.53997099999}
+{"scenario":"b","value":50,"heapMiB":221.2498016357422,"deltaMiB":192.58104705810547,"buildMs":19056.539071999992}
+{"scenario":"b","value":50,"heapMiB":221.2567596435547,"deltaMiB":192.58792114257812,"buildMs":19319.54378899999}
+Preparing rotation=10; 3 sequential fresh processes
+{"scenario":"rotation","round":1,"heapMiB":70.87319946289062,"liveInstances":10}
+{"scenario":"rotation","round":2,"heapMiB":71.05549621582031,"liveInstances":10}
+{"scenario":"rotation","round":3,"heapMiB":71.4720458984375,"liveInstances":10}
+{"scenario":"rotation","round":4,"heapMiB":71.72383117675781,"liveInstances":10}
+{"scenario":"rotation","round":5,"heapMiB":72.04510498046875,"liveInstances":10}
+{"scenario":"rotation","value":10,"heapMiB":72.04510498046875,"deltaMiB":null}
+{"scenario":"rotation","round":1,"heapMiB":70.31925201416016,"liveInstances":10}
+{"scenario":"rotation","round":2,"heapMiB":70.9905014038086,"liveInstances":10}
+{"scenario":"rotation","round":3,"heapMiB":71.40364074707031,"liveInstances":10}
+{"scenario":"rotation","round":4,"heapMiB":71.65628051757812,"liveInstances":10}
+{"scenario":"rotation","round":5,"heapMiB":71.9412612915039,"liveInstances":10}
+{"scenario":"rotation","value":10,"heapMiB":71.9412612915039,"deltaMiB":null}
+{"scenario":"rotation","round":1,"heapMiB":70.40156555175781,"liveInstances":10}
+{"scenario":"rotation","round":2,"heapMiB":71.03286743164062,"liveInstances":10}
+{"scenario":"rotation","round":3,"heapMiB":71.49032592773438,"liveInstances":10}
+{"scenario":"rotation","round":4,"heapMiB":71.78404998779297,"liveInstances":10}
+{"scenario":"rotation","round":5,"heapMiB":72.08868408203125,"liveInstances":10}
+{"scenario":"rotation","value":10,"heapMiB":72.08868408203125,"deltaMiB":null}
+Preparing c=10; 3 sequential fresh processes
+{"scenario":"c","value":10,"heapMiB":37.35139465332031,"deltaMiB":3.80902099609375}
+{"scenario":"c","value":10,"heapMiB":37.34956359863281,"deltaMiB":3.8137435913085938}
+{"scenario":"c","value":10,"heapMiB":37.34197998046875,"deltaMiB":3.8081817626953125}
+Preparing c=100; 3 sequential fresh processes
+{"scenario":"c","value":100,"heapMiB":64.94058227539062,"deltaMiB":31.401405334472656}
+{"scenario":"c","value":100,"heapMiB":64.90571594238281,"deltaMiB":31.356407165527344}
+{"scenario":"c","value":100,"heapMiB":64.8836669921875,"deltaMiB":31.350723266601562}
+Preparing c=1000; 3 sequential fresh processes
+{"scenario":"c","value":1000,"heapMiB":329.409423828125,"deltaMiB":295.86917877197266}
+{"scenario":"c","value":1000,"heapMiB":329.0210266113281,"deltaMiB":295.47872161865234}
+{"scenario":"c","value":1000,"heapMiB":329.1526412963867,"deltaMiB":295.6020202636719}
+Preparing c=5000; 3 sequential fresh processes
+{"scenario":"c","value":5000,"heapMiB":1493.6982421875,"deltaMiB":1460.1659698486328}
+{"scenario":"c","value":5000,"heapMiB":1493.8078155517578,"deltaMiB":1460.2733612060547}
+{"scenario":"c","value":5000,"heapMiB":1494.8577728271484,"deltaMiB":1461.3267135620117}
+Preparing d=1; 3 sequential fresh processes
+{"scenario":"d","value":1,"heapMiB":32.57075500488281,"deltaMiB":3.9068603515625,"buildMs":465.2229160000006,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"snapshot":"d-1-r1.json.heapsnapshot","nodes":336776,"reachable":336768,"signatures":[{"label":"Type row","count":505,"shallowBytes":145440,"unionRetainedBytes":1143448,"maxRetainedBytes":2480},{"label":"Build object signature","count":1,"shallowBytes":24,"unionRetainedBytes":419576,"maxRetainedBytes":419576},{"label":"Attribute row","count":75,"shallowBytes":17400,"unionRetainedBytes":121160,"maxRetainedBytes":1624},{"label":"Class row","count":30,"shallowBytes":9120,"unionRetainedBytes":104032,"maxRetainedBytes":4048},{"label":"Introspection container signature","count":1,"shallowBytes":208,"unionRetainedBytes":56584,"maxRetainedBytes":56584},{"label":"Constraint row","count":21,"shallowBytes":5040,"unionRetainedBytes":48496,"maxRetainedBytes":2632},{"label":"Procedure row","count":5,"shallowBytes":1360,"unionRetainedBytes":17584,"maxRetainedBytes":3608},{"label":"Namespace row","count":3,"shallowBytes":192,"unionRetainedBytes":4064,"maxRetainedBytes":1360}]}
+{"scenario":"d","value":1,"heapMiB":32.572021484375,"deltaMiB":3.9072494506835938,"buildMs":454.31269299999985,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"snapshot":"d-1-r2.json.heapsnapshot","nodes":336826,"reachable":336818,"signatures":[{"label":"Type row","count":505,"shallowBytes":145440,"unionRetainedBytes":1143448,"maxRetainedBytes":2480},{"label":"Build object signature","count":1,"shallowBytes":24,"unionRetainedBytes":419576,"maxRetainedBytes":419576},{"label":"Attribute row","count":75,"shallowBytes":17400,"unionRetainedBytes":121160,"maxRetainedBytes":1624},{"label":"Class row","count":30,"shallowBytes":9120,"unionRetainedBytes":104032,"maxRetainedBytes":4048},{"label":"Introspection container signature","count":1,"shallowBytes":208,"unionRetainedBytes":56584,"maxRetainedBytes":56584},{"label":"Constraint row","count":21,"shallowBytes":5040,"unionRetainedBytes":48496,"maxRetainedBytes":2632},{"label":"Procedure row","count":5,"shallowBytes":1360,"unionRetainedBytes":17584,"maxRetainedBytes":3608},{"label":"Namespace row","count":3,"shallowBytes":192,"unionRetainedBytes":4064,"maxRetainedBytes":1360}]}
+{"scenario":"d","value":1,"heapMiB":32.57447052001953,"deltaMiB":3.9068222045898438,"buildMs":472.56184399999984,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"snapshot":"d-1-r3.json.heapsnapshot","nodes":336821,"reachable":336813,"signatures":[{"label":"Type row","count":505,"shallowBytes":145440,"unionRetainedBytes":1143448,"maxRetainedBytes":2480},{"label":"Build object signature","count":1,"shallowBytes":24,"unionRetainedBytes":419576,"maxRetainedBytes":419576},{"label":"Attribute row","count":75,"shallowBytes":17400,"unionRetainedBytes":121160,"maxRetainedBytes":1624},{"label":"Class row","count":30,"shallowBytes":9120,"unionRetainedBytes":104032,"maxRetainedBytes":4048},{"label":"Introspection container signature","count":1,"shallowBytes":208,"unionRetainedBytes":56584,"maxRetainedBytes":56584},{"label":"Constraint row","count":21,"shallowBytes":5040,"unionRetainedBytes":48496,"maxRetainedBytes":2632},{"label":"Procedure row","count":5,"shallowBytes":1360,"unionRetainedBytes":17584,"maxRetainedBytes":3608},{"label":"Namespace row","count":3,"shallowBytes":192,"unionRetainedBytes":4064,"maxRetainedBytes":1360}]}
+Preparing d=150; 3 sequential fresh processes
+{"scenario":"d","value":150,"heapMiB":32.588531494140625,"deltaMiB":3.9120559692382812,"buildMs":426.16261400000076,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"snapshot":"d-150-r1.json.heapsnapshot","nodes":337041,"reachable":337033,"signatures":[{"label":"Type row","count":505,"shallowBytes":145440,"unionRetainedBytes":1143448,"maxRetainedBytes":2480},{"label":"Build object signature","count":1,"shallowBytes":24,"unionRetainedBytes":419576,"maxRetainedBytes":419576},{"label":"Attribute row","count":75,"shallowBytes":17400,"unionRetainedBytes":121160,"maxRetainedBytes":1624},{"label":"Class row","count":30,"shallowBytes":9120,"unionRetainedBytes":104032,"maxRetainedBytes":4048},{"label":"Introspection container signature","count":1,"shallowBytes":208,"unionRetainedBytes":56584,"maxRetainedBytes":56584},{"label":"Constraint row","count":21,"shallowBytes":5040,"unionRetainedBytes":48496,"maxRetainedBytes":2632},{"label":"Procedure row","count":5,"shallowBytes":1360,"unionRetainedBytes":17584,"maxRetainedBytes":3608},{"label":"Namespace row","count":3,"shallowBytes":192,"unionRetainedBytes":4064,"maxRetainedBytes":1360}]}
+{"scenario":"d","value":150,"heapMiB":32.59368133544922,"deltaMiB":3.9146881103515625,"buildMs":479.92213300000003,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"snapshot":"d-150-r2.json.heapsnapshot","nodes":337222,"reachable":337214,"signatures":[{"label":"Type row","count":505,"shallowBytes":145440,"unionRetainedBytes":1143448,"maxRetainedBytes":2480},{"label":"Build object signature","count":1,"shallowBytes":24,"unionRetainedBytes":419576,"maxRetainedBytes":419576},{"label":"Attribute row","count":75,"shallowBytes":17400,"unionRetainedBytes":121160,"maxRetainedBytes":1624},{"label":"Class row","count":30,"shallowBytes":9120,"unionRetainedBytes":104032,"maxRetainedBytes":4048},{"label":"Introspection container signature","count":1,"shallowBytes":208,"unionRetainedBytes":56584,"maxRetainedBytes":56584},{"label":"Constraint row","count":21,"shallowBytes":5040,"unionRetainedBytes":48496,"maxRetainedBytes":2632},{"label":"Procedure row","count":5,"shallowBytes":1360,"unionRetainedBytes":17584,"maxRetainedBytes":3608},{"label":"Namespace row","count":3,"shallowBytes":192,"unionRetainedBytes":4064,"maxRetainedBytes":1360}]}
+{"scenario":"d","value":150,"heapMiB":32.583091735839844,"deltaMiB":3.9081192016601562,"buildMs":497.33859399999983,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"snapshot":"d-150-r3.json.heapsnapshot","nodes":336961,"reachable":336953,"signatures":[{"label":"Type row","count":505,"shallowBytes":145440,"unionRetainedBytes":1143448,"maxRetainedBytes":2480},{"label":"Build object signature","count":1,"shallowBytes":24,"unionRetainedBytes":419576,"maxRetainedBytes":419576},{"label":"Attribute row","count":75,"shallowBytes":17400,"unionRetainedBytes":121160,"maxRetainedBytes":1624},{"label":"Class row","count":30,"shallowBytes":9120,"unionRetainedBytes":104032,"maxRetainedBytes":4048},{"label":"Introspection container signature","count":1,"shallowBytes":208,"unionRetainedBytes":56584,"maxRetainedBytes":56584},{"label":"Constraint row","count":21,"shallowBytes":5040,"unionRetainedBytes":48496,"maxRetainedBytes":2632},{"label":"Procedure row","count":5,"shallowBytes":1360,"unionRetainedBytes":17584,"maxRetainedBytes":3608},{"label":"Namespace row","count":3,"shallowBytes":192,"unionRetainedBytes":4064,"maxRetainedBytes":1360}]}
+Raw results: /workspace/graphile-memory-comparison/results/crystal-pr2

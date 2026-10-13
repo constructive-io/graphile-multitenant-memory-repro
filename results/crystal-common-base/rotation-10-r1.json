@@ -1,0 +1,280 @@
+{
+  "scenario": "rotation",
+  "value": 10,
+  "totalTenants": 60,
+  "capacity": 10,
+  "environment": {
+    "recordedAt": "2026-10-13T04:52:26.672Z",
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "platform": "linux",
+    "arch": "x64",
+    "cpus": 5,
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "totalMemory": 18882699264,
+    "nodeOptions": "",
+    "nodeEnv": "production",
+    "graphileEnv": "production",
+    "quietMs": 5500,
+    "gcPasses": 3,
+    "postgres": "PostgreSQL 17.7 (Debian 17.7-3.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "postgresSettings": [
+      {
+        "name": "max_connections",
+        "setting": "100",
+        "unit": null
+      },
+      {
+        "name": "max_locks_per_transaction",
+        "setting": "512",
+        "unit": null
+      },
+      {
+        "name": "shared_buffers",
+        "setting": "16384",
+        "unit": "8kB"
+      }
+    ],
+    "gitSha": "62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba",
+    "gitDirty": true,
+    "sourceDirty": false,
+    "dependencies": {
+      "postgraphile": {
+        "version": "5.1.5",
+        "path": "/workspace/graphile-crystal-common-base/postgraphile/postgraphile"
+      },
+      "grafast": {
+        "version": "1.1.3",
+        "path": "/workspace/graphile-crystal-common-base/grafast/grafast"
+      },
+      "grafserv": {
+        "version": "1.0.2",
+        "path": "/workspace/graphile-crystal-common-base/grafast/grafserv"
+      },
+      "graphile-build": {
+        "version": "5.1.1",
+        "path": "/workspace/graphile-crystal-common-base/graphile-build/graphile-build"
+      },
+      "graphile-build-pg": {
+        "version": "5.1.4",
+        "path": "/workspace/graphile-crystal-common-base/graphile-build/graphile-build-pg"
+      },
+      "@dataplan/pg": {
+        "version": "1.1.2",
+        "path": "/workspace/graphile-crystal-common-base/grafast/dataplan-pg"
+      },
+      "pg-introspection": {
+        "version": "1.0.1",
+        "path": "/workspace/graphile-crystal-common-base/utils/pg-introspection"
+      },
+      "graphql": {
+        "version": "16.13.2",
+        "path": "/workspace/graphile-crystal-common-base/node_modules/graphql"
+      },
+      "pg": {
+        "version": "8.23.1",
+        "path": "/workspace/graphile-memory-comparison/node_modules/.pnpm/pg@8.23.1/node_modules/pg"
+      },
+      "express": {
+        "version": "4.22.3",
+        "path": "/workspace/graphile-memory-comparison/node_modules/.pnpm/express@4.22.3_supports-color@7.2.0/node_modules/express"
+      }
+    },
+    "crystal": {
+      "checkout": "/workspace/graphile-crystal-common-base",
+      "profile": "common-base",
+      "sha": "3ecd1d7920de38dc5ae6ee61763e8223b3b53908",
+      "dirty": false,
+      "originalLink": ".pnpm/postgraphile@5.1.5_70a8db00ec8e159a782a203bfef66a07/node_modules/postgraphile",
+      "linkedAt": "2026-10-13T04:44:21.084Z"
+    },
+    "comparisonProfile": "common-base"
+  },
+  "warmup": {
+    "instances": 1,
+    "requests": 5
+  },
+  "comparisonActivation": {
+    "profile": "common-base",
+    "scoped": false,
+    "pluginPresent": false,
+    "catalogTypes": null,
+    "capabilityExtensions": []
+  },
+  "baseline": {
+    "rss": 183742464,
+    "heapTotal": 101367808,
+    "heapUsed": 30134824,
+    "external": 4147747,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 190930944,
+    "gcPausesMs": [
+      14.612194999999701,
+      13.032908000000134,
+      11.223293000000012
+    ]
+  },
+  "statsBefore": {
+    "builds": 1,
+    "releases": 1,
+    "peakSize": 1
+  },
+  "rounds": [
+    {
+      "round": 1,
+      "completedBuilds": 60,
+      "size": 10,
+      "stats": {
+        "builds": 61,
+        "releases": 51,
+        "peakSize": 10
+      },
+      "memory": {
+        "rss": 1006682112,
+        "heapTotal": 328884224,
+        "heapUsed": 294535576,
+        "external": 71360640,
+        "arrayBuffers": 212271,
+        "peakRssBytes": 1008533504,
+        "gcPausesMs": [
+          271.3293980000017,
+          243.50007400000322,
+          204.42947200000344
+        ]
+      },
+      "heapDelta": 264400752
+    },
+    {
+      "round": 2,
+      "completedBuilds": 120,
+      "size": 10,
+      "stats": {
+        "builds": 121,
+        "releases": 111,
+        "peakSize": 10
+      },
+      "memory": {
+        "rss": 1045905408,
+        "heapTotal": 314990592,
+        "heapUsed": 295104824,
+        "external": 71360640,
+        "arrayBuffers": 212271,
+        "peakRssBytes": 1048391680,
+        "gcPausesMs": [
+          155.96749799999816,
+          176.7262880000053,
+          187.42901100000017
+        ]
+      },
+      "heapDelta": 264970000
+    },
+    {
+      "round": 3,
+      "completedBuilds": 180,
+      "size": 10,
+      "stats": {
+        "builds": 181,
+        "releases": 171,
+        "peakSize": 10
+      },
+      "memory": {
+        "rss": 1048862720,
+        "heapTotal": 370040832,
+        "heapUsed": 295497568,
+        "external": 71360640,
+        "arrayBuffers": 212271,
+        "peakRssBytes": 1051455488,
+        "gcPausesMs": [
+          157.8609989999968,
+          163.43336899999122,
+          181.676541000008
+        ]
+      },
+      "heapDelta": 265362744
+    },
+    {
+      "round": 4,
+      "completedBuilds": 240,
+      "size": 10,
+      "stats": {
+        "builds": 241,
+        "releases": 231,
+        "peakSize": 10
+      },
+      "memory": {
+        "rss": 1032171520,
+        "heapTotal": 495345664,
+        "heapUsed": 295792424,
+        "external": 71360640,
+        "arrayBuffers": 212271,
+        "peakRssBytes": 1061265408,
+        "gcPausesMs": [
+          158.5924529999902,
+          197.46314499998698,
+          187.45359299999836
+        ]
+      },
+      "heapDelta": 265657600
+    },
+    {
+      "round": 5,
+      "completedBuilds": 300,
+      "size": 10,
+      "stats": {
+        "builds": 301,
+        "releases": 291,
+        "peakSize": 10
+      },
+      "memory": {
+        "rss": 1052663808,
+        "heapTotal": 462577664,
+        "heapUsed": 296100464,
+        "external": 71360640,
+        "arrayBuffers": 212271,
+        "peakRssBytes": 1061265408,
+        "gcPausesMs": [
+          141.1838239999779,
+          179.4234770000039,
+          177.25627700000769
+        ]
+      },
+      "heapDelta": 265965640
+    }
+  ],
+  "retained": {
+    "rss": 1052663808,
+    "heapTotal": 462577664,
+    "heapUsed": 296100464,
+    "external": 71360640,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 1061265408,
+    "gcPausesMs": [
+      141.1838239999779,
+      179.4234770000039,
+      177.25627700000769
+    ]
+  },
+  "statsLoaded": {
+    "builds": 301,
+    "releases": 291,
+    "peakSize": 10
+  },
+  "afterRelease": {
+    "rss": 1045368832,
+    "heapTotal": 39501824,
+    "heapUsed": 31890544,
+    "external": 4141240,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 1061265408,
+    "gcPausesMs": [
+      34.72964000000502,
+      15.1250519999885,
+      13.013458000001265
+    ]
+  },
+  "statsAfter": {
+    "builds": 301,
+    "releases": 301,
+    "peakSize": 10
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "status": "passed",
+  "groups": [
+    {
+      "profile": "common-base",
+      "testExitCode": 0,
+      "benchmarkSha": "62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba"
+    },
+    {
+      "profile": "pr2",
+      "testExitCode": 0,
+      "benchmarkSha": "62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba"
+    },
+    {
+      "profile": "pr3",
+      "testExitCode": 0,
+      "benchmarkSha": "62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba"
+    }
+  ]
+}

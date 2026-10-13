@@ -120,7 +120,7 @@ Catalog-row and build-object signatures are evidence of post-build survival wher
 
 ## Coverage and comparison limits
 
-- Registry stock and the common-base control use Amber only. The explicit PR2/PR3 comparison profiles enable the candidate scoped configuration; PR3 additionally installs its own exported scoped preset. No installed implementation is patched by the harness. Checkout provenance distinguishes these groups. No separate Benjie development branch was supplied or benchmarked.
+- Registry stock and the common-base control use Amber only. PR2 is the sole measured scoped-introspection candidate. PR3 shares its algorithm but has a different integration path; no PR3 performance matrix was run. No installed implementation is patched by the harness. Checkout provenance distinguishes groups. No separate Benjie development branch was supplied or benchmarked.
 - A/D cover catalog retention and build-state survival. B combines this with runtime instance costs and release behavior. C covers one bounded nested operation family; it does not characterize all mutation, subscription or polymorphic plan workloads.
 - RLS and cross-schema correctness are tested independently and exercised by each discarded warmup. Lower memory obtained by dropping required dependencies would fail the intended comparison.
 - Historical ~0.4 MB/co-tenant/instance and 103→27 MiB figures are sanity references only. This harness uses ten tables per tenant, three repeats, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Cross-version results are not a causal optimization comparison; compare candidates against their exact common base.
