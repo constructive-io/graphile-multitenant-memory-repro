@@ -52,7 +52,7 @@ At K=5,000, incremental process heap is **1,461.89 versus 1,460.27 MiB**, or
 explicit full-GC wall time is **631.06 versus 625.88 ms**; three repetitions do not
 establish a statistically significant latency difference.
 
-Every process verifies 5,001 real successful plans, including its one warmup plan,
+Every K=5,000 process verifies 5,001 real successful plans, including its one warmup plan,
 and unchanged counts on replay. The memory delta includes ASTs, parsing, plans,
 SQL strings/generated JavaScript and cache overhead; client responses are consumed
 in another process. This measures a plan-memory problem area, but the candidate

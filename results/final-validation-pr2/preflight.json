@@ -1,0 +1,30 @@
+{
+  "status": "passed",
+  "profile": "pr2",
+  "testExitCode": 0,
+  "benchmarkSha": "4c5413375c8a7f1ff7eaeb47599f5b6d36a7479f",
+  "sourceDirty": false,
+  "crystal": {
+    "checkout": "/workspace/graphile-crystal-pr2",
+    "profile": "pr2",
+    "sha": "434a1f6deddda7786fa2497ad30ca01d598135a1",
+    "dirty": false,
+    "originalLink": ".pnpm/postgraphile@5.1.5_70a8db00ec8e159a782a203bfef66a07/node_modules/postgraphile",
+    "linkedAt": "2026-10-13T05:47:11.909Z"
+  },
+  "dependencies": {
+    "postgraphile": "5.1.5",
+    "grafast": "1.1.3",
+    "grafserv": "1.0.2",
+    "graphile-build": "5.1.1",
+    "graphile-build-pg": "5.1.4",
+    "@dataplan/pg": "1.1.2",
+    "pg-introspection": "1.0.1",
+    "graphql": "16.13.2",
+    "pg": "8.23.1",
+    "express": "4.22.3"
+  },
+  "provenanceUnchanged": true,
+  "startedAt": "2026-10-13T05:47:12.014Z",
+  "recordedAt": "2026-10-13T05:47:15.329Z"
+}

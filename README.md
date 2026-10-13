@@ -205,20 +205,20 @@ lockfile, then run both groups serially:
 
 ```sh
 pnpm crystal:link /absolute/path/to/common-base common-base
-node scripts/preflight.js crystal-common-base
-BENCH_RUN=crystal-common-base pnpm bench:all
-node scripts/verify-results.js crystal-common-base
-pnpm report crystal-common-base
+node scripts/preflight.js my-common-base
+BENCH_RUN=my-common-base pnpm bench:all
+node scripts/verify-results.js my-common-base
+pnpm report my-common-base
 pnpm crystal:stock
 
 pnpm crystal:link /absolute/path/to/pr2 pr2
-node scripts/preflight.js crystal-pr2
-BENCH_RUN=crystal-pr2 pnpm bench:all
-node scripts/verify-results.js crystal-pr2
-pnpm report crystal-pr2
+node scripts/preflight.js my-pr2
+BENCH_RUN=my-pr2 pnpm bench:all
+node scripts/verify-results.js my-pr2
+pnpm report my-pr2
 pnpm crystal:stock
 
-node scripts/compare.js crystal-common-base crystal-pr2
+node scripts/compare.js my-common-base my-pr2
 ```
 
 Choose new run directory names when repeating measurements. `preflight.js` runs the

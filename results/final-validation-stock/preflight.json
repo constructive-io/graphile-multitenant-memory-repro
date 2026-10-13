@@ -1,0 +1,23 @@
+{
+  "status": "passed",
+  "profile": "stock",
+  "testExitCode": 0,
+  "benchmarkSha": "4c5413375c8a7f1ff7eaeb47599f5b6d36a7479f",
+  "sourceDirty": false,
+  "crystal": null,
+  "dependencies": {
+    "postgraphile": "5.1.5",
+    "grafast": "1.1.4",
+    "grafserv": "1.0.2",
+    "graphile-build": "5.1.1",
+    "graphile-build-pg": "5.1.5",
+    "@dataplan/pg": "1.1.2",
+    "pg-introspection": "1.0.1",
+    "graphql": "16.14.2",
+    "pg": "8.23.1",
+    "express": "4.22.3"
+  },
+  "provenanceUnchanged": true,
+  "startedAt": "2026-10-13T05:46:33.809Z",
+  "recordedAt": "2026-10-13T05:46:36.863Z"
+}

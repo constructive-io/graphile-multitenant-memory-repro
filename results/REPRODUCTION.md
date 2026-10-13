@@ -122,3 +122,30 @@ JSON and analyses into the primary clone. Snapshot files themselves were exclude
 The historical runtime commits remain recorded rather than being relabeled as the
 later reporting commit. Initial incomplete stock attempts remain clearly separated
 under `PARTIAL-RUNS.md`; no partial sample contributes to accepted tables.
+
+## Final clean-clone acceptance
+
+A new remote clone at reporting/tooling commit
+`4c5413375c8a7f1ff7eaeb47599f5b6d36a7479f` completed a frozen-lockfile installation.
+The new preflight helper passed all 12 correctness tests on registry stock, the
+common-base checkout and PR2, sequentially. Its receipts bind the clean harness
+revision, clean linked Crystal revision and resolved dependency versions before
+and after testing. Receipts and complete test output are in
+`final-validation-stock/`, `final-validation-common-base/` and
+`final-validation-pr2/`; link and restoration evidence is in `final-clean-clone/`.
+
+All three full-matrix verifiers and the two-group comparison verifier passed from
+this new clone. Regenerating all three detailed reports and the comparison produced
+no tracked diff. The registry symlink was restored after checkout validation.
+An additional fresh-process A N=1 and C K=10 smoke run then completed from this
+clone; both have one repetition and are saved under `final-clean-clone-smoke/`.
+They are reproduction checks only and do not contribute to formal medians.
+
+The full matrices had already run in clean remote clones at their recorded runtime
+commits. They were not rerun at the later reporting/tooling commit; its changes
+affect reports, source-switch output formatting and preflight provenance, not the
+measured Graphile implementation or benchmark workload. The final evidence commit
+adds validation records and documentation only. Machine-readable final evidence is
+in `final-clean-clone/verification.json`. All 18 actual local snapshot SHA-256 values
+were also checked against committed analysis JSON, recorded in
+`snapshot-hash-verification.json`.
