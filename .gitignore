@@ -4,3 +4,4 @@ node_modules/
 results/tmp/
 .crystal-state.json
 results/smoke*/
+dist/
