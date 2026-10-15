@@ -1,0 +1,28 @@
+{
+  "status": "passed",
+  "build": {
+    "compiler": "5.9.3",
+    "sourceSha256": "4aaad5f8afdb70ec30adcc96fa38b6825d3103870fba1830d500dc1d5bb86344",
+    "emittedSha256": "2e8c3a9b5277472a2b9f41ca090521782c9c4413c145652803a59f1cce28164c"
+  },
+  "profile": "stock",
+  "testExitCode": 0,
+  "benchmarkSha": "66b157deefa9ba682822f39e17b05387a1d3b94f",
+  "sourceDirty": false,
+  "crystal": null,
+  "dependencies": {
+    "postgraphile": "5.1.5",
+    "grafast": "1.1.4",
+    "grafserv": "1.0.2",
+    "graphile-build": "5.1.1",
+    "graphile-build-pg": "5.1.5",
+    "@dataplan/pg": "1.1.2",
+    "pg-introspection": "1.0.1",
+    "graphql": "16.14.2",
+    "pg": "8.23.1",
+    "express": "4.22.3"
+  },
+  "provenanceUnchanged": true,
+  "startedAt": "2026-10-14T23:03:24.921Z",
+  "recordedAt": "2026-10-14T23:03:27.658Z"
+}

@@ -1,0 +1,17 @@
+$ node dist/src/cli/bench.js a
+Preparing a=1; 1 sequential fresh processes
+{"scenario":"a","value":1,"heapMiB":33.28069305419922,"deltaMiB":4.3928375244140625,"buildMs":263.20594900000015,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+Preparing a=150; 1 sequential fresh processes
+{"scenario":"a","value":150,"heapMiB":85.20494842529297,"deltaMiB":56.24462890625,"buildMs":1973.3366480000004,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+Raw results: /workspace/graphile-multitenant-memory-repro/results/refactor-stock-smoke-2026-10-14
+$ node dist/src/cli/bench.js c
+Preparing c=10; 1 sequential fresh processes
+{"scenario":"c","value":10,"heapMiB":38.011505126953125,"deltaMiB":3.7794113159179688}
+Raw results: /workspace/graphile-multitenant-memory-repro/results/refactor-stock-smoke-2026-10-14
+$ node dist/src/cli/bench.js d
+Preparing d=1; 1 sequential fresh processes
+{"scenario":"d","value":1,"heapMiB":33.27617645263672,"deltaMiB":4.388603210449219,"buildMs":344.2782479999996,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
+{"snapshot":"d-1-r1.json.heapsnapshot","nodes":344246,"reachable":344238,"signatures":[{"label":"Type row","count":529,"shallowBytes":152352,"unionRetainedBytes":1197256,"maxRetainedBytes":2480},{"label":"Build object signature","count":1,"shallowBytes":24,"unionRetainedBytes":419576,"maxRetainedBytes":419576},{"label":"Attribute row","count":144,"shallowBytes":33408,"unionRetainedBytes":231488,"maxRetainedBytes":1624},{"label":"Class row","count":57,"shallowBytes":17328,"unionRetainedBytes":190848,"maxRetainedBytes":4048},{"label":"Constraint row","count":40,"shallowBytes":9600,"unionRetainedBytes":90216,"maxRetainedBytes":2632},{"label":"Introspection container signature","count":1,"shallowBytes":208,"unionRetainedBytes":79104,"maxRetainedBytes":79104},{"label":"Procedure row","count":15,"shallowBytes":4080,"unionRetainedBytes":37600,"maxRetainedBytes":3608},{"label":"Namespace row","count":6,"shallowBytes":384,"unionRetainedBytes":7984,"maxRetainedBytes":1360}]}
+Raw results: /workspace/graphile-multitenant-memory-repro/results/refactor-stock-smoke-2026-10-14
+$ node dist/src/cli/report.js refactor-stock-smoke-2026-10-14
+/workspace/graphile-multitenant-memory-repro/results/refactor-stock-smoke-2026-10-14/REPORT.md

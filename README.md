@@ -14,6 +14,13 @@ matrix. See the [stock findings](results/STOCK-SUMMARY.md),
 [comparison tables](results/COMPARISON.md), and
 [reproduction record](results/REPRODUCTION.md). Raw JSON is linked from each report.
 
+The TypeScript refactor and fresh validation are documented in the
+[refactor validation record](results/refactor-validation/VALIDATION.md). The new
+common-base/PR2 comparison contains 84 formal samples and 12 snapshot analyses:
+[current comparison](results/refactor-validation/COMPARISON.md) and
+[historical versus refactored measurements](results/refactor-validation/REFACTOR-COMPARISON.md).
+Historical figures above remain evidence of their original code.
+
 ## Quick start
 
 Requires Node 24+, pnpm 11.19.0 and Docker Compose. The pinned PostgreSQL 17.7 image
@@ -253,6 +260,8 @@ pnpm report my-pr2
 pnpm crystal:stock
 
 pnpm compare my-common-base my-pr2 results/my-comparison
+# Compare the completed new groups with the preserved historical groups:
+pnpm compare:refactor crystal-common-base my-common-base crystal-pr2 my-pr2 results/my-comparison
 ```
 
 Choose new run directory names when repeating measurements. Comparison reports use

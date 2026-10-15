@@ -1,0 +1,25 @@
+✔ scenario registration preserves the 42-worker matrix and fixture boundaries (2.48169ms)
+✔ compiled worker paths and isolated production environment (3.606025ms)
+✔ synthetic SQL stays byte-equivalent to source 4221f1f for all supported tenant fixtures (19.435283ms)
+✔ historical samples keep their original source identity without new build metadata (0.679387ms)
+✔ private manifest, exact minimal dependencies, and database guard (1.846613ms)
+✔ coalesces concurrent first builds and waits for leases plus asynchronous release (43.162419ms)
+✔ failed build does not poison future builds or close (1.613611ms)
+✔ dominator graph handles shared children, cycles and unreachable nodes (1.491465ms)
+✔ constructor union excludes nested retained size, preserves siblings (0.393677ms)
+✔ dominator results agree with independent deletion reachability on generated graphs (9.159123ms)
+▶ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction
+  ✔ lazy coalescing and concurrent tenant/user isolation (640.296156ms)
+  ✔ transaction-local settings do not survive in the shared pool (3.692862ms)
+  ✔ distinct plan counts grow and replay reuses plans (177.862208ms)
+  ✔ NOTIFY drains, releases, and rebuilds after DDL (184.906769ms)
+  ✔ client abort cannot release a running operation early (560.723128ms)
+✔ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction (2869.803438ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3862.500966
