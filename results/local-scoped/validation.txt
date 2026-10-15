@@ -1,0 +1,153 @@
+✔ stock resolves one shared package graph and the selected implementation (656.51966ms)
+✔ local-scoped resolves one shared package graph and the selected implementation (1107.744617ms)
+✔ removed profiles are rejected at parser and CLI boundaries (94.745646ms)
+✔ scenario registration selects 21 memory workers and preserves optional matrices (2.190429ms)
+✔ compiled worker paths and isolated production environment (4.817089ms)
+✔ synthetic SQL stays byte-equivalent to source 4221f1f for all supported tenant fixtures (13.017817ms)
+✔ legacy-format parsing preserves supplied identity without inventing build metadata (1.693458ms)
+✔ private manifest, exact minimal dependencies, and database guard (1.585436ms)
+✔ coalesces concurrent first builds and waits for leases plus asynchronous release (42.675847ms)
+✔ failed build does not poison future builds or close (0.611804ms)
+✔ dominator graph handles shared children, cycles and unreachable nodes (1.415983ms)
+✔ constructor union excludes nested retained size, preserves siblings (0.48947ms)
+✔ dominator results agree with independent deletion reachability on generated graphs (11.149056ms)
+▶ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction
+  ✔ lazy coalescing and concurrent tenant/user isolation (1276.786166ms)
+  ✔ transaction-local settings do not survive in the shared pool (3.128927ms)
+  ✔ distinct plan counts grow and replay reuses plans (142.448726ms)
+  ✔ NOTIFY drains, releases, and rebuilds after DDL (531.987591ms)
+  ✔ client abort cannot release a running operation early (779.625879ms)
+✔ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction (2847.901898ms)
+✔ memory comparison aggregates worker deltas, reports ranges, and links all 42 raw samples (20.837496ms)
+▶ memory comparison rejects mismatched provenance before writing reports or run receipts
+  ✔ source SHA (7.52135ms)
+  ✔ build hash (7.475111ms)
+  ✔ dependency version (7.908909ms)
+  ✔ SDL hash (6.110282ms)
+  ✔ host memory (6.322536ms)
+✔ memory comparison rejects mismatched provenance before writing reports or run receipts (36.312888ms)
+▶ memory comparison requires complete selected workers, unique processes, and correct activation
+  ✔ missing repetition (4.51456ms)
+  ✔ extra scenario (4.145503ms)
+  ✔ duplicate process across groups (6.351821ms)
+  ✔ disabled local activation (5.910581ms)
+  ✔ forged incremental heap (5.560021ms)
+  ✔ preflight after measurement (4.94656ms)
+  ✔ preflight checkout (6.141675ms)
+✔ memory comparison requires complete selected workers, unique processes, and correct activation (38.519278ms)
+✔ memory comparison preserves review-only provenance and rejects full-matrix input (10.38716ms)
+{
+  "status": "review-only",
+  "reviewOnly": true,
+  "sourceSha": "1111111111111111111111111111111111111111",
+  "sourceDirty": true,
+  "selection": "memory",
+  "workers": 21,
+  "repetitions": 3,
+  "matrix": {
+    "a": [
+      1,
+      20,
+      60,
+      150
+    ],
+    "b": [
+      1,
+      10,
+      50
+    ]
+  },
+  "sdlHash": "4444444444444444444444444444444444444444444444444444444444444444",
+  "postgresSettings": [
+    {
+      "name": "max_connections",
+      "setting": "100",
+      "unit": null
+    }
+  ],
+  "dependencies": {
+    "postgraphile": "0.0.0-synthetic",
+    "grafast": "0.0.0-synthetic",
+    "grafserv": "0.0.0-synthetic",
+    "graphile-build": "0.0.0-synthetic",
+    "graphile-build-pg": "0.0.0-synthetic",
+    "@dataplan/pg": "0.0.0-synthetic",
+    "pg-introspection": "0.0.0-synthetic",
+    "graphql": "0.0.0-synthetic",
+    "pg": "0.0.0-synthetic",
+    "express": "0.0.0-synthetic"
+  },
+  "crystal": null,
+  "comparisonProfile": "stock"
+}
+✔ memory verification accepts exactly 21 workers by inferred or explicit selection (10.405709ms)
+✔ optional full verification still accepts 42 workers and snapshot analyses (7.140773ms)
+✔ uncommitted results cannot pass default acceptance and retain truthful review provenance (4.944414ms)
+✔ memory verification rejects a manifest with incomplete status (1.468644ms)
+✔ memory verification rejects a manifest with wrong selection (1.035344ms)
+✔ memory verification rejects a manifest with wrong repetition count (1.488831ms)
+✔ memory verification rejects a manifest with extra scenario (1.469196ms)
+✔ memory verification rejects a manifest with missing point (1.384151ms)
+✔ memory verification rejects a manifest with duplicate point (1.151481ms)
+✔ memory verification requires a manifest and unambiguous inference (2.596883ms)
+✔ memory verification rejects extra sample b-50-r4.json (1.540987ms)
+✔ memory verification rejects extra sample rotation-10-r1.json (0.988487ms)
+✔ memory verification rejects extra sample a-invalid.json (1.007112ms)
+✔ memory verification rejects a missing sample (1.030179ms)
+✔ memory verification rejects mismatched scenario (1.68059ms)
+✔ memory verification rejects mismatched point (1.927657ms)
+✔ memory verification rejects different source (1.762485ms)
+✔ memory verification rejects different runtime (1.621734ms)
+✔ memory verification rejects different dependency (2.298361ms)
+✔ memory verification rejects duplicate PID (1.912029ms)
+✔ memory verification rejects missing PID (2.428706ms)
+✔ memory verification rejects missing build receipt (2.036767ms)
+✔ memory verification rejects different compiled source (2.310853ms)
+✔ memory verification rejects different process flags (2.357684ms)
+✔ memory verification rejects different SDL (1.879457ms)
+✔ memory verification requires independent-worker metadata in every sample (1.682095ms)
+✔ memory verification rejects non-production Graphile environment (2.232678ms)
+✔ memory verification rejects wrong GC pass count (2.159578ms)
+✔ memory verification rejects wrong warmup (2.685347ms)
+✔ memory verification rejects wrong capacity (2.514353ms)
+✔ memory verification rejects missing release GC passes (2.096354ms)
+✔ memory verification rejects incorrect heap delta (2.494655ms)
+✔ memory verification rejects incorrect B per-instance heap (1.963385ms)
+✔ memory verification rejects incorrect retained instance count (2.356367ms)
+✔ memory verification rejects extra builds after release (2.050107ms)
+✔ verification CLI accepts memory flags and rejects malformed options (190.622642ms)
+▶ local scoped dependency closure preserves upstream schema and capabilities
+  ✔ stock and local schemas and runtime match (2.972841ms)
+  ✔ transitive tables, functions, ranges, arrays, inheritance and foreign keys survive (0.475935ms)
+  ✔ indexes and owning extension survive while unrelated objects are excluded (0.205161ms)
+  ✔ explicit extension capabilities survive without an index dependency (277.475032ms)
+  ✔ partitioned access method retains extension metadata (312.462683ms)
+  ✔ missing root schema fails closed (259.01126ms)
+✔ local scoped dependency closure preserves upstream schema and capabilities (1434.375257ms)
+▶ schema-scoped introspection query
+  ✔ does not change the stock introspection query (1.05374ms)
+  ✔ keeps schema and extension names in query parameters (0.805034ms)
+  ✔ rejects invalid schema and extension names (0.380744ms)
+  ✔ supports full and dependency-closure catalog type policies (0.33618ms)
+  ✔ rejects invalid catalog type policies from JSON configuration (0.2807ms)
+  ✔ keeps normalized scope data independent of mutable query parameters (0.355248ms)
+  ✔ fails fast when a required root schema is missing (0.180952ms)
+  ✔ fails fast when a function dependency type is missing (0.379763ms)
+  ✔ fails fast on a dangling column type (0.378624ms)
+  ✔ accepts dependency types retained in internal lookups (0.294154ms)
+✔ schema-scoped introspection query (5.726711ms)
+✔ local plugin uses stock introspection for undefined (13.851474ms)
+✔ local plugin uses stock introspection for false (25.472316ms)
+✔ local plugin defaults and parameterized service configuration (7.995337ms)
+✔ local plugin rejects unknown services before querying (10.622304ms)
+✔ local plugin identifies bad service configuration: requires at least one schema (3.697089ms)
+✔ local plugin identifies bad service configuration: cannot expose system schema (3.688532ms)
+✔ local plugin identifies bad service configuration: catalogTypes must be (5.243971ms)
+ℹ tests 95
+ℹ suites 1
+ℹ pass 95
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8092.134318

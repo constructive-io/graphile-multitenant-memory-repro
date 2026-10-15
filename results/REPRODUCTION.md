@@ -71,6 +71,13 @@ build and dependencies, and correctness receipts older than every measured worke
 It rejects uncommitted source by default. Overall `gitDirty` may be true because
 new output is untracked while the narrower measured `sourceDirty` remains false.
 
+The recorded run used a cgroup with a four-CPU quota and 16 GiB limit. Its snapshots in
+[checks.json](checks.json) show no new memory-limit or OOM events. Cumulative CPU
+throttling increased by 13.39 seconds during the stock interval and 0.62 seconds
+during the local-scoped interval. These cgroup counters cannot identify which
+process caused a delay; the serial, unpaired build timings remain descriptive
+observations from three repetitions.
+
 All previous tracked result files were removed before this run; they remain
 recoverable from [the prior Git commit](https://github.com/Zetazzz/graphile-multitenant-memory-repro/tree/20cd35cb7561aa679718be85c79db001038231c3/results).
 No old measurement values were relabelled or reused in this comparison.

@@ -1,0 +1,262 @@
+{
+  "status": "passed",
+  "commands": [
+    {
+      "command": [
+        "pnpm",
+        "format"
+      ],
+      "environment": {},
+      "startedAt": "2026-10-15T04:56:55.725677+00:00",
+      "completedAt": "2026-10-15T04:56:57.316988+00:00",
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "typecheck"
+      ],
+      "environment": {},
+      "startedAt": "2026-10-15T04:56:57.317073+00:00",
+      "completedAt": "2026-10-15T04:56:59.547109+00:00",
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "build"
+      ],
+      "environment": {},
+      "startedAt": "2026-10-15T04:56:59.552842+00:00",
+      "completedAt": "2026-10-15T04:57:02.746420+00:00",
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "format:check"
+      ],
+      "environment": {},
+      "startedAt": "2026-10-15T04:57:02.746489+00:00",
+      "completedAt": "2026-10-15T04:57:04.386713+00:00",
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "test"
+      ],
+      "environment": {
+        "BENCH_PROFILE": "stock"
+      },
+      "startedAt": "2026-10-15T04:57:04.386801+00:00",
+      "completedAt": "2026-10-15T04:57:13.247055+00:00",
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "pnpm",
+        "test"
+      ],
+      "environment": {
+        "BENCH_PROFILE": "local-scoped"
+      },
+      "startedAt": "2026-10-15T04:57:13.247419+00:00",
+      "completedAt": "2026-10-15T04:57:22.429612+00:00",
+      "exitCode": 0
+    }
+  ],
+  "measurementImplementationUnchangedFrom": "20cd35cb7561aa679718be85c79db001038231c3",
+  "dependencyLockUnchanged": true,
+  "oldResultsRequiredByTests": false,
+  "sourceSha": "b9aa76d027d35e14e00a648cf219025df39f1c5d",
+  "build": {
+    "compiler": "5.9.3",
+    "sourceSha256": "06d8935e170f0f33a47204aa797ba8a0daf16b48d25e83fd3128331330cec771",
+    "emittedSha256": "45b8fae086a9735fc232f51591e60a51098fff5604d5602cb3379a1665b89fc9"
+  },
+  "selection": "memory",
+  "workersExpected": 42,
+  "profiles": {
+    "stock": {
+      "preflight": {
+        "command": [
+          "pnpm",
+          "preflight",
+          "stock"
+        ],
+        "environment": {
+          "BENCH_PROFILE": "stock"
+        },
+        "startedAt": "2026-10-15T04:59:23.827129+00:00",
+        "completedAt": "2026-10-15T04:59:31.463615+00:00",
+        "exitCode": 0
+      },
+      "tests": 95,
+      "pass": 95,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    },
+    "local-scoped": {
+      "preflight": {
+        "command": [
+          "pnpm",
+          "preflight",
+          "local-scoped"
+        ],
+        "environment": {
+          "BENCH_PROFILE": "local-scoped"
+        },
+        "startedAt": "2026-10-15T04:59:31.465148+00:00",
+        "completedAt": "2026-10-15T04:59:40.518397+00:00",
+        "exitCode": 0
+      },
+      "tests": 95,
+      "pass": 95,
+      "fail": 0,
+      "skipped": 0,
+      "cancelled": 0
+    }
+  },
+  "resources": {
+    "beforeStock": {
+      "recordedAt": "2026-10-15T04:59:40.519547+00:00",
+      "memory.events": "low 0\nhigh 0\nmax 21917\noom 0\noom_kill 0\noom_group_kill 0\n",
+      "memory.current": "10989826048\n",
+      "memory.max": "17179869184\n",
+      "cpu.stat": "usage_usec 6962209875\nuser_usec 5835658706\nsystem_usec 1126551168\nnice_usec 0\nnr_periods 60928\nnr_throttled 3854\nthrottled_usec 296851628\nnr_bursts 0\nburst_usec 0\n",
+      "cpu.max": "400000 100000\n"
+    },
+    "betweenProfiles": {
+      "recordedAt": "2026-10-15T05:08:00.199487+00:00",
+      "memory.events": "low 0\nhigh 0\nmax 21917\noom 0\noom_kill 0\noom_group_kill 0\n",
+      "memory.current": "11186028544\n",
+      "memory.max": "17179869184\n",
+      "cpu.stat": "usage_usec 7253569795\nuser_usec 6075439865\nsystem_usec 1178129930\nnice_usec 0\nnr_periods 63925\nnr_throttled 4032\nthrottled_usec 310239262\nnr_bursts 0\nburst_usec 0\n",
+      "cpu.max": "400000 100000\n"
+    },
+    "afterLocal": {
+      "recordedAt": "2026-10-15T05:18:11.917545+00:00",
+      "memory.events": "low 0\nhigh 0\nmax 21917\noom 0\noom_kill 0\noom_group_kill 0\n",
+      "memory.current": "11233492992\n",
+      "memory.max": "17179869184\n",
+      "cpu.stat": "usage_usec 7621704469\nuser_usec 6382762108\nsystem_usec 1238942360\nnice_usec 0\nnr_periods 68161\nnr_throttled 4044\nthrottled_usec 310857415\nnr_bursts 0\nburst_usec 0\n",
+      "cpu.max": "400000 100000\n"
+    }
+  },
+  "completedAt": "2026-10-15T05:18:13.441160+00:00",
+  "resourceIntervalDeltas": {
+    "stock": {
+      "interval": [
+        "2026-10-15T04:59:40.519547+00:00",
+        "2026-10-15T05:08:00.199487+00:00"
+      ],
+      "memory.events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cpu.stat": {
+        "usage_usec": 291359920,
+        "user_usec": 239781159,
+        "system_usec": 51578762,
+        "nice_usec": 0,
+        "nr_periods": 2997,
+        "nr_throttled": 178,
+        "throttled_usec": 13387634,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "memory.current": [
+        10989826048,
+        11186028544
+      ]
+    },
+    "local-scoped": {
+      "interval": [
+        "2026-10-15T05:08:00.199487+00:00",
+        "2026-10-15T05:18:11.917545+00:00"
+      ],
+      "memory.events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0
+      },
+      "cpu.stat": {
+        "usage_usec": 368134674,
+        "user_usec": 307322243,
+        "system_usec": 60812430,
+        "nice_usec": 0,
+        "nr_periods": 4236,
+        "nr_throttled": 12,
+        "throttled_usec": 618153,
+        "nr_bursts": 0,
+        "burst_usec": 0
+      },
+      "memory.current": [
+        11186028544,
+        11233492992
+      ]
+    }
+  },
+  "resourceInterpretation": "Counters describe cgroup intervals; they do not identify which process caused events. memory.current is a gauge. Timing is unpaired with three observations per point.",
+  "finalVerification": {
+    "status": "passed",
+    "independentAuditCounts": {
+      "profiles": 2,
+      "workers": 42,
+      "uniquePids": 42,
+      "points": 7,
+      "repetitionsPerProfilePoint": 3,
+      "metricSummaries": 73,
+      "numericComparisons": 592,
+      "receiptInputHashes": 48,
+      "numericReportRows": 45,
+      "rawLinks": 42,
+      "allReportLinks": 50,
+      "sourceHashFiles": 73,
+      "emittedHashFiles": 65,
+      "registryDependencies": 10,
+      "resultFiles": 55
+    },
+    "derivedFilesRegenerateByteIdentically": true,
+    "regenerationCommands": [
+      [
+        "pnpm",
+        "verify-results",
+        "stock",
+        "--matrix",
+        "memory"
+      ],
+      [
+        "pnpm",
+        "verify-results",
+        "local-scoped",
+        "--matrix",
+        "memory"
+      ],
+      [
+        "pnpm",
+        "report",
+        "stock",
+        "local-scoped",
+        "results"
+      ]
+    ],
+    "derivedArtifactSha256": {
+      "results/COMPARISON.md": "813a06c360e46b2fc1e235b8c4a83697ec8d862c193faec1e9f57fb23538667c",
+      "results/comparison-verification.json": "cd34c80113cbbf437809817cb0764f87c2c27ed4b4cd928e3f4334db54dcd130",
+      "results/local-metrics.json": "5519ca96b11026d97781bfe584e6dbadc30d09d4519f612abdf4e2213438070a",
+      "results/local-scoped/verification.json": "9214beec3ad26f087487e1b2eb1426b8187b06503677bd5747c6c68006087a47",
+      "results/stock/verification.json": "658855f0441ec5d4e4c073dc4d0fd15b95d0d5be7e0086ff0ab487bfb8e89fc7"
+    },
+    "regenerationCheckedAt": "2026-10-15T05:18:46.719732+00:00"
+  }
+}

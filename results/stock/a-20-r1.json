@@ -1,0 +1,165 @@
+{
+  "value": 20,
+  "totalTenants": 21,
+  "capacity": 1,
+  "environment": {
+    "recordedAt": "2026-10-15T05:00:35.057Z",
+    "build": {
+      "compiler": "5.9.3",
+      "sourceSha256": "06d8935e170f0f33a47204aa797ba8a0daf16b48d25e83fd3128331330cec771",
+      "emittedSha256": "45b8fae086a9735fc232f51591e60a51098fff5604d5602cb3379a1665b89fc9"
+    },
+    "pid": 137811,
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=10000"
+    ],
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "platform": "linux",
+    "arch": "x64",
+    "cpus": 5,
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "totalMemory": 18882699264,
+    "nodeOptions": "",
+    "nodeEnv": "production",
+    "graphileEnv": "production",
+    "quietMs": 5500,
+    "gcPasses": 3,
+    "postgres": "PostgreSQL 17.7 (Debian 17.7-3.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "postgresSettings": [
+      {
+        "name": "max_connections",
+        "setting": "100",
+        "unit": null
+      },
+      {
+        "name": "max_locks_per_transaction",
+        "setting": "512",
+        "unit": null
+      },
+      {
+        "name": "shared_buffers",
+        "setting": "16384",
+        "unit": "8kB"
+      }
+    ],
+    "gitSha": "b9aa76d027d35e14e00a648cf219025df39f1c5d",
+    "gitDirty": true,
+    "sourceDirty": false,
+    "dependencies": {
+      "postgraphile": {
+        "version": "5.1.5",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile"
+      },
+      "grafast": {
+        "version": "1.1.4",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0/node_modules/grafast"
+      },
+      "grafserv": {
+        "version": "1.0.2",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/grafserv@1.0.2_@types+node@24.19.2_grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0___da0258aaf4e0a36d5c6f1d84da92acde/node_modules/grafserv"
+      },
+      "graphile-build": {
+        "version": "5.1.1",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/graphile-build@5.1.1_grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0__graphile-confi_4ea3da3ff4b60e9bcea43be135fae2f4/node_modules/graphile-build"
+      },
+      "graphile-build-pg": {
+        "version": "5.1.5",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/graphile-build-pg@5.1.5_@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@1_570907438a7252372014207d8e5737e0/node_modules/graphile-build-pg"
+      },
+      "@dataplan/pg": {
+        "version": "1.1.2",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@16.14.2_supports-color@7._c40740177dae874243de9c72a305e0be/node_modules/@dataplan/pg"
+      },
+      "pg-introspection": {
+        "version": "1.0.1",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/pg-introspection@1.0.1/node_modules/pg-introspection"
+      },
+      "graphql": {
+        "version": "16.14.2",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/graphql@16.14.2/node_modules/graphql"
+      },
+      "pg": {
+        "version": "8.23.1",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/pg@8.23.1/node_modules/pg"
+      },
+      "express": {
+        "version": "4.22.3",
+        "path": "/workspace/graphile-multitenant-memory-repro/node_modules/.pnpm/express@4.22.3_supports-color@7.2.0/node_modules/express"
+      }
+    },
+    "crystal": null,
+    "comparisonProfile": "stock"
+  },
+  "warmup": {
+    "instances": 1,
+    "requests": 5
+  },
+  "comparisonActivation": {
+    "profile": "stock",
+    "localPlugin": false,
+    "scoped": false,
+    "pluginPresent": false,
+    "catalogTypes": null,
+    "capabilityExtensions": []
+  },
+  "baseline": {
+    "rss": 163594240,
+    "heapTotal": 100995072,
+    "heapUsed": 30375912,
+    "external": 4177954,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 166453248,
+    "gcPausesMs": [
+      19.037115000000085,
+      13.456543999999667,
+      13.528717000000142
+    ]
+  },
+  "statsBefore": {
+    "builds": 1,
+    "releases": 1,
+    "peakSize": 1
+  },
+  "scenario": "a",
+  "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+  "buildMs": 212.8751940000002,
+  "retained": {
+    "rss": 181530624,
+    "heapTotal": 49090560,
+    "heapUsed": 41734872,
+    "external": 6744367,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 183517184,
+    "gcPausesMs": [
+      17.929567999999563,
+      17.025001999998494,
+      17.13160499999867
+    ]
+  },
+  "heapDelta": 11358960,
+  "statsLoaded": {
+    "builds": 2,
+    "releases": 1,
+    "peakSize": 1
+  },
+  "afterRelease": {
+    "rss": 181530624,
+    "heapTotal": 35196928,
+    "heapUsed": 30680064,
+    "external": 4177994,
+    "arrayBuffers": 212271,
+    "peakRssBytes": 183517184,
+    "gcPausesMs": [
+      16.14525599999979,
+      12.269360999998753,
+      10.45991900000081
+    ]
+  },
+  "statsAfter": {
+    "builds": 2,
+    "releases": 2,
+    "peakSize": 1
+  }
+}

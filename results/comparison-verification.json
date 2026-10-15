@@ -1,0 +1,333 @@
+{
+  "status": "passed",
+  "reviewOnly": false,
+  "selection": "memory",
+  "workers": 42,
+  "repetitions": 3,
+  "matrix": {
+    "a": [
+      1,
+      20,
+      60,
+      150
+    ],
+    "b": [
+      1,
+      10,
+      50
+    ]
+  },
+  "sourceSha": "b9aa76d027d35e14e00a648cf219025df39f1c5d",
+  "sourceDirty": false,
+  "build": {
+    "compiler": "5.9.3",
+    "sourceSha256": "06d8935e170f0f33a47204aa797ba8a0daf16b48d25e83fd3128331330cec771",
+    "emittedSha256": "45b8fae086a9735fc232f51591e60a51098fff5604d5602cb3379a1665b89fc9"
+  },
+  "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+  "dependencies": {
+    "postgraphile": "5.1.5",
+    "grafast": "1.1.4",
+    "grafserv": "1.0.2",
+    "graphile-build": "5.1.1",
+    "graphile-build-pg": "5.1.5",
+    "@dataplan/pg": "1.1.2",
+    "pg-introspection": "1.0.1",
+    "graphql": "16.14.2",
+    "pg": "8.23.1",
+    "express": "4.22.3"
+  },
+  "postgresSettings": [
+    {
+      "name": "max_connections",
+      "setting": "100",
+      "unit": null
+    },
+    {
+      "name": "max_locks_per_transaction",
+      "setting": "512",
+      "unit": null
+    },
+    {
+      "name": "shared_buffers",
+      "setting": "16384",
+      "unit": "8kB"
+    }
+  ],
+  "environment": {
+    "node": "v24.19.0",
+    "v8": "13.6.233.17-node.51",
+    "postgres": "PostgreSQL 17.7 (Debian 17.7-3.pgdg12+1) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit",
+    "platform": "linux",
+    "arch": "x64",
+    "cpuModel": "INTEL(R) XEON(R) PLATINUM 8573C",
+    "cpus": 5,
+    "totalMemory": 18882699264,
+    "nodeOptions": "",
+    "execArgv": [
+      "--expose-gc",
+      "--max-old-space-size=10000"
+    ],
+    "quietMs": 5500,
+    "gcPasses": 3,
+    "nodeEnv": "production",
+    "graphileEnv": "production"
+  },
+  "groups": [
+    {
+      "profile": "stock",
+      "workers": 21,
+      "workerPids": [
+        137107,
+        137379,
+        137595,
+        139204,
+        139446,
+        139675,
+        137811,
+        138034,
+        138239,
+        138455,
+        138675,
+        138901,
+        139967,
+        140251,
+        140481,
+        140704,
+        141043,
+        141387,
+        141749,
+        142660,
+        143551
+      ],
+      "inputs": [
+        {
+          "path": "./stock/manifest-memory.json",
+          "sha256": "ff5bd6d8bfdc293bf4ce442496c835c757d48b490ec6bb87c7a261b5c1412ce4"
+        },
+        {
+          "path": "./stock/preflight.json",
+          "sha256": "25ffe69aae1a93ee06cdcf81a38f2ed6a6a25a2d6e6b288877320a114242f77c"
+        },
+        {
+          "path": "./stock/verification.json",
+          "sha256": "658855f0441ec5d4e4c073dc4d0fd15b95d0d5be7e0086ff0ab487bfb8e89fc7"
+        },
+        {
+          "path": "./stock/a-1-r1.json",
+          "sha256": "78478278408ae2f9bf620075cc153e148bf920aa408f2082c6d46bb6ba883af2"
+        },
+        {
+          "path": "./stock/a-1-r2.json",
+          "sha256": "e5c8d97f6f089cf1b00ce6499121c44f782b020a11ea9a17cf6ae0689db9aaa3"
+        },
+        {
+          "path": "./stock/a-1-r3.json",
+          "sha256": "053d659b43171ac01cf9c705e465efbcc1f5c91b51eae65b32a3883cf7db9356"
+        },
+        {
+          "path": "./stock/a-150-r1.json",
+          "sha256": "afef94ede4c367624925a86e3d4fc1f793686e3884cefb49109678204f3dad66"
+        },
+        {
+          "path": "./stock/a-150-r2.json",
+          "sha256": "0963f4792a05b5394fd6bc8bccb3e1511af857f0589ea3f07370705a271f1523"
+        },
+        {
+          "path": "./stock/a-150-r3.json",
+          "sha256": "2dee5f31ad2284fe153a802b81c694a3400cf0f212c395eb81249a4c44ed8c6c"
+        },
+        {
+          "path": "./stock/a-20-r1.json",
+          "sha256": "058b50a0344fdfe4b74c4b1170e1750e5f13e86c106efcb280c3544b5d040d21"
+        },
+        {
+          "path": "./stock/a-20-r2.json",
+          "sha256": "c8282dd17d6805c38171027ed340559ad5b2bc627c1ff862f3648cccb87f7bb6"
+        },
+        {
+          "path": "./stock/a-20-r3.json",
+          "sha256": "d1c69addfa49049df4fc3371482c9832db985c855c1d55a3a750677e806ace2e"
+        },
+        {
+          "path": "./stock/a-60-r1.json",
+          "sha256": "c2f3eacee54ecbcb53bb67e6c397f08507fa4e6a49fbabc9c92b70a0c35b0707"
+        },
+        {
+          "path": "./stock/a-60-r2.json",
+          "sha256": "26241d2642a4d82280d46e6ca2a8be6582909f0ffc28763ea981bec1a82d649d"
+        },
+        {
+          "path": "./stock/a-60-r3.json",
+          "sha256": "8a034cc0add0a087cbfe9e6335cc5c2d38d10a7b11652e21b2c35e45cc32f124"
+        },
+        {
+          "path": "./stock/b-1-r1.json",
+          "sha256": "670e59c3613dda8dbca06effaa9dd989f55f11c46a0e7fbf98f8695cc199e3d5"
+        },
+        {
+          "path": "./stock/b-1-r2.json",
+          "sha256": "8288feb496c8a17c5449c2867fc39b39b8ad95ebd952bbcf1dbdd97d6a5ab769"
+        },
+        {
+          "path": "./stock/b-1-r3.json",
+          "sha256": "189844987c8a9046ccf7b8009af450ee07e36612f0778b0bde25470bd91c9f96"
+        },
+        {
+          "path": "./stock/b-10-r1.json",
+          "sha256": "ced0fdd6507f76370644ad6845377d3ad91da0ad99c1210abae8a74367d05f4e"
+        },
+        {
+          "path": "./stock/b-10-r2.json",
+          "sha256": "0c39394d1842ab112448f95678a6c256a75116db63c4625fd05b9016cde2b21c"
+        },
+        {
+          "path": "./stock/b-10-r3.json",
+          "sha256": "4d2aad064e46a036602e931d54a616a8329acd9d792829eb1cc47ba2f9dc629d"
+        },
+        {
+          "path": "./stock/b-50-r1.json",
+          "sha256": "a08ecf8c2af8f97ee8174c3fca16fdad0ee197c35a65e5efebdc02f63c8f4e12"
+        },
+        {
+          "path": "./stock/b-50-r2.json",
+          "sha256": "b8d16593a24ee61877afd022cd135e4cca60572b51d034e982fb7280a430786a"
+        },
+        {
+          "path": "./stock/b-50-r3.json",
+          "sha256": "84bfe47dd4de4233d9da41ced50034b0b1323f6ebd8cd71c60d34af2e92ad52e"
+        }
+      ]
+    },
+    {
+      "profile": "local-scoped",
+      "workers": 21,
+      "localImplementation": {
+        "upstreamSha": "434a1f6deddda7786fa2497ad30ca01d598135a1",
+        "pluginPath": "/workspace/graphile-multitenant-memory-repro/dist/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js",
+        "scopedPath": "/workspace/graphile-multitenant-memory-repro/dist/utils/pg-introspection/src/scopedIntrospection.js"
+      },
+      "workerPids": [
+        144552,
+        144770,
+        144993,
+        146574,
+        146794,
+        147014,
+        145210,
+        145427,
+        145648,
+        145882,
+        146096,
+        146317,
+        147270,
+        147522,
+        147740,
+        147999,
+        148398,
+        148774,
+        149191,
+        150272,
+        151427
+      ],
+      "inputs": [
+        {
+          "path": "./local-scoped/manifest-memory.json",
+          "sha256": "69cfb7d9374a80ca1baf8b6a606c9de7733a09476a0d167bff709a6d3ab07e41"
+        },
+        {
+          "path": "./local-scoped/preflight.json",
+          "sha256": "8bce26ea79063f96144e1e5ec9a7f5b9cfead1a2dda8d41d0f1498f2008aeb44"
+        },
+        {
+          "path": "./local-scoped/verification.json",
+          "sha256": "9214beec3ad26f087487e1b2eb1426b8187b06503677bd5747c6c68006087a47"
+        },
+        {
+          "path": "./local-scoped/a-1-r1.json",
+          "sha256": "270b9f257c1341079eab9acc104a3002e6a85f043d2f73ed912ae033dba5eed7"
+        },
+        {
+          "path": "./local-scoped/a-1-r2.json",
+          "sha256": "8ce1a22b5eada7893223562d5b0d597d7fa9e8811c25c6559345ece5284d7641"
+        },
+        {
+          "path": "./local-scoped/a-1-r3.json",
+          "sha256": "f328485c7d570ee46e16857e0845ef72bfc2594ba575147942fed070a1a5f8fe"
+        },
+        {
+          "path": "./local-scoped/a-150-r1.json",
+          "sha256": "06261026b5438d4c12b0a35ee19c801faa55b3bb0e60a9c7c1762b7344f1f6c4"
+        },
+        {
+          "path": "./local-scoped/a-150-r2.json",
+          "sha256": "172e7af65eb2f75a6b3f089c76952b21e08f238af7dca51a554088850e0b16bb"
+        },
+        {
+          "path": "./local-scoped/a-150-r3.json",
+          "sha256": "ba8ac4cfd0c8b4689a805257b1b809fce5b99356b11e94d10bcc7760a764908f"
+        },
+        {
+          "path": "./local-scoped/a-20-r1.json",
+          "sha256": "a856183b73a736dc58e7123201b0bd64a8e3dfb7aca94116df3b48f2e043d66c"
+        },
+        {
+          "path": "./local-scoped/a-20-r2.json",
+          "sha256": "56e121b83686e94f86e57347da4cb0730e681da62f7003869aed63f59333bced"
+        },
+        {
+          "path": "./local-scoped/a-20-r3.json",
+          "sha256": "e03501bc1bd815fff325a9cbf1a3e9e2d4fc0e7fa2a9884a3a98736de861f607"
+        },
+        {
+          "path": "./local-scoped/a-60-r1.json",
+          "sha256": "395deb0ef4065588eba3e3c981de07f6dad1bef5b92acbf0d762c3d35c666f5d"
+        },
+        {
+          "path": "./local-scoped/a-60-r2.json",
+          "sha256": "a02c6ce96efb93288d3603dbd385d4a5d4fff2ef6db1eeb7fa9df1a616654f90"
+        },
+        {
+          "path": "./local-scoped/a-60-r3.json",
+          "sha256": "993de1140e5fcd2eabac90c1fb3289d2cbc0646bad96ff0be44583f5072b0f80"
+        },
+        {
+          "path": "./local-scoped/b-1-r1.json",
+          "sha256": "d954f0c0bb5f7355d8cd72db39e8fe95cad9b371be0d23487abfe2b4f24b9284"
+        },
+        {
+          "path": "./local-scoped/b-1-r2.json",
+          "sha256": "a1e2fcf7adb7ac576bc391b47aaea9f89d600dd04ceaa17d0e40eac12e539044"
+        },
+        {
+          "path": "./local-scoped/b-1-r3.json",
+          "sha256": "0edd18b6ce93f37383b48ec544e7d31030dea2cebe215b6b8468537e09be1ac0"
+        },
+        {
+          "path": "./local-scoped/b-10-r1.json",
+          "sha256": "1a6a79663d9f29cc3b408e08a51485a20febcdb63091a4680f1ef6c5c26e94b2"
+        },
+        {
+          "path": "./local-scoped/b-10-r2.json",
+          "sha256": "3b9e46c4d82a133bc2c7392df5c84e3cda61e45cf689d833bf786a419bb10952"
+        },
+        {
+          "path": "./local-scoped/b-10-r3.json",
+          "sha256": "8ce732dde4cc45cedaf823d92caffc536578fb22f899dc820b6a575c17a654cc"
+        },
+        {
+          "path": "./local-scoped/b-50-r1.json",
+          "sha256": "d7bc67a07994acb3506914da2792b061f718089df37a897e95f9e6b5b4dd38f7"
+        },
+        {
+          "path": "./local-scoped/b-50-r2.json",
+          "sha256": "7186ea3e0904961d593120db2d3c021fedbe1484ddaf32505898695295f9a2a7"
+        },
+        {
+          "path": "./local-scoped/b-50-r3.json",
+          "sha256": "21562c81aa8b980a7ab1dceade7488d01f17347e96e507199b4d8b311e427d0f"
+        }
+      ]
+    }
+  ]
+}
