@@ -3,7 +3,7 @@ import { readdirSync, writeFileSync } from 'node:fs';
 import { readSample, readAnalysis } from './read.js';
 import { object, array, string, readJson } from '../json.js';
 import { projectPath } from '../paths.js';
-export function verifyResults(run: string, output?: string) {
+export function verifyResults(run: string, output?: string, review = false) {
   const dir = projectPath('results', run);
   const manifest = object(readJson(`${dir}/manifest-all.json`));
   assert.equal(
@@ -38,7 +38,11 @@ export function verifyResults(run: string, output?: string) {
     assert(identity);
     assert.equal(r.scenario, identity[1], `${files[i]}: scenario`);
     assert.equal(r.value, Number(identity[2]), `${files[i]}: value`);
-    assert.equal(r.environment.sourceDirty, false, files[i]);
+    assert.equal(r.environment.sourceDirty, first.sourceDirty, files[i]);
+    assert(
+      review || !r.environment.sourceDirty,
+      `${files[i]}: uncommitted results require --review`,
+    );
     assert.equal(r.environment.gitSha, first.gitSha);
     for (const key of [
       'node',
@@ -129,9 +133,10 @@ export function verifyResults(run: string, output?: string) {
   ];
   assert.equal(hashes.length, 1, 'SDL must be invariant in A and D');
   const verification = {
-    status: 'passed',
+    status: first.sourceDirty ? 'review-only' : 'passed',
+    ...(first.sourceDirty ? { reviewOnly: true } : {}),
     sourceSha: first.gitSha,
-    sourceDirty: false,
+    sourceDirty: first.sourceDirty,
     workers: samples.length,
     repetitions: 3,
     matrix: expected,

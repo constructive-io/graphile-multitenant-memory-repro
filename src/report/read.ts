@@ -23,6 +23,15 @@ export function parseEnvironment(value: unknown): RecordedEnvironment {
   const row = object(value);
   return {
     ...(row.build === undefined ? {} : { build: parseBuild(row.build) }),
+    ...(row.localImplementation === undefined
+      ? {}
+      : {
+          localImplementation: {
+            upstreamSha: string(object(row.localImplementation).upstreamSha),
+            pluginPath: string(object(row.localImplementation).pluginPath),
+            scopedPath: string(object(row.localImplementation).scopedPath),
+          },
+        }),
     recordedAt: string(row.recordedAt),
     node: string(row.node),
     v8: string(row.v8),
@@ -94,6 +103,9 @@ function activation(value: unknown): ComparisonActivation {
     throw new Error('Unsupported catalogTypes');
   return {
     profile: parseProfile(row.profile),
+    ...(row.localPlugin === undefined
+      ? {}
+      : { localPlugin: boolean(row.localPlugin) }),
     scoped: boolean(row.scoped),
     pluginPresent: boolean(row.pluginPresent),
     catalogTypes: row.catalogTypes,

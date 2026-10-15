@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 import { readdirSync, writeFileSync } from 'node:fs';
+import { dirname, relative, resolve } from 'node:path';
 import { readSample, readAnalysis } from './read.js';
 import type { WorkerResult } from '../benchmark/results.js';
 import type { Scenario } from '../benchmark/scenarios.js';
 import { projectPath } from '../paths.js';
 export function report(run: string, output?: string): void {
   const dir = projectPath('results', run);
+  const outputDirectory = output ? dirname(resolve(output)) : dir;
   const samples = readdirSync(dir)
     .filter((n) => /^(a|b|c|d|rotation)-\d+-r\d+\.json$/.test(n))
     .map((name) => ({ ...readSample(`${dir}/${name}`), file: name }));
@@ -45,9 +47,11 @@ export function report(run: string, output?: string): void {
   const first = samples[0],
     env = first.environment;
   const lines = [
-    env.crystal
-      ? '# Crystal checkout memory measurements'
-      : '# Stock Graphile memory measurements',
+    env.comparisonProfile === 'local-scoped'
+      ? '# Local scoped-introspection memory measurements'
+      : env.crystal
+        ? '# Crystal checkout memory measurements'
+        : '# Stock Graphile memory measurements',
     '',
     `Generated from ${samples.length} fresh-process raw measurements in this directory. Values are medians; MiB = 2^20 bytes.`,
     '',
@@ -62,6 +66,24 @@ export function report(run: string, output?: string): void {
     'Every point has a discarded five-request warmup instance. Memory collection waits 5.5 seconds and forces GC three times. Peak RSS is the process lifetime high-water mark, including warmup. Clients execute in separate processes and exit before sampling.',
     '',
   ];
+  if (samples.some((row) => row.environment.sourceDirty)) {
+    lines.splice(
+      2,
+      0,
+      '**Review-only: uncommitted source.** sourceDirty=true; the SHA below identifies the base commit, not the edited implementation. Default clean-source acceptance does not pass for these observations.',
+      '',
+      `Source content hashes: ${[...new Set(samples.map((row) => row.environment.build?.sourceSha256 ?? 'unavailable'))].map((hash) => '`' + hash + '`').join(', ')}. Emitted hashes: ${[...new Set(samples.map((row) => row.environment.build?.emittedSha256 ?? 'unavailable'))].map((hash) => '`' + hash + '`').join(', ')}.`,
+      '',
+    );
+    const sourceIndex = lines.findIndex((line) =>
+      line.startsWith('Source commits:'),
+    );
+    if (sourceIndex >= 0)
+      lines[sourceIndex] = lines[sourceIndex].replace(
+        'Source commits:',
+        'Source base commits:',
+      );
+  }
   function table(headers: string[], rows: (string | number)[][]) {
     lines.push(
       '| ' + headers.join(' | ') + ' |',
@@ -281,7 +303,7 @@ export function report(run: string, output?: string): void {
     '',
     '## Coverage and comparison limits',
     '',
-    '- Registry stock and the common-base control use Amber only. PR2 is the sole measured scoped-introspection candidate. PR3 shares its algorithm but has a different integration path; no PR3 performance matrix was run. No installed implementation is patched by the harness. Checkout provenance distinguishes groups. No separate Benjie development branch was supplied or benchmarked.',
+    '- Registry stock and the common-base control use Amber only. The local-scoped profile adapts PR2 to the published dependency graph; historical PR2 results refer to the recorded external checkout. No installed implementation is patched by the harness. Checkout provenance distinguishes groups. No separate Benjie development branch was supplied or benchmarked.',
     '- A/D cover catalog retention and build-state survival. B combines this with runtime instance costs and release behavior. C covers one bounded nested operation family; it does not characterize all mutation, subscription or polymorphic plan workloads.',
     '- RLS and cross-schema correctness are tested independently and exercised by each discarded warmup. Lower memory obtained by dropping required dependencies would fail the intended comparison.',
     '- Historical ~0.4 MB/co-tenant/instance and 103→27 MiB figures are sanity references only. This harness uses ten tables per tenant, three repeats, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Cross-version results are not a causal optimization comparison; compare candidates against their exact common base.',
@@ -289,7 +311,10 @@ export function report(run: string, output?: string): void {
     '',
     '## Raw files',
     '',
-    ...samples.map((r) => `- [${r.file}](./${r.file})`),
+    ...samples.map(
+      (r) =>
+        `- [${r.file}](./${relative(outputDirectory, `${dir}/${r.file}`)})`,
+    ),
     '',
   );
   writeFileSync(output ?? `${dir}/REPORT.md`, lines.join('\n'));

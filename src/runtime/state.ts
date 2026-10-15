@@ -2,14 +2,14 @@ import { readJson, object, string, boolean, isMissingFile } from '../json.js';
 import { projectPath } from '../paths.js';
 
 export type ComparisonProfile =
-  'stock' | 'checkout' | 'common-base' | 'pr2' | 'pr3';
+  'stock' | 'checkout' | 'common-base' | 'pr2' | 'local-scoped';
 export function parseProfile(value: unknown): ComparisonProfile {
   if (
     value === 'stock' ||
     value === 'checkout' ||
     value === 'common-base' ||
     value === 'pr2' ||
-    value === 'pr3'
+    value === 'local-scoped'
   )
     return value;
   throw new Error('Unknown Crystal comparison profile');
@@ -41,4 +41,15 @@ export function readCrystalState(): CrystalState | null {
     if (isMissingFile(error)) return null;
     throw error;
   }
+}
+
+export function activeProfile(): ComparisonProfile {
+  const state = readCrystalState();
+  const requested = process.env.BENCH_PROFILE;
+  if (requested === undefined) return state?.profile ?? 'stock';
+  if (requested !== 'stock' && requested !== 'local-scoped')
+    throw new Error('BENCH_PROFILE must be stock or local-scoped');
+  if (state)
+    throw new Error('Restore registry stock before selecting BENCH_PROFILE');
+  return requested;
 }

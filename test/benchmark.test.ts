@@ -45,6 +45,7 @@ test('compiled worker paths and isolated production environment', () => {
         'GRAPHILE_ENV',
         'BENCH_PG_PORT',
         'BENCH_DATABASE_URL',
+        'BENCH_PROFILE',
       ].includes(key),
     );
   const build = verifiedBuild();

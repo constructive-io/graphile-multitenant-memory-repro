@@ -7,7 +7,7 @@ import { readCrystalState } from '../runtime/state.js';
 import { projectPath, projectRoot, testPath } from '../paths.js';
 import { verifiedBuild } from '../measurement/build.js';
 
-export function preflight(name: string): void {
+export function preflight(name: string, review = false): void {
   assert(name, 'Pass a new benchmark run name');
   const dir = projectPath('results', name);
   mkdirSync(dir, { recursive: true });
@@ -19,10 +19,11 @@ export function preflight(name: string): void {
 
   const benchmarkSha = git(['rev-parse', 'HEAD']);
   const paths = sourcePaths;
-  assert.equal(
-    git(['status', '--porcelain', '--', ...paths]),
-    '',
-    'Commit benchmark source before preflight',
+  const sourceStatus = git(['status', '--porcelain', '--', ...paths]);
+  const sourceDirty = sourceStatus !== '';
+  assert(
+    review || !sourceDirty,
+    'Commit benchmark source before preflight, or explicitly use --review for uncommitted validation',
   );
   function provenance() {
     const crystal = readCrystalState();
@@ -39,7 +40,7 @@ export function preflight(name: string): void {
       );
       assert.equal(crystal.dirty, false);
       assert.equal(crystal.profile ?? 'checkout', comparisonProfile);
-    } else assert.equal(comparisonProfile, 'stock');
+    } else assert(['stock', 'local-scoped'].includes(comparisonProfile));
     const resolved = dependencies();
     if (crystal)
       for (const [name, value] of Object.entries(resolved)) {
@@ -77,7 +78,7 @@ export function preflight(name: string): void {
   writeFileSync(`${dir}/validation.txt`, output);
   const unchanged =
     git(['rev-parse', 'HEAD']) === benchmarkSha &&
-    git(['status', '--porcelain', '--', ...paths]) === '';
+    git(['status', '--porcelain', '--', ...paths]) === sourceStatus;
   let provenanceUnchanged = false;
   try {
     assert.deepEqual(provenance(), before);
@@ -93,12 +94,14 @@ export function preflight(name: string): void {
     receipt,
     JSON.stringify(
       {
-        status: passed ? 'passed' : 'failed',
+        status: passed ? (sourceDirty ? 'review-only' : 'passed') : 'failed',
+        reviewOnly: sourceDirty,
         build,
         profile: comparisonProfile,
         testExitCode: run.status,
         benchmarkSha,
-        sourceDirty: !unchanged,
+        sourceDirty,
+        sourceUnchanged: unchanged,
         ...before,
         provenanceUnchanged,
         startedAt,

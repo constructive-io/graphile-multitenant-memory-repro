@@ -229,7 +229,7 @@ export function compareRefactor(
   }
   lines.push(
     '',
-    'Signature categories overlap and must not be summed. D release measurements are snapshot-perturbed and excluded from ordinary release comparisons. All metric deltas, including RSS, baseline, release and explicit GC pauses, are in [refactor-deltas.json](./refactor-deltas.json). No PR3 matrix or plan-memory branch was added.',
+    'Signature categories overlap and must not be summed. D release measurements are snapshot-perturbed and excluded from ordinary release comparisons. All metric deltas, including RSS, baseline, release and explicit GC pauses, are in [refactor-deltas.json](./refactor-deltas.json). No plan-memory branch was added.',
     '',
   );
   writeFileSync(

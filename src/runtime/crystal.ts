@@ -26,8 +26,8 @@ export function switchCrystal(
       throw new Error('Already linked; restore stock before switching');
     const checkout = realpathSync(resolve(checkoutArgument ?? ''));
     const profile = parseProfile(profileArgument ?? 'checkout');
-    if (!['checkout', 'common-base', 'pr2', 'pr3'].includes(profile))
-      throw new Error('Profile must be checkout, common-base, pr2 or pr3');
+    if (!['checkout', 'common-base', 'pr2'].includes(profile))
+      throw new Error('Profile must be checkout, common-base or pr2');
     const target = join(checkout, 'postgraphile/postgraphile');
     if (object(readJson(join(target, 'package.json'))).name !== 'postgraphile')
       throw new Error('Not a Crystal checkout');

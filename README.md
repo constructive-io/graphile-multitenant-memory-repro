@@ -1,11 +1,15 @@
 # Graphile multitenant memory benchmark
 
-A private, standalone, synthetic reproduction for planning issue #2228. The stock
-baseline uses only PostGraphile's Amber preset. A separate controlled comparison
-tests Crystal PR #2 against its common base. No Graphile
-implementation is patched by this harness, and no application plugin, production
-database, application code, or real tenant data is included. All harness code and
-SQL in this repository were written independently for this benchmark.
+A private, standalone, synthetic reproduction for planning issue #2228. A fresh
+clone installs published registry dependencies and builds everything locally with
+`pnpm build`; no separate Crystal checkout is required. `stock` uses unmodified
+PostGraphile Amber. `local-scoped` replaces only its introspection plugin with the
+PR2 adaptation in this repository. Registry package files are never patched.
+
+The harness and benchmark fixtures were written independently. The local Graphile
+candidate contains attributed upstream code under `graphile-build/graphile-build-pg/`
+and `utils/pg-introspection/`; see [source and licences](UPSTREAM.md). No CNC code,
+dependencies, application logic, production database or real tenant data is included.
 
 Historical evidence (from the original JavaScript sources) comprises 126 formal fresh-process samples and 18 separate
 snapshot analyses: stock, common base and PR2 each complete the full three-repeat
@@ -59,12 +63,16 @@ with the same database and administrator names. Record that fallback explicitly.
 
 ## Code map and TypeScript execution
 
-All implementation, command entry points, and tests are TypeScript. No JavaScript
+All implementation, command entry points, and tests are TypeScript, including the local candidate. No JavaScript
 configuration exception is needed: configuration is JSON/YAML. TypeScript 5.9.3
 uses strict checking, native ESM/NodeNext and ES2023 output, without a runtime
 loader, bundler, source-map hook or downlevel async transformation. External package
 declarations use `skipLibCheck`; all local source and tests are checked.
 
+- `graphile-build/graphile-build-pg/`: local PR2 introspection plugin and its
+  watch SQL/version/licence context; the remaining plugins stay published.
+- `utils/pg-introspection/`: scoped SQL builder and validation; published parser
+  and catalogue types are reused through PostGraphile forwarding exports.
 - `src/cli/`: executable adapters for the server, fixture, benchmark, worker, load,
   snapshot, provenance, preflight, reports and Crystal switching.
 - `src/benchmark/scenarios.ts`: typed scenario registration, point validation,
@@ -96,7 +104,8 @@ Run `pnpm build` after editing TypeScript. Every normal package command targets
 `dist/src/cli/*.js`; tests target `dist/test/*.test.js`. Child paths are anchored to
 that compiled tree, and the child working directory is the repository root.
 Compilation finishes before any measured process starts. `dist/build.json` hashes
-source, compiler configuration and emitted JavaScript; workers and preflight reject
+harness, tests, local candidate sources/licences, upstream record, compiler
+configuration and emitted JavaScript; workers and preflight reject
 stale/changed output and record the receipt. `dist/` is ignored, never benchmark input
 from a previous checkout. Formatting: `pnpm format:check` (or `pnpm format`).
 
@@ -203,7 +212,62 @@ objects. Retention alone does not prove that every object is build-only or avoid
 Raw snapshots stay local (`*.heapsnapshot` is ignored); JSON analyses include their
 SHA-256 and are committed. Regenerate them with `bench:d` when needed.
 
-## Stock versus a local Crystal checkout
+## Standalone stock versus local scoped comparison
+
+Both profiles use the same frozen registry dependency graph: PostGraphile 5.1.5,
+graphile-build-pg 5.1.5, pg-introspection 1.0.1 and the versions in `pnpm-lock.yaml`.
+The local plugin imports shared Graphile APIs through PostGraphile forwarding
+exports, reusing the published catalogue types and parser. No package alias or
+global override substitutes a second GraphQL/Grafast copy. The local preset
+explicitly disables `PgIntrospectionPlugin`, installs `LocalPgIntrospectionPlugin`
+with the original ordering capability, and sets
+`gather.pgScopedIntrospection.main=true` (`catalogTypes=all`, no capability
+extensions). Runtime assertions check the selected plugin object, and tests prove
+actual resolution paths, shared package/type identities and zero local module
+loads in a fresh stock process.
+
+`BENCH_PROFILE` accepts only `stock` or `local-scoped`; it cannot be combined with
+an external checkout link. The explicit profile is forwarded to fresh workers.
+Build once before either group, then run serially with new run names:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm build
+pnpm format:check
+pnpm db:up
+BENCH_PROFILE=stock pnpm preflight my-stock
+BENCH_PROFILE=stock BENCH_RUN=my-stock pnpm bench:all
+pnpm verify-results my-stock
+pnpm report my-stock
+BENCH_PROFILE=local-scoped pnpm preflight my-local
+BENCH_PROFILE=local-scoped BENCH_RUN=my-local pnpm bench:all
+pnpm verify-results my-local
+pnpm report my-local
+pnpm compare:local my-stock my-local results/my-local-comparison
+```
+
+Normal preflight and verification require committed source. For an explicitly
+uncommitted review, append `--review` to preflight, use
+`pnpm verify-results <run> <output.json> --review`, and append `--review` to
+`compare:local`. Review receipts and comparisons say `review-only`, keep
+`sourceDirty=true`, and verify stable source/emitted hashes; the default acceptance
+gate still rejects them. Never relabel them as clean or reuse historical receipts.
+The full matrix is 42 fresh processes and six snapshot analyses per profile.
+Reports distinguish current local code from historical external-checkout PR2 data.
+
+Correctness alone can be checked with
+`BENCH_PROFILE=stock NODE_ENV=production GRAPHILE_ENV=production pnpm test` and
+`BENCH_PROFILE=local-scoped NODE_ENV=production GRAPHILE_ENV=production pnpm test`.
+The suite includes original lifecycle/RLS/plan tests plus upstream query,
+service-configuration, extension/dependency-closure and activation checks. Tests
+and fixture-resetting benchmarks must remain serial.
+
+## Optional historical Crystal checkout workflow
+
+The standalone workflow above does not use an external checkout. These commands
+remain available to reproduce the separately labelled historical comparison.
+
 
 The lockfile pins official registry PostGraphile 5.1.5 and all transitives. Read-only
 version/provenance output is available with `pnpm provenance`.
@@ -233,10 +297,11 @@ branch has been supplied, so no result here claims to test his proposed fixes.
 ### Controlled scoped-introspection comparison
 
 The user selected [Crystal PR #2](https://github.com/constructive-io/crystal/pull/2)
-as the sole representative of the scoped algorithm shared with
-[PR #3](https://github.com/constructive-io/crystal/pull/3). Their fixed heads and
-actual common merge-base are recorded under `results/comparison-provenance/`.
-PR3 has a different integration path but no performance matrix is run for it.
+as the sole scoped-introspection candidate.
+[PR #3](https://github.com/constructive-io/crystal/pull/3) shares PR2's algorithm and
+is not separately benchmarked.
+The fixed comparison refs and actual common merge-base are recorded under
+`results/comparison-provenance/`.
 Build the unmodified common-base and PR2 checkouts with their identical upstream
 lockfile. The exact refs remain common-base
 `3ecd1d7920de38dc5ae6ee61763e8223b3b53908` and PR2
@@ -271,8 +336,9 @@ be regenerated elsewhere with `pnpm report <run> <output.md>`; verification acce
 an optional output JSON path. Analyze a local snapshot with
 `pnpm snapshot <input.heapsnapshot> <output.analysis.json>`.
 
- `pnpm preflight` runs the
-correctness suite and saves a per-run receipt tied to the current clean source SHA;
+`pnpm preflight` runs the
+correctness suite and saves a per-run receipt tied to the current source SHA and
+source/emitted hashes (clean by default, explicitly marked for `--review`);
 it also records the tested clean Crystal SHA and resolved dependency versions.
 The comparison checks this receipt and requires tests to precede measurements.
 Historical receipts are retained for the
@@ -280,13 +346,10 @@ original accepted runs. Do not reuse their SHA labels for measurements of later 
 
 `common-base` adds no option or preset. `pr2` sets
 `gather.pgScopedIntrospection.main=true`, with default `catalogTypes=all` and no
-capability extensions. The optional `pr3` adapter adds the candidate's exported
-`PgScopedIntrospectionPreset`; configuration alone would not activate PR3. That
-adapter was prepared before the user removed duplicate performance work. It is not
-used in the measured comparison. Runtime assertions verify the resolved preset and
-save activation metadata. SQL, queries, warmup, GC, matrix and repetitions stay
+capability extensions. Runtime assertions verify the resolved preset and save
+activation metadata. SQL, queries, warmup, GC, matrix and repetitions stay
 identical, and the comparison verifier requires matching dependency versions and
-SDL hashes. Their shared scoped algorithm does not change Grafast plan-memory design.
+SDL hashes. Scoped introspection does not change Grafast plan-memory design.
 
 The common-base control is necessary: today's registry stock resolves different
 transitive versions from these source checkouts. Do not treat registry-to-candidate

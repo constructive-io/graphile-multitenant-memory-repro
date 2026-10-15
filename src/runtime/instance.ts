@@ -1,17 +1,12 @@
 import type { Pool } from 'pg';
 import type {} from './types.js';
 import { postgraphile } from 'postgraphile';
-import { PostGraphileAmberPreset } from 'postgraphile/presets/amber';
 import { makePgService } from 'postgraphile/adaptors/pg';
 import { grafserv } from 'postgraphile/grafserv/express/v4';
 import { printSchema, lexicographicSortSchema } from 'postgraphile/graphql';
 import { createHash } from 'node:crypto';
 import { validTenant } from './config.js';
-import {
-  comparisonPresets,
-  comparisonOptions,
-  verifyComparisonPreset,
-} from './comparison.js';
+import { runtimePreset, verifyComparisonPreset } from './comparison.js';
 export async function buildInstance(
   tenant: string,
   pool: Pool,
@@ -20,8 +15,7 @@ export async function buildInstance(
   if (!validTenant(tenant)) throw new Error('Invalid tenant');
   const start = performance.now();
   const pgl = postgraphile({
-    extends: [PostGraphileAmberPreset, ...comparisonPresets],
-    ...comparisonOptions,
+    ...runtimePreset,
     pgServices: [
       makePgService({
         pool,

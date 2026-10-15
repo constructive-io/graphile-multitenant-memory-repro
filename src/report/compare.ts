@@ -23,17 +23,6 @@ export function compare(
     'Pass common-base and PR2 result directory names',
   );
   const profiles = ['common-base', 'pr2'];
-  const pr3Directory = projectPath('results', 'crystal-pr3');
-  const pr3PerformanceSamples = existsSync(pr3Directory)
-    ? readdirSync(pr3Directory).filter((n) =>
-        /^(a|b|c|d|rotation)-\d+-r\d+\.json$/.test(n),
-      ).length
-    : 0;
-  assert.equal(
-    pr3PerformanceSamples,
-    0,
-    'The selected comparison scope excludes PR3 performance samples',
-  );
   const expectedShas = [
     '3ecd1d7920de38dc5ae6ee61763e8223b3b53908',
     '434a1f6deddda7786fa2497ad30ca01d598135a1',
@@ -203,7 +192,7 @@ export function compare(
     '',
     `Shared merge-base: \`${expectedShas[0]}\`. Identical upstream yarn.lock blob: \`30ce8fb20d27a304158469c1cf4ccb98d8e2320d\`.`,
     '',
-    "PR2 is the sole scoped representative and enables direct integration with catalogTypes=all and no capability extensions. PR2 and PR3 contain the same scoped algorithm with different integration paths; at the user's direction, no PR3 performance matrix was run.",
+    'PR2 is the sole scoped candidate and enables direct integration with catalogTypes=all and no capability extensions.',
     '',
     '## Provenance',
     '',
@@ -362,15 +351,14 @@ export function compare(
     'These are heuristic object signatures, not exclusive ownership categories. A zero count can reflect signature limitations; a positive count demonstrates matching reachable objects. The three-repetition medians describe these finite runs and are not confidence intervals.',
     '',
   );
-  writeFileSync(resolve(outputDirectory, 'COMPARISON.md'), lines.join('\n'));
   mkdirSync(outputDirectory, { recursive: true });
+  writeFileSync(resolve(outputDirectory, 'COMPARISON.md'), lines.join('\n'));
   writeFileSync(
     resolve(outputDirectory, 'comparison-verification.json'),
     JSON.stringify(
       {
         status: 'passed',
         workers: 84,
-        pr3PerformanceSamples,
         groups: groups.map((g) => g.verification),
       },
       null,

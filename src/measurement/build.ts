@@ -30,9 +30,15 @@ function currentBuild() {
     sourceSha256: digest([
       ...files(projectPath('src')),
       ...files(projectPath('test')),
-      ...['package.json', 'pnpm-lock.yaml', 'tsconfig.json'].map((path) =>
-        projectPath(path),
-      ),
+      ...files(projectPath('graphile-build')),
+      ...files(projectPath('utils')),
+      projectPath('UPSTREAM.md'),
+      ...[
+        'package.json',
+        'pnpm-lock.yaml',
+        'tsconfig.json',
+        'compose.yaml',
+      ].map((path) => projectPath(path)),
     ]),
     emittedSha256: digest(
       files(projectPath('dist')).filter((path) => path.endsWith('.js')),

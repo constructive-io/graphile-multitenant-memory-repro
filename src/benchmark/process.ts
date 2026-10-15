@@ -8,7 +8,7 @@ export function workerEnvironment(): NodeJS.ProcessEnv {
     NODE_ENV: 'production',
     GRAPHILE_ENV: 'production',
   };
-  for (const key of ['BENCH_PG_PORT', 'BENCH_DATABASE_URL'])
+  for (const key of ['BENCH_PG_PORT', 'BENCH_DATABASE_URL', 'BENCH_PROFILE'])
     if (process.env[key]) env[key] = process.env[key];
   return env;
 }

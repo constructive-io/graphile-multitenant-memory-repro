@@ -1,30 +1,38 @@
 import type {} from 'postgraphile';
-import { readCrystalState } from './state.js';
+import { activeProfile } from './state.js';
+import { PostGraphileAmberPreset } from 'postgraphile/presets/amber';
+import { PgIntrospectionPlugin as PublishedIntrospectionPlugin } from 'postgraphile/graphile-build-pg';
 import type { ComparisonProfile } from './state.js';
 import { object } from '../json.js';
 
-const state = readCrystalState();
-export const comparisonProfile = state?.profile ?? 'stock';
-export const comparisonPresets: GraphileConfig.Preset[] = [];
-if (comparisonProfile === 'pr3') {
-  // The optional export is absent from registry stock; check the runtime boundary.
-  const exports = await import('postgraphile/graphile-build-pg');
-  if (!('PgScopedIntrospectionPreset' in exports))
-    throw new Error('PR3 preset export is unavailable');
-  comparisonPresets.push(object(exports.PgScopedIntrospectionPreset));
-}
+export const comparisonProfile = activeProfile();
+// Local code loads only for the explicitly selected candidate, keeping stock intact.
+const localPlugin =
+  comparisonProfile === 'local-scoped'
+    ? (
+        await import('../../graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js')
+      ).PgIntrospectionPlugin
+    : null;
+const scopedProfile =
+  comparisonProfile === 'pr2' || comparisonProfile === 'local-scoped';
 // Extra gather keys are intentionally limited to the pinned scoped comparison.
 type ScopedGather = GraphileBuild.GatherOptions & {
   pgScopedIntrospection: { main: true };
 };
-export const comparisonOptions: { gather?: ScopedGather } = [
-  'pr2',
-  'pr3',
-].includes(comparisonProfile)
+export const comparisonOptions: { gather?: ScopedGather } = scopedProfile
   ? { gather: { pgScopedIntrospection: { main: true } } }
   : {};
+export const runtimePreset: GraphileConfig.Preset = localPlugin
+  ? {
+      extends: [PostGraphileAmberPreset],
+      disablePlugins: ['PgIntrospectionPlugin'],
+      plugins: [localPlugin],
+      ...comparisonOptions,
+    }
+  : { extends: [PostGraphileAmberPreset], ...comparisonOptions };
 export interface ComparisonActivation {
   profile: ComparisonProfile;
+  localPlugin?: boolean;
   scoped: boolean;
   pluginPresent: boolean;
   catalogTypes: 'all' | null;
@@ -40,12 +48,22 @@ export function verifyComparisonPreset(
   const scoped =
     gather.pgScopedIntrospection !== undefined &&
     object(gather.pgScopedIntrospection).main === true;
-  if (pluginPresent !== (comparisonProfile === 'pr3'))
-    throw new Error('Unexpected scoped plugin activation');
-  if (scoped !== ['pr2', 'pr3'].includes(comparisonProfile))
+  if (pluginPresent) throw new Error('Unexpected scoped plugin activation');
+  const introspectionPlugins = preset.plugins.filter(
+    (plugin) =>
+      plugin.name === 'PgIntrospectionPlugin' ||
+      plugin.name === 'LocalPgIntrospectionPlugin',
+  );
+  if (
+    introspectionPlugins.length !== 1 ||
+    introspectionPlugins[0] !== (localPlugin ?? PublishedIntrospectionPlugin)
+  )
+    throw new Error('Expected exactly the selected introspection plugin');
+  if (scoped !== scopedProfile)
     throw new Error('Unexpected scoped gather activation');
   return {
     profile: comparisonProfile,
+    localPlugin: localPlugin !== null,
     scoped,
     pluginPresent,
     catalogTypes: scoped ? 'all' : null,

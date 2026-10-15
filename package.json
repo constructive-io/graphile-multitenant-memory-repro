@@ -11,8 +11,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && node dist/src/cli/build-stamp.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "format:check": "prettier --check src test package.json tsconfig.json",
-    "format": "prettier --write src test package.json tsconfig.json",
+    "format:check": "prettier --check src test graphile-build utils package.json tsconfig.json",
+    "format": "prettier --write src test graphile-build utils package.json tsconfig.json",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "db:fixture": "node dist/src/cli/fixture.js",
@@ -31,7 +31,8 @@
     "provenance": "node dist/src/cli/provenance.js",
     "crystal:link": "node dist/src/cli/crystal.js link",
     "crystal:stock": "node dist/src/cli/crystal.js stock",
-    "compare:refactor": "node dist/src/cli/compare-refactor.js"
+    "compare:refactor": "node dist/src/cli/compare-refactor.js",
+    "compare:local": "node dist/src/cli/compare-local.js"
   },
   "dependencies": {
     "express": "4.22.3",

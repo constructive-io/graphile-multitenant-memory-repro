@@ -17,6 +17,9 @@ export type Dependencies = Record<string, Dependency>;
 export const sourcePaths = [
   'src',
   'test',
+  'graphile-build',
+  'utils',
+  'UPSTREAM.md',
   'package.json',
   'pnpm-lock.yaml',
   'tsconfig.json',
@@ -82,7 +85,7 @@ export async function environment(pool: Pool) {
       );
     if ((crystal.profile ?? 'checkout') !== comparisonProfile)
       throw new Error('Crystal profile changed during worker startup');
-    if (['common-base', 'pr2', 'pr3'].includes(comparisonProfile) && dirty)
+    if (['common-base', 'pr2'].includes(comparisonProfile) && dirty)
       throw new Error('Comparison checkouts must have clean tracked source');
   }
   return {
@@ -117,6 +120,25 @@ export async function environment(pool: Pool) {
     dependencies: dependencies(),
     crystal,
     comparisonProfile,
+    ...(comparisonProfile === 'local-scoped'
+      ? {
+          localImplementation: {
+            upstreamSha: '434a1f6deddda7786fa2497ad30ca01d598135a1',
+            pluginPath: realpathSync(
+              new URL(
+                '../../graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js',
+                import.meta.url,
+              ),
+            ),
+            scopedPath: realpathSync(
+              new URL(
+                '../../utils/pg-introspection/src/scopedIntrospection.js',
+                import.meta.url,
+              ),
+            ),
+          },
+        }
+      : {}),
   };
 }
 

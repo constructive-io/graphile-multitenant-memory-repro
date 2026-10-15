@@ -1,0 +1,775 @@
+import type {} from 'postgraphile/graphile-build-pg';
+import type {
+  KeysOfType,
+  PgExecutor,
+  PgExecutorContext,
+} from 'postgraphile/@dataplan/pg';
+import type { PromiseOrDirect, Step } from 'postgraphile/grafast';
+import type { GatherPluginContext } from 'postgraphile/graphile-build';
+import { EXPORTABLE, gatherConfig } from 'postgraphile/graphile-build';
+import type {
+  Introspection,
+  PgClass,
+  PgConstraint,
+  PgEnum,
+  PgExtension,
+  PgIndex,
+  PgLanguage,
+  PgNamespace,
+  PgProc,
+  PgRoles,
+  PgType,
+  SchemaScopedIntrospectionOptions,
+  SchemaScopedIntrospectionPlan,
+} from '../../../../utils/pg-introspection/src/index.js';
+import {
+  makeIntrospectionQuery,
+  makeSchemaScopedIntrospectionPlan,
+  parseIntrospectionResults,
+  validateSchemaScopedIntrospection,
+} from '../../../../utils/pg-introspection/src/index.js';
+
+import { version } from '../version.js';
+import { watchFixtures } from '../watchFixtures.js';
+
+const sleep = (ms: number) =>
+  new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/** Someone else created */
+const CLASH_CODES = ['23505', '42P06', '42P07', '42710'];
+
+export type PgEntityWithId =
+  | PgNamespace
+  | PgClass
+  | PgConstraint
+  | PgProc
+  | PgRoles
+  | PgType
+  | PgEnum
+  | PgExtension
+  | PgExtension
+  | PgIndex
+  | PgLanguage;
+
+type PgScopedIntrospectionOptions = SchemaScopedIntrospectionOptions;
+
+type PgScopedIntrospectionServiceConfig =
+  boolean | PgScopedIntrospectionOptions;
+
+interface IntrospectionQueryPlan {
+  query: { text: string; values?: unknown[] };
+  scopedPlan: SchemaScopedIntrospectionPlan | null;
+}
+
+// Other helper and hook declarations come from the published package so there
+// is one shared Graphile type identity across the registry and local plugin.
+declare global {
+  namespace GraphileConfig {
+    interface Plugins {
+      LocalPgIntrospectionPlugin: true;
+    }
+  }
+  namespace GraphileBuild {
+    interface GatherOptions {
+      pgScopedIntrospection?: Readonly<
+        Record<string, PgScopedIntrospectionServiceConfig>
+      >;
+    }
+  }
+}
+
+function getIntrospectionQuery(
+  pgService: GraphileConfig.PgServiceConfiguration,
+  config?: PgScopedIntrospectionServiceConfig,
+): IntrospectionQueryPlan {
+  if (!config) {
+    return {
+      query: { text: makeIntrospectionQuery() },
+      scopedPlan: null,
+    };
+  }
+
+  const options = config === true ? {} : config;
+  let scopedPlan: SchemaScopedIntrospectionPlan;
+  try {
+    scopedPlan = makeSchemaScopedIntrospectionPlan(
+      pgService.schemas ?? [],
+      options,
+    );
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    throw new Error(
+      `Schema-scoped introspection plan construction failed for PostgreSQL service '${pgService.name}': ${message}`,
+      { cause: error },
+    );
+  }
+
+  return {
+    query: scopedPlan.query,
+    scopedPlan,
+  };
+}
+
+function assertScopedIntrospectionServices(
+  pgServices: ReadonlyArray<GraphileConfig.PgServiceConfiguration> | undefined,
+  options: GraphileBuild.GatherOptions['pgScopedIntrospection'],
+): void {
+  if (!options) return;
+
+  const serviceNames = new Set(
+    (pgServices ?? []).map((pgService) => pgService.name),
+  );
+  const unknownServiceNames = Object.keys(options).filter(
+    (serviceName) => !serviceNames.has(serviceName),
+  );
+  if (unknownServiceNames.length > 0) {
+    throw new Error(
+      `Schema-scoped introspection configured for unknown PostgreSQL service(s): ${unknownServiceNames.join(
+        ', ',
+      )}`,
+    );
+  }
+}
+
+type RawIntrospectionResults = Array<{
+  pgService: GraphileConfig.PgServiceConfiguration;
+  introspectionText: string;
+  scopedPlan: SchemaScopedIntrospectionPlan | null;
+}>;
+type IntrospectionResults = Array<{
+  pgService: GraphileConfig.PgServiceConfiguration;
+  introspection: Introspection;
+}>;
+
+interface Cache {
+  introspectionResultsPromise: null | Promise<RawIntrospectionResults>;
+  dirty: boolean;
+}
+
+interface State {
+  getIntrospectionPromise: null | PromiseOrDirect<IntrospectionResults>;
+  executors: {
+    [key: string]: PgExecutor;
+  };
+}
+
+async function getDb(
+  info: GatherPluginContext<State, Cache>,
+  serviceName: string,
+) {
+  const introspections = await info.helpers.pgIntrospection.getIntrospection();
+  const relevant = introspections.find(
+    (intro) => intro.pgService.name === serviceName,
+  );
+  if (!relevant) {
+    throw new Error(`Could not find database '${serviceName}'`);
+  }
+  return relevant;
+}
+
+function makeGetEntity<
+  TKey extends KeysOfType<Introspection, Array<PgEntityWithId>>,
+>(loc: TKey) {
+  return async (
+    info: GatherPluginContext<State, Cache>,
+    serviceName: string,
+    id: string,
+  ): Promise<Introspection[TKey][number] | undefined> => {
+    const relevant = await getDb(info, serviceName);
+    const list = relevant.introspection[loc];
+    if (!list) {
+      throw new Error(
+        `Could not find database '${serviceName}''s introspection results for '${loc}'`,
+      );
+    }
+    return (list as PgEntityWithId[]).find((entity: PgEntityWithId) =>
+      '_id' in entity
+        ? entity._id === id
+        : 'indexrelid' in entity
+          ? entity.indexrelid
+          : false,
+    );
+  };
+}
+
+function makeGetEntities<
+  TKey extends KeysOfType<Introspection, Array<PgEntityWithId>>,
+>(loc: TKey) {
+  return async (
+    info: GatherPluginContext<State, Cache>,
+    serviceName: string,
+  ): Promise<Introspection[TKey]> => {
+    const relevant = await getDb(info, serviceName);
+    const list = relevant.introspection[loc];
+    if (!list) {
+      throw new Error(
+        `Could not find database '${serviceName}''s introspection results for '${loc}'`,
+      );
+    }
+    return list as any[];
+  };
+}
+
+export const PgIntrospectionPlugin: GraphileConfig.Plugin = {
+  name: 'LocalPgIntrospectionPlugin',
+  provides: ['PgIntrospectionPlugin'],
+  description:
+    'Introspects PostgreSQL databases and makes the results available to other plugins',
+  version: version,
+
+  // Run before PgRegistryPlugin because we want all the introspection to be
+  // triggered/announced before the registryBuilder is built.
+  before: ['PgRegistryPlugin'],
+
+  gather: gatherConfig({
+    namespace: 'pgIntrospection',
+    initialCache: (): Cache => ({
+      introspectionResultsPromise: null,
+      dirty: false,
+    }),
+    initialState: (): State => ({
+      getIntrospectionPromise: null,
+      executors: Object.create(null),
+    }),
+    helpers: {
+      getExecutorForService(info, serviceName) {
+        const { constant, context, object } = info.lib.grafast;
+        const { PgExecutor } = info.lib.dataplanPg;
+        if (info.state.executors[serviceName]) {
+          return info.state.executors[serviceName];
+        }
+        const pgService = info.resolvedPreset.pgServices?.find(
+          (db) => db.name === serviceName,
+        );
+        if (!pgService) {
+          throw new Error(`Database '${serviceName}' not found`);
+        }
+        const { pgSettingsKey, withPgClientKey } = pgService;
+        /* TODO: consider replacing the `withPgClient` with:
+           ```
+           withPgClient: assertNotNull(
+             ctx.get(withPgClientKey),
+             `Server is misconfigured; unable to find '${withPgClientKey}' in context.`,
+           ),
+           ```
+        */
+        const contextCallback =
+          pgSettingsKey != null
+            ? EXPORTABLE(
+                (context, object, pgSettingsKey, withPgClientKey) => () => {
+                  const ctx = context();
+                  return object({
+                    pgSettings: ctx.get(pgSettingsKey),
+                    withPgClient: ctx.get(withPgClientKey),
+                  }) as Step<PgExecutorContext<any>>;
+                },
+                [context, object, pgSettingsKey, withPgClientKey],
+                'contextCallback',
+              )
+            : EXPORTABLE(
+                (constant, context, object, withPgClientKey) => () => {
+                  const ctx = context();
+                  return object({
+                    pgSettings: constant(null),
+                    withPgClient: ctx.get(withPgClientKey),
+                  }) as Step<PgExecutorContext<any>>;
+                },
+                [constant, context, object, withPgClientKey],
+                'contextCallback',
+              );
+        const executor = EXPORTABLE(
+          (PgExecutor, contextCallback, serviceName) =>
+            new PgExecutor({ name: serviceName, context: contextCallback }),
+          [PgExecutor, contextCallback, serviceName],
+          serviceName === 'main' ? `executor` : `${serviceName}Executor`,
+        );
+
+        info.state.executors[serviceName] = executor;
+        return executor;
+      },
+
+      getNamespace: makeGetEntity('namespaces'),
+      getClasses: makeGetEntities('classes'),
+      getClass: makeGetEntity('classes'),
+      getConstraint: makeGetEntity('constraints'),
+      getProc: makeGetEntity('procs'),
+      getRoles: makeGetEntity('roles'),
+      getType: makeGetEntity('types'),
+      getEnum: makeGetEntity('enums'),
+      getExtension: makeGetEntity('extensions'),
+      getIndex: makeGetEntity('indexes'),
+      getLanguage: makeGetEntity('languages'),
+
+      // ENHANCE: we need getters for these
+      // getAuthMembers: makeGetEntity("authMembers"),
+      // getRange: makeGetEntity("ranges"),
+      // getDepend: makeGetEntity("depends"),
+      // getDescription: makeGetEntity("descriptions"),
+      //
+
+      async getAttribute(info, serviceName, classId, attributeNumber) {
+        const pgClass = await info.helpers.pgIntrospection.getClass(
+          serviceName,
+          classId,
+        );
+        return pgClass?.getAttribute({ number: attributeNumber });
+      },
+
+      async getAttributesForClass(info, serviceName, classId) {
+        const pgClass = await info.helpers.pgIntrospection.getClass(
+          serviceName,
+          classId,
+        );
+        return pgClass?.getAttributes() ?? [];
+      },
+
+      async getConstraintsForClass(info, serviceName, classId) {
+        const pgClass = await info.helpers.pgIntrospection.getClass(
+          serviceName,
+          classId,
+        );
+        return pgClass?.getConstraints() ?? [];
+      },
+
+      async getForeignConstraintsForClass(info, serviceName, classId) {
+        const pgClass = await info.helpers.pgIntrospection.getClass(
+          serviceName,
+          classId,
+        );
+        return pgClass?.getForeignConstraints() ?? [];
+      },
+
+      async getInheritedForClass(info, serviceName, classId) {
+        // const pgClass = await info.helpers.pgIntrospection.getClass(serviceName, classId);
+        const relevant = await getDb(info, serviceName);
+        const list = relevant.introspection.inherits;
+        // PERF: cache
+        return list.filter((entity) => entity.inhrelid === classId);
+      },
+
+      async getInheritanceChildrenForClass(info, serviceName, classId) {
+        const relevant = await getDb(info, serviceName);
+        const list = relevant.introspection.inherits;
+        // PERF: cache
+        return list.filter((entity) => entity.inhparent === classId);
+      },
+
+      async getNamespaceByName(info, serviceName, name) {
+        const relevant = await getDb(info, serviceName);
+        const list = relevant.introspection.namespaces;
+        return list.find((nsp) => nsp.nspname === name);
+      },
+
+      async getClassByName(info, serviceName, schemaName, tableName) {
+        const relevant = await getDb(info, serviceName);
+        const list = relevant.introspection.classes;
+        return list.find(
+          (rel) =>
+            rel.getNamespace()!.nspname === schemaName &&
+            rel.relname === tableName,
+        );
+      },
+
+      async getTypeByName(info, serviceName, schemaName, typeName) {
+        const relevant = await getDb(info, serviceName);
+        const list = relevant.introspection.types;
+        return list.find(
+          (typ) =>
+            typ.getNamespace()!.nspname === schemaName &&
+            typ.typname === typeName,
+        );
+      },
+
+      // ENHANCE: we should maybe use pg_type.typelem and look up by ID directy
+      // instead of having this function
+      async getTypeByArray(info, serviceName, arrayId) {
+        const relevant = await getDb(info, serviceName);
+        const list = relevant.introspection.types;
+        return list.find((type) => type.typarray === arrayId);
+      },
+
+      async getEnumsForType(info, serviceName, typeId) {
+        const type = await info.helpers.pgIntrospection.getType(
+          serviceName,
+          typeId,
+        );
+        return type?.getEnumValues() ?? [];
+      },
+
+      async getRangeByType(info, serviceName, typeId) {
+        const type = await info.helpers.pgIntrospection.getType(
+          serviceName,
+          typeId,
+        );
+        return type?.getRange();
+      },
+
+      async getExtensionByName(info, serviceName, extensionName) {
+        const relevant = await getDb(info, serviceName);
+        const list = relevant.introspection.extensions;
+        // PERF: cache
+        return list.find((entity) => entity.extname === extensionName);
+      },
+
+      getIntrospection(info) {
+        // IMPORTANT: introspection shouldn't change within a single run (even
+        // if the cache does), thus we add it to state.
+        return (
+          info.state.getIntrospectionPromise ??
+          (info.state.getIntrospectionPromise = (async () => {
+            // If the cache is dirty, clear it now we're about to replace it.
+            if (info.cache.dirty) {
+              info.cache.introspectionResultsPromise = null;
+              info.cache.dirty = false;
+            }
+            // Introspect the database (or read it from CLEAN cache)
+            const introspectionPromise =
+              info.cache.introspectionResultsPromise ??
+              (info.cache.introspectionResultsPromise =
+                introspectPgServices(info));
+
+            // Don't cache errors
+            introspectionPromise.then(null, () => {
+              info.cache.introspectionResultsPromise = null;
+            });
+
+            const rawIntrospections = await introspectionPromise;
+
+            const introspections: IntrospectionResults = rawIntrospections.map(
+              ({ pgService, introspectionText, scopedPlan }) => {
+                // IMPORTANT: parseIntrospectionResults must NOT be cached, because other plugins mutate it.
+                const introspection =
+                  parseIntrospectionResults(introspectionText);
+                if (scopedPlan) {
+                  try {
+                    validateSchemaScopedIntrospection(
+                      introspection,
+                      scopedPlan,
+                    );
+                  } catch (error) {
+                    const message =
+                      error instanceof Error ? error.message : String(error);
+                    throw new Error(
+                      `Schema-scoped introspection validation failed for PostgreSQL service '${pgService.name}': ${message}`,
+                    );
+                  }
+                }
+                return { pgService, introspection };
+              },
+            );
+
+            // Store the resolved state, so access during announcements doesn't cause the system to hang
+            info.state.getIntrospectionPromise = introspections;
+
+            // Announce the introspection results.
+            // NOTE: we must not *cache* this, because it needs to run on every
+            // gather. We only do it once per gather though, so writing to state
+            // is fine.
+            await Promise.all(
+              introspections.map(async (result) => {
+                const { introspection, pgService } = result;
+
+                const {
+                  namespaces,
+                  classes,
+                  attributes,
+                  constraints,
+                  procs,
+                  roles,
+                  auth_members,
+                  types,
+                  enums,
+                  extensions,
+                  indexes,
+                  languages,
+                  ranges,
+                  depends,
+                  descriptions,
+                } = introspection;
+
+                function announce<
+                  TEvent extends keyof GraphileConfig.GatherHooks,
+                >(
+                  eventName: TEvent,
+                  entities: GraphileConfig.GatherHooks[TEvent] extends (
+                    firstArg: { entity: infer V; serviceName: string },
+                    ...rest: any[]
+                  ) => any
+                    ? V[]
+                    : never,
+                ) {
+                  const promises: Promise<any>[] = [];
+                  for (const entity of entities) {
+                    promises.push(
+                      (info.process as any)(eventName, {
+                        entity: entity,
+                        serviceName: pgService.name,
+                      }),
+                    );
+                  }
+                  return Promise.all(promises);
+                }
+                await info.process('pgIntrospection_introspection', {
+                  introspection,
+                  serviceName: pgService.name,
+                });
+                await announce('pgIntrospection_namespace', namespaces);
+                await announce('pgIntrospection_class', classes);
+                await announce('pgIntrospection_attribute', attributes);
+                await announce('pgIntrospection_constraint', constraints);
+                await announce('pgIntrospection_proc', procs);
+                await announce('pgIntrospection_role', roles);
+                await announce('pgIntrospection_auth_member', auth_members);
+                await announce('pgIntrospection_type', types);
+                await announce('pgIntrospection_enum', enums);
+                await announce('pgIntrospection_extension', extensions);
+                await announce('pgIntrospection_index', indexes);
+                await announce('pgIntrospection_language', languages);
+                await announce('pgIntrospection_range', ranges);
+                await announce('pgIntrospection_depend', depends);
+                await announce('pgIntrospection_description', descriptions);
+              }),
+            );
+
+            return introspections;
+          })())
+        );
+      },
+      async getService(info, serviceName) {
+        const all = await info.helpers.pgIntrospection.getIntrospection();
+        const match = all.find((n) => n.pgService.name === serviceName);
+        if (!match) {
+          throw new Error(
+            `Could not find results for database '${serviceName}'`,
+          );
+        }
+        return match;
+      },
+    },
+
+    hooks: {
+      async pgRegistry_PgRegistryBuilder_init(info, _event) {
+        await info.helpers.pgIntrospection.getIntrospection();
+      },
+      pgRegistry_PgRegistryBuilder_pgExecutors(info, event) {
+        for (const pgService of info.resolvedPreset.pgServices ?? []) {
+          const executor = info.helpers.pgIntrospection.getExecutorForService(
+            pgService.name,
+          );
+          event.registryBuilder.addExecutor(executor);
+        }
+      },
+    },
+
+    async watch(info, callback) {
+      const { withSuperuserPgClientFromPgService } = info.lib.dataplanPg;
+      const { abortable, noop } = info.lib.grafast;
+      const unlistens: Array<() => void> = [];
+      for (const pgService of info.resolvedPreset.pgServices ?? []) {
+        if (!pgService.pgSubscriber) {
+          console.warn(
+            `pgService '${pgService.name}' does not have a pgSubscriber, and thus cannot be used for watch mode`,
+          );
+          continue;
+        }
+        // install the watch fixtures
+        if (info.options.installWatchFixtures ?? true) {
+          try {
+            await withSuperuserPgClientFromPgService(
+              pgService,
+              null,
+              (client) => client.query({ text: watchFixtures }),
+            );
+          } catch (e) {
+            const code =
+              typeof e === 'object' && e !== null && 'code' in e
+                ? e.code
+                : undefined;
+            if (typeof code === 'string' && CLASH_CODES.includes(code)) {
+              // Ignore; most likely someone else is installing it currently
+            } else {
+              console.warn(
+                `Failed to install watch fixtures into '${pgService.name}'.\nInstalling watch fixtures requires superuser privileges; have you correctly configured a 'superuserConnectionString'?\nYou may also opt to configure 'installWatchFixtures: false' and install them yourself.\n\nPostgres says: ${e}`,
+              );
+            }
+          }
+        }
+        try {
+          let eventStream =
+            await pgService.pgSubscriber.subscribe('postgraphile_watch');
+          const $$stop = Symbol('stop');
+
+          const controller = new AbortController();
+          const signal = controller.signal;
+          unlistens.push(() => void controller.abort());
+
+          const regather = () => {
+            // Delete the introspection results
+            info.cache.introspectionResultsPromise = null;
+            // Deleting the introspection results is not sufficient since they might be replaced before gather runs again
+            info.cache.dirty = true;
+            // Trigger re-gather
+            callback();
+          };
+          const waitNext = () => {
+            const next = Promise.resolve(
+              abortable(signal, $$stop, eventStream.next()),
+            );
+            next.then(
+              (event) => {
+                if (event === $$stop) {
+                  // Terminate the stream
+                  if (eventStream.return) {
+                    const result = eventStream.return();
+                    result.then(null, noop);
+                  } else if (eventStream.throw) {
+                    const result = eventStream.throw(
+                      new Error('Please stop streaming events now.'),
+                    );
+                    result.then(null, noop);
+                  }
+                } else {
+                  if (event.done) {
+                    // This should never happen
+                    return restart();
+                  } else {
+                    try {
+                      regather();
+                    } finally {
+                      // Wait for the next event
+                      waitNext();
+                    }
+                  }
+                }
+              },
+              (e) => {
+                return restart(e instanceof Error ? e : new Error(String(e)));
+              },
+            );
+          };
+          let attempts = 0;
+          const restart = async (e?: Error) => {
+            attempts++;
+            let delay = 50 * Math.pow(1.5, attempts - 1);
+            const MAX_DELAY = 30_000;
+            if (delay > MAX_DELAY) delay = MAX_DELAY * (Math.random() + 0.5);
+            console.error(
+              `postgraphile_watch subscription failed (${e}); waiting ${delay.toFixed(0)}ms then re-establishing`,
+            );
+            const result = await abortable(signal, $$stop, sleep(delay));
+            if (result === $$stop) {
+              return;
+            }
+            try {
+              eventStream =
+                await pgService.pgSubscriber!.subscribe('postgraphile_watch');
+            } catch (e) {
+              return restart(e instanceof Error ? e : new Error(String(e)));
+            }
+            regather();
+            // Reset to success
+            attempts = 0;
+            waitNext();
+          };
+          waitNext();
+        } catch (e) {
+          console.warn(`Failed to watch '${pgService.name}': ${e}`);
+        }
+      }
+      return () => {
+        for (const cb of unlistens) {
+          try {
+            cb();
+          } catch {
+            /*nom nom nom*/
+          }
+        }
+      };
+    },
+  }),
+};
+
+function introspectPgServices(
+  info: GatherPluginContext<State, Cache>,
+): Promise<RawIntrospectionResults> {
+  const { withPgClientFromPgService } = info.lib.dataplanPg;
+  const pgServices = info.resolvedPreset.pgServices;
+  const scopedIntrospection = info.options.pgScopedIntrospection;
+  assertScopedIntrospectionServices(pgServices, scopedIntrospection);
+  if (!pgServices) {
+    return Promise.resolve([]);
+  }
+
+  const seenNames = new Map<string, number>();
+  const seenPgSettingsKeys = new Map<string, number>();
+  const seenWithPgClientKeys = new Map<string, number>();
+
+  // Resolve the promise ASAP so dependents can `getIntrospection()` and then
+  // `getClass` or whatever from the result.
+  return Promise.all(
+    pgServices.map(async (pgService, i) => {
+      // Validate there's no conflicts between pgServices
+      const { name, pgSettingsKey, withPgClientKey } = pgService;
+      if (!name) {
+        throw new Error(`pgServices[${i}] has no name`);
+      }
+      if (!withPgClientKey) {
+        throw new Error(`pgServices[${i}] has no withPgClientKey`);
+      }
+      {
+        const existingIndex = seenNames.get(name);
+        if (existingIndex != null) {
+          throw new Error(
+            `pgServices[${i}] has the same name as pgServices[${existingIndex}] (${JSON.stringify(
+              name,
+            )})`,
+          );
+        }
+        seenNames.set(name, i);
+      }
+      {
+        const existingIndex = seenWithPgClientKeys.get(withPgClientKey);
+        if (existingIndex != null) {
+          throw new Error(
+            `pgServices[${i}] has the same withPgClientKey as pgServices[${existingIndex}] (${JSON.stringify(
+              withPgClientKey,
+            )})`,
+          );
+        }
+        seenWithPgClientKeys.set(withPgClientKey, i);
+      }
+      if (pgSettingsKey) {
+        const existingIndex = seenPgSettingsKeys.get(pgSettingsKey);
+        if (existingIndex != null) {
+          throw new Error(
+            `pgServices[${i}] has the same pgSettingsKey as pgServices[${existingIndex}] (${JSON.stringify(
+              pgSettingsKey,
+            )})`,
+          );
+        }
+        seenPgSettingsKeys.set(pgSettingsKey, i);
+      }
+
+      // Do the introspection
+      const { query, scopedPlan } = getIntrospectionQuery(
+        pgService,
+        scopedIntrospection?.[name],
+      );
+      const {
+        rows: [row],
+      } = await withPgClientFromPgService(
+        pgService,
+        pgService.pgSettingsForIntrospection ?? null,
+        (client) => client.query<{ introspection: string }>(query),
+      );
+      if (!row) {
+        throw new Error('Introspection failed');
+      }
+      return {
+        pgService,
+        introspectionText: row.introspection,
+        scopedPlan,
+      };
+    }),
+  );
+}
