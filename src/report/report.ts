@@ -92,9 +92,9 @@ export function report(run: string, output?: string): void {
       '',
     );
   }
-  lines.push('## A: unrelated tenant schemas', '');
   const a = grouped('a');
   if (a.length) {
+    lines.push('## A: unrelated tenant schemas', '');
     const hashes = new Set(a.flatMap(([, r]) => r.map((x) => x.sdlHash)));
     assert.equal(hashes.size, 1, 'Target SDL differs with N');
     table(
@@ -136,42 +136,43 @@ export function report(run: string, output?: string): void {
       );
     }
   }
-  lines.push('## B: simultaneous live instances', '');
   const b = grouped('b');
-  table(
-    [
-      'Instances M',
-      'Repeats',
-      'Heap MiB',
-      'Increment MiB',
-      'Increment per instance MiB',
-      'RSS MiB',
-      'Peak RSS MiB',
-      'Total build ms',
-      'After release heap MiB',
-      'After release minus baseline MiB',
-    ],
-    b.map(([m, r]) => [
-      m,
-      r.length,
-      mib(med(r, (x) => x.retained.heapUsed)),
-      mib(med(r, (x) => x.heapDelta)),
-      mib(med(r, (x) => x.heapPerInstance)),
-      mib(med(r, (x) => x.retained.rss)),
-      mib(med(r, (x) => x.retained.peakRssBytes)),
-      fmt(med(r, (x) => x.buildMs)),
-      mib(med(r, (x) => x.afterRelease.heapUsed)),
-      mib(med(r, (x) => x.afterRelease.heapUsed - x.baseline.heapUsed)),
-    ]),
-  );
-  lines.push(
-    'The catalog stays at 60 tenants. Every instance is built by a real Host-routed request and runs one identical bounded correctness query. Increment per instance divides the process delta by M; it includes shared and per-instance runtime costs.',
-    '',
-    '### Fixed-capacity rotation',
-    '',
-  );
+  if (b.length) {
+    lines.push('## B: simultaneous live instances', '');
+    table(
+      [
+        'Instances M',
+        'Repeats',
+        'Heap MiB',
+        'Increment MiB',
+        'Increment per instance MiB',
+        'RSS MiB',
+        'Peak RSS MiB',
+        'Total build ms',
+        'After release heap MiB',
+        'After release minus baseline MiB',
+      ],
+      b.map(([m, r]) => [
+        m,
+        r.length,
+        mib(med(r, (x) => x.retained.heapUsed)),
+        mib(med(r, (x) => x.heapDelta)),
+        mib(med(r, (x) => x.heapPerInstance)),
+        mib(med(r, (x) => x.retained.rss)),
+        mib(med(r, (x) => x.retained.peakRssBytes)),
+        fmt(med(r, (x) => x.buildMs)),
+        mib(med(r, (x) => x.afterRelease.heapUsed)),
+        mib(med(r, (x) => x.afterRelease.heapUsed - x.baseline.heapUsed)),
+      ]),
+    );
+    lines.push(
+      'The catalog stays at 60 tenants. Every instance is built by a real Host-routed request and runs one identical bounded correctness query. Increment per instance divides the process delta by M; it includes shared and per-instance runtime costs.',
+      '',
+    );
+  }
   const rotations = samples.filter((x) => x.scenario === 'rotation');
   if (rotations.length) {
+    lines.push('## Fixed-capacity rotation', '');
     table(
       [
         'Completed tenant builds',
@@ -201,41 +202,42 @@ export function report(run: string, output?: string): void {
       '',
     );
   }
-  lines.push('## C: retained distinct cached operations', '');
   const c = grouped('c');
-  table(
-    [
-      'New operations K',
-      'Repeats',
-      'Verified total plans',
-      'Heap MiB',
-      'Plan baseline MiB',
-      'Increment MiB',
-      'KiB per new operation',
-      'Forced-GC median ms',
-      'RSS MiB',
-      'Peak RSS MiB',
-    ],
-    c.map(([k, r]) => [
-      k,
-      r.length,
-      med(r, (x) => x.cacheAfter.plans),
-      mib(med(r, (x) => x.retained.heapUsed)),
-      mib(med(r, (x) => x.planBaseline.heapUsed)),
-      mib(med(r, (x) => x.heapDelta)),
-      fmt(med(r, (x) => x.heapPerPlan) / 1024),
-      fmt(med(r, (x) => median(x.retained.gcPausesMs))),
-      mib(med(r, (x) => x.retained.rss)),
-      mib(med(r, (x) => x.retained.peakRssBytes)),
-    ]),
-  );
-  lines.push(
-    'Each K adds exactly K successful, distinct OperationPlan objects on top of one warmup plan. Replay preserves counts. Both the operations cache and HTTP parsing cache have capacity K+100. The delta includes ASTs, parsing, plans, SQL strings/generated JavaScript and cache overhead. This is the plan-memory-overhaul problem area; it is not a pure plan-object retained-size measurement. GC numbers are explicit full-collection wall times, not automatic-GC percentiles.',
-    '',
-    '## D: isolated build-only snapshots',
-    '',
-  );
+  if (c.length) {
+    lines.push('## C: retained distinct cached operations', '');
+    table(
+      [
+        'New operations K',
+        'Repeats',
+        'Verified total plans',
+        'Heap MiB',
+        'Plan baseline MiB',
+        'Increment MiB',
+        'KiB per new operation',
+        'Forced-GC median ms',
+        'RSS MiB',
+        'Peak RSS MiB',
+      ],
+      c.map(([k, r]) => [
+        k,
+        r.length,
+        med(r, (x) => x.cacheAfter.plans),
+        mib(med(r, (x) => x.retained.heapUsed)),
+        mib(med(r, (x) => x.planBaseline.heapUsed)),
+        mib(med(r, (x) => x.heapDelta)),
+        fmt(med(r, (x) => x.heapPerPlan) / 1024),
+        fmt(med(r, (x) => median(x.retained.gcPausesMs))),
+        mib(med(r, (x) => x.retained.rss)),
+        mib(med(r, (x) => x.retained.peakRssBytes)),
+      ]),
+    );
+    lines.push(
+      'Each K adds exactly K successful, distinct OperationPlan objects on top of one warmup plan. Replay preserves counts. Both the operations cache and HTTP parsing cache have capacity K+100. The delta includes ASTs, parsing, plans, SQL strings/generated JavaScript and cache overhead. This is the plan-memory-overhaul problem area; it is not a pure plan-object retained-size measurement. GC numbers are explicit full-collection wall times, not automatic-GC percentiles.',
+      '',
+    );
+  }
   const d = grouped('d');
+  if (d.length) lines.push('## D: isolated build-only snapshots', '');
   for (const [n, rows] of d) {
     const analyses = rows.map((r) =>
       readAnalysis(`${dir}/${r.file}.analysis.json`),
@@ -298,16 +300,37 @@ export function report(run: string, output?: string): void {
       ]),
     );
   }
+  if (d.length)
+    lines.push(
+      'Catalog-row and build-object signatures are evidence of post-build survival where present; they do not prove every retained object can safely be removed. Constructor totals union only outermost same-constructor dominated subtrees. Different rows overlap and MUST NOT be summed. Analysis uses a declared strong-edge model, excludes weak/non-root shortcut edges, and does not reproduce all V8 ephemeron semantics. Snapshot hashes and full constructor summaries are in the analysis JSON. D after-release memory is snapshot-perturbed and is excluded from formal release comparisons.',
+      '',
+    );
   lines.push(
-    'Catalog-row and build-object signatures are evidence of post-build survival where present; they do not prove every retained object can safely be removed. Constructor totals union only outermost same-constructor dominated subtrees. Different rows overlap and MUST NOT be summed. Analysis uses a declared strong-edge model, excludes weak/non-root shortcut edges, and does not reproduce all V8 ephemeron semantics. Snapshot hashes and full constructor summaries are in the analysis JSON. D after-release memory is snapshot-perturbed and is excluded from formal release comparisons.',
-    '',
     '## Coverage and comparison limits',
     '',
-    '- Registry stock and the common-base control use Amber only. The local-scoped profile adapts PR2 to the published dependency graph; historical PR2 results refer to the recorded external checkout. No installed implementation is patched by the harness. Checkout provenance distinguishes groups. No separate Benjie development branch was supplied or benchmarked.',
-    '- A/D cover catalog retention and build-state survival. B combines this with runtime instance costs and release behavior. C covers one bounded nested operation family; it does not characterize all mutation, subscription or polymorphic plan workloads.',
+    '- Registry stock and the common-base control use Amber only. The local-scoped profile adapts PR2 to the published dependency graph; the PR2 checkout profile uses its recorded external source. No installed implementation is patched by the harness. Checkout provenance distinguishes groups.',
+    ...[
+      ...(a.length ? ['A covers catalog retention with one live target.'] : []),
+      ...(b.length
+        ? ['B covers simultaneous runtime instance costs and release behavior.']
+        : []),
+      ...(rotations.length
+        ? [
+            'Rotation covers settling and drift through five complete tenant passes; a finite plateau cannot rule out slower growth.',
+          ]
+        : []),
+      ...(c.length
+        ? [
+            'C covers one bounded nested operation family; it does not characterize all mutation, subscription or polymorphic plan workloads.',
+          ]
+        : []),
+      ...(d.length
+        ? ['D covers build-state survival in isolated snapshots.']
+        : []),
+    ].map((limit) => `- ${limit}`),
     '- RLS and cross-schema correctness are tested independently and exercised by each discarded warmup. Lower memory obtained by dropping required dependencies would fail the intended comparison.',
-    '- Historical ~0.4 MB/co-tenant/instance and 103→27 MiB figures are sanity references only. This harness uses ten tables per tenant, three repeats, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Cross-version results are not a causal optimization comparison; compare candidates against their exact common base.',
-    '- RSS allocator behavior is separate from retained JS heap. A high RSS after release does not establish a JS leak. A finite rotation plateau also cannot rule out slower growth.',
+    '- This harness uses ten tables per tenant, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Cross-version results are not a causal optimization comparison; compare candidates against their exact common base.',
+    '- RSS allocator behavior is separate from retained JS heap. A high RSS after release does not establish a JS leak.',
     '',
     '## Raw files',
     '',

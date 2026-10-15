@@ -1,8 +1,14 @@
 import { compareLocal } from '../report/local-comparison.js';
-if (process.argv[5] !== undefined && process.argv[5] !== '--review')
-  throw new Error('Optional comparison flag must be --review');
-compareLocal(
-  process.argv.slice(2, 4),
-  process.argv[4] ?? '',
-  process.argv[5] === '--review',
-);
+
+const args = process.argv.slice(2);
+const review = args.at(-1) === '--review';
+if (review) args.pop();
+if (
+  args.length < 2 ||
+  args.length > 3 ||
+  args.some((arg) => arg.startsWith('--'))
+)
+  throw new Error(
+    'Use compare:local <stock-run> <local-scoped-run> [output-directory] [--review]',
+  );
+compareLocal(args.slice(0, 2), args[2], review);

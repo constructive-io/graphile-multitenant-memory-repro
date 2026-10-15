@@ -1,24 +1,41 @@
 import assert from 'node:assert/strict';
-import { readdirSync, writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import { readSample, readAnalysis } from './read.js';
 import { object, array, string, readJson } from '../json.js';
 import { projectPath } from '../paths.js';
-export function verifyResults(run: string, output?: string, review = false) {
+import { scenarios, selectScenarios } from '../benchmark/scenarios.js';
+import type { MatrixSelection } from '../benchmark/scenarios.js';
+export function verifyResults(
+  run: string,
+  output?: string | false,
+  review = false,
+  selection?: MatrixSelection,
+) {
   const dir = projectPath('results', run);
-  const manifest = object(readJson(`${dir}/manifest-all.json`));
+  if (selection === undefined) {
+    const available = (['all', 'memory'] as const).filter((kind) =>
+      existsSync(`${dir}/manifest-${kind}.json`),
+    );
+    assert.equal(
+      available.length,
+      1,
+      'Expected exactly one all or memory manifest; select --matrix explicitly when both exist',
+    );
+    selection = available[0];
+  }
+  const manifest = object(readJson(`${dir}/manifest-${selection}.json`));
   assert.equal(
     manifest.status,
     'complete',
-    'Full acceptance requires a completed all-scenarios manifest',
+    'Acceptance requires a completed matrix manifest',
   );
+  assert.equal(manifest.scenario, selection, 'Manifest selection mismatch');
   assert.equal(manifest.repeats, 3);
-  const expected = {
-    a: [1, 20, 60, 150],
-    b: [1, 10, 50],
-    rotation: [10],
-    c: [10, 100, 1000, 5000],
-    d: [1, 150],
-  };
+  const selected = selectScenarios(selection);
+  assert.deepEqual(array(manifest.selected).map(string), selected);
+  const expected = Object.fromEntries(
+    selected.map((kind) => [kind, [...scenarios[kind].points]]),
+  );
   const expectedNames = Object.entries(expected)
     .flatMap(([kind, values]) =>
       values.flatMap((value) =>
@@ -28,7 +45,11 @@ export function verifyResults(run: string, output?: string, review = false) {
     .sort();
   assert.deepEqual(array(manifest.points).map(string).sort(), expectedNames);
   const files = readdirSync(dir)
-    .filter((n) => /^(a|b|c|d|rotation)-\d+-r\d+\.json$/.test(n))
+    .filter(
+      (n) =>
+        /^(a|b|c|d|rotation)-.*\.json$/.test(n) &&
+        !n.endsWith('.analysis.json'),
+    )
     .sort();
   assert.deepEqual(files, expectedNames);
   const samples = files.map((n) => readSample(`${dir}/${n}`));
@@ -52,6 +73,7 @@ export function verifyResults(run: string, output?: string, review = false) {
       'dependencies',
       'crystal',
       'comparisonProfile',
+      'localImplementation',
       'nodeEnv',
       'graphileEnv',
       'quietMs',
@@ -63,6 +85,20 @@ export function verifyResults(run: string, output?: string, review = false) {
     assert.equal(r.statsAfter.builds, r.statsAfter.releases);
     assert.equal(r.baseline.gcPausesMs.length, 3);
     assert.equal(r.retained.gcPausesMs.length, 3);
+    if (selection === 'memory') {
+      assert(r.scenario === 'a' || r.scenario === 'b');
+      assert.equal(r.environment.graphileEnv, 'production');
+      assert.equal(r.environment.gcPasses, 3);
+      assert.deepEqual(r.warmup, { instances: 1, requests: 5 });
+      assert.equal(r.capacity, scenarios[r.scenario].capacity(r.value));
+      assert.equal(r.afterRelease.gcPausesMs.length, 3);
+      assert.equal(r.heapDelta, r.retained.heapUsed - r.baseline.heapUsed);
+      if (r.scenario === 'b')
+        assert.equal(r.heapPerInstance, r.heapDelta / r.value);
+      assert.equal(r.statsLoaded.builds - r.statsLoaded.releases, r.capacity);
+      assert.equal(r.statsAfter.builds, r.statsLoaded.builds);
+      assert.equal(r.statsAfter.releases, r.statsLoaded.releases + r.capacity);
+    }
     for (const key of ['heapUsed', 'rss', 'peakRssBytes'] as const)
       assert(Number.isFinite(r.retained[key]) && r.retained[key] > 0);
     if (r.scenario === 'a' || r.scenario === 'd')
@@ -100,7 +136,7 @@ export function verifyResults(run: string, output?: string, review = false) {
   const processIds = samples.flatMap((row) =>
     row.environment.pid === undefined ? [] : [row.environment.pid],
   );
-  if (processIds.length) {
+  if (selection === 'memory' || processIds.length) {
     assert.equal(
       processIds.length,
       samples.length,
@@ -131,12 +167,13 @@ export function verifyResults(run: string, output?: string, review = false) {
       ),
     ),
   ];
-  assert.equal(hashes.length, 1, 'SDL must be invariant in A and D');
+  assert.equal(hashes.length, 1, 'SDL must be invariant in measured A and D');
   const verification = {
     status: first.sourceDirty ? 'review-only' : 'passed',
     ...(first.sourceDirty ? { reviewOnly: true } : {}),
     sourceSha: first.gitSha,
     sourceDirty: first.sourceDirty,
+    selection,
     workers: samples.length,
     repetitions: 3,
     matrix: expected,
@@ -148,11 +185,13 @@ export function verifyResults(run: string, output?: string, review = false) {
     crystal: first.crystal,
     comparisonProfile: first.comparisonProfile ?? 'stock',
   };
-  writeFileSync(
-    output ?? `${dir}/verification.json`,
-    JSON.stringify(verification, null, 2) + '\n',
-  );
-  console.log(JSON.stringify(verification, null, 2));
+  if (output !== false) {
+    writeFileSync(
+      output ?? `${dir}/verification.json`,
+      JSON.stringify(verification, null, 2) + '\n',
+    );
+    console.log(JSON.stringify(verification, null, 2));
+  }
 
   return verification;
 }

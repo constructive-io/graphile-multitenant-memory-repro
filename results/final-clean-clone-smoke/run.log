@@ -1,9 +1,0 @@
-$ node scripts/bench.js a
-Preparing a=1; 1 sequential fresh processes
-{"scenario":"a","value":1,"heapMiB":33.084083557128906,"deltaMiB":4.3855743408203125,"buildMs":122.83971200000087,"sdlHash":"d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb"}
-Raw results: /workspace/graphile-memory-final-check/results/final-clean-clone-smoke
-$ node scripts/bench.js c
-Preparing c=10; 1 sequential fresh processes
-{"scenario":"c","value":10,"heapMiB":37.83763122558594,"deltaMiB":3.8136138916015625}
-Raw results: /workspace/graphile-memory-final-check/results/final-clean-clone-smoke
-/workspace/graphile-memory-final-check/results/final-clean-clone-smoke/REPORT.md

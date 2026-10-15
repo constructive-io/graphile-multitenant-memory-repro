@@ -1,2 +1,0 @@
-$ node dist/src/cli/report.js standalone-stock-2026-10-15
-/workspace/graphile-multitenant-memory-repro/results/standalone-stock-2026-10-15/REPORT.md

@@ -1,6 +1,0 @@
-{
-  "version": "5.1.5",
-  "dist.integrity": "sha512-2sT6pyzlkJJURcrGbVng4hEDVDHq2YuySbJVnEFABs6Nr6WGLOtxsNZs1i8iYroPkI2+OL3jArEt7A6tu+b0MA==",
-  "dist.tarball": "https://registry.npmjs.org/postgraphile/-/postgraphile-5.1.5.tgz",
-  "gitHead": "046893b6366ccc150ba490ac8981796d55985594"
-}

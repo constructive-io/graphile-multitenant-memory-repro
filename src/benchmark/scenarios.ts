@@ -1,7 +1,8 @@
 import assert from 'node:assert/strict';
 
 export type Scenario = 'a' | 'b' | 'rotation' | 'c' | 'd';
-export type Selection = Scenario | 'all';
+export type MatrixSelection = 'all' | 'memory';
+export type Selection = Scenario | MatrixSelection;
 export interface ScenarioDefinition {
   name: Scenario;
   description: string;
@@ -79,14 +80,16 @@ export function parseScenario(value: unknown): Scenario {
   throw new Error(`Unknown scenario: ${String(value)}`);
 }
 export function parseSelection(value: string): Selection {
-  return value === 'all' ? value : parseScenario(value);
+  return value === 'all' || value === 'memory' ? value : parseScenario(value);
 }
 export function selectScenarios(selection: Selection): readonly Scenario[] {
   return selection === 'all'
     ? scenarioOrder
-    : selection === 'b'
-      ? ['b', 'rotation']
-      : [selection];
+    : selection === 'memory'
+      ? ['a', 'b']
+      : selection === 'b'
+        ? ['b', 'rotation']
+        : [selection];
 }
 export function validatePoint(scenario: Scenario, value: number): void {
   assert(

@@ -1,9 +1,0 @@
-{
-  "profiles": [
-    "common-base",
-    "pr2"
-  ],
-  "workers": 84,
-  "pr3PerformanceSamples": 0,
-  "reason": "User selected PR2 as the sole representative of the shared scoped algorithm; PR3 differs in integration."
-}

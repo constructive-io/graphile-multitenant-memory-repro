@@ -1,1 +1,0 @@
-$ tsc -p tsconfig.json && node dist/src/cli/build-stamp.js

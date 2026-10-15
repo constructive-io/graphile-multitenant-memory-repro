@@ -1,9 +1,0 @@
-{
-  "originalHead": "4221f1fb2ae47efbd57b1a07eb56f4383b21fe32",
-  "refactorSource": "66b157deefa9ba682822f39e17b05387a1d3b94f",
-  "trackedHistoricalFiles": 238,
-  "historicalResultsTreeSha256": "b2d7d5939fd1e8f56a30f1d1e6a91f7439e1f2fd1ba179e42558dea0c7700aa5",
-  "allHistoricalFilesByteIdentical": true,
-  "formalSamples": 126,
-  "snapshotAnalyses": 18
-}

@@ -1,8 +1,0 @@
-{
-  "recordedAt": "2026-10-14T23:05:49.300Z",
-  "note": "After upstream builds; before the full comparison matrices",
-  "cpuMax": "400000 100000",
-  "memoryMax": "17179869184",
-  "memoryCurrent": "10049523712",
-  "memoryEvents": "low 0\nhigh 0\nmax 7858\noom 0\noom_kill 0\noom_group_kill 0"
-}

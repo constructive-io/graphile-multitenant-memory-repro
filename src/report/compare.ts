@@ -1,15 +1,10 @@
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
-import {
-  readSample,
-  readAnalysis,
-  readVerification,
-  parseDependencies,
-} from './read.js';
+import { readSample, readAnalysis, readVerification } from './read.js';
 import type { WorkerResult } from '../benchmark/results.js';
 import type { Scenario } from '../benchmark/scenarios.js';
-import { object, array, string, number, readJson } from '../json.js';
+import { object, string, number, readJson } from '../json.js';
 import { projectPath } from '../paths.js';
 import { parseCrystalState } from '../runtime/state.js';
 
@@ -45,82 +40,37 @@ export function compare(
   for (const group of groups) {
     assert(group.verification.crystal);
     const localReceipt = projectPath('results', group.name, 'preflight.json');
-    let test: {
-      status: string;
-      profile: string;
-      testExitCode: number;
-      benchmarkSha: string;
-    };
-    if (existsSync(localReceipt)) {
-      const receipt = object(readJson(localReceipt));
-      test = {
-        status: string(receipt.status),
-        profile: string(receipt.profile),
-        testExitCode: number(receipt.testExitCode),
-        benchmarkSha: string(receipt.benchmarkSha),
-      };
-      const crystal = parseCrystalState(receipt.crystal);
-      assert.equal(receipt.sourceDirty, false);
-      assert.equal(receipt.provenanceUnchanged, true);
-      assert.deepEqual(
-        receipt.build,
-        group.samples[0].environment.build,
-        'Preflight must test the measured compiled output',
-      );
-      assert.equal(crystal.sha, group.verification.crystal.sha);
-      assert.equal(crystal.dirty, false);
-      assert.deepEqual(receipt.dependencies, group.verification.dependencies);
-      const firstSample = Math.min(
-        ...group.samples.map((s) => Date.parse(s.environment.recordedAt)),
-      );
-      assert(
-        Date.parse(string(receipt.recordedAt)) <= firstSample,
-        'Correctness preflight must precede measurement',
-      );
-    } else {
-      // Preserve receipts for the original accepted runs, which predate per-run receipts.
-      const historic = object(
-        readJson(projectPath('results/comparison-provenance/preflight.json')),
-      );
-      assert.equal(historic.status, 'passed');
-      const receipt = array(historic.groups)
-        .map(object)
-        .find((g) => g.profile === group.verification.comparisonProfile);
-      assert(receipt);
-      test = {
-        status: string(historic.status),
-        profile: string(receipt.profile),
-        testExitCode: number(receipt.testExitCode),
-        benchmarkSha: string(receipt.benchmarkSha),
-      };
-      assert.equal(
-        test.benchmarkSha,
-        '62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba',
-        'Historical receipt is limited to original accepted source',
-      );
-      const link = object(
-        readJson(
-          projectPath(
-            `results/comparison-provenance/${test.profile}-link.json`,
-          ),
-        ),
-      );
-      const state = parseCrystalState(link.state);
-      assert.equal(state.sha, group.verification.crystal.sha);
-      assert.equal(state.dirty, false);
-      assert.deepEqual(
-        Object.fromEntries(
-          Object.entries(parseDependencies(link.dependencies)).map(
-            ([name, value]) => [name, value.version],
-          ),
-        ),
-        group.verification.dependencies,
-      );
-    }
-    assert.equal(test.status, 'passed');
-    assert.equal(test.profile, group.verification.comparisonProfile);
-    assert.equal(test.testExitCode, 0);
-    assert.equal(test.benchmarkSha, reference.verification.sourceSha);
+    assert(
+      existsSync(localReceipt),
+      'Each run must contain its own preflight.json',
+    );
+    const receipt = object(readJson(localReceipt));
+    const crystal = parseCrystalState(receipt.crystal);
+    assert.equal(receipt.sourceDirty, false);
+    assert.equal(receipt.sourceUnchanged, true);
+    assert.equal(receipt.provenanceUnchanged, true);
+    assert.deepEqual(
+      receipt.build,
+      group.samples[0].environment.build,
+      'Preflight must test the measured compiled output',
+    );
+    assert.equal(crystal.sha, group.verification.crystal.sha);
+    assert.equal(crystal.dirty, false);
+    assert.deepEqual(receipt.dependencies, group.verification.dependencies);
+    const firstSample = Math.min(
+      ...group.samples.map((s) => Date.parse(s.environment.recordedAt)),
+    );
+    assert(
+      Date.parse(string(receipt.recordedAt)) <= firstSample,
+      'Correctness preflight must precede measurement',
+    );
+    assert.equal(string(receipt.status), 'passed');
+    assert.equal(string(receipt.profile), group.verification.comparisonProfile);
+    assert.equal(number(receipt.testExitCode), 0);
+    assert.equal(
+      string(receipt.benchmarkSha),
+      reference.verification.sourceSha,
+    );
   }
   for (const group of groups) {
     for (const key of [
@@ -188,7 +138,7 @@ export function compare(
   const lines = [
     '# Crystal scoped-introspection comparison',
     '',
-    'Both groups use the same benchmark source, synthetic SQL, query family, GC protocol, dependency versions, PostgreSQL configuration and three fresh processes per point. Each group completes all 42 workers. The published registry baseline is reported separately because its transitive dependency versions differ.',
+    'Both groups use the same benchmark source, synthetic SQL, query family, GC protocol, dependency versions, PostgreSQL configuration and three fresh processes per point. Each group completes all 42 workers. Registry-stock runs are outside this checkout comparison and may use different transitive dependency versions.',
     '',
     `Shared merge-base: \`${expectedShas[0]}\`. Identical upstream yarn.lock blob: \`30ce8fb20d27a304158469c1cf4ccb98d8e2320d\`.`,
     '',

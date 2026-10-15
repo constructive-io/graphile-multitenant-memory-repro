@@ -1,10 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
+import { mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { tenantSql } from '../src/fixture/tenant.js';
 import { hiddenDependenciesSql } from '../src/fixture/hidden.js';
 import {
   pointsFor,
+  parseSelection,
   scenarioOrder,
   selectScenarios,
   scenarios,
@@ -14,9 +18,17 @@ import { workerEnvironment } from '../src/benchmark/process.js';
 import { cliPath, projectRoot } from '../src/paths.js';
 import { verifiedBuild } from '../src/measurement/build.js';
 import { readSample } from '../src/report/read.js';
-import { projectPath } from '../src/paths.js';
+import { syntheticIdentity, syntheticSample } from './helpers/results.js';
 
-test('scenario registration preserves the 42-worker matrix and fixture boundaries', () => {
+test('scenario registration selects 21 memory workers and preserves optional matrices', () => {
+  assert.equal(parseSelection('memory'), 'memory');
+  assert.deepEqual(selectScenarios('memory'), ['a', 'b']);
+  assert.equal(
+    selectScenarios('memory').flatMap((kind) => pointsFor(kind, {})).length * 3,
+    21,
+  );
+  assert.deepEqual(pointsFor('a', {}), [1, 20, 60, 150]);
+  assert.deepEqual(pointsFor('b', {}), [1, 10, 50]);
   assert.deepEqual(selectScenarios('all'), ['a', 'b', 'rotation', 'c', 'd']);
   assert.deepEqual(selectScenarios('b'), ['b', 'rotation']);
   assert.equal(
@@ -65,14 +77,19 @@ test('synthetic SQL stays byte-equivalent to source 4221f1f for all supported te
     '79436ee1f26613fc3fd8cf56412e0ee69e7cb6867e912dc914de831444235f20',
   );
 });
-test('historical samples keep their original source identity without new build metadata', () => {
-  const sample = readSample(
-    projectPath('results/crystal-common-base/a-1-r1.json'),
-  );
-  assert.equal(
-    sample.environment.gitSha,
-    '62a71b2f41f708dcabd7e8bc8da5ab9442bd99ba',
-  );
-  assert.equal(sample.environment.build, undefined);
-  assert.equal(sample.environment.pid, undefined);
+test('legacy-format parsing preserves supplied identity without inventing build metadata', () => {
+  const directory = mkdtempSync(join(tmpdir(), 'graphile-synthetic-legacy-'));
+  try {
+    const path = join(directory, 'a-1-r1.json');
+    writeFileSync(
+      path,
+      JSON.stringify(syntheticSample('a', 1, 0, { legacy: true })),
+    );
+    const sample = readSample(path);
+    assert.equal(sample.environment.gitSha, syntheticIdentity.gitSha);
+    assert.equal(sample.environment.build, undefined);
+    assert.equal(sample.environment.pid, undefined);
+  } finally {
+    rmSync(directory, { recursive: true });
+  }
 });

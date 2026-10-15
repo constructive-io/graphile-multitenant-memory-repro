@@ -23,7 +23,7 @@
     "bench:c": "node dist/src/cli/bench.js c",
     "bench:d": "node dist/src/cli/bench.js d",
     "bench:all": "node dist/src/cli/bench.js all",
-    "report": "node dist/src/cli/report.js",
+    "report": "node dist/src/cli/compare-local.js",
     "compare": "node dist/src/cli/compare.js",
     "verify-results": "node dist/src/cli/verify-results.js",
     "preflight": "node dist/src/cli/preflight.js",
@@ -31,8 +31,9 @@
     "provenance": "node dist/src/cli/provenance.js",
     "crystal:link": "node dist/src/cli/crystal.js link",
     "crystal:stock": "node dist/src/cli/crystal.js stock",
-    "compare:refactor": "node dist/src/cli/compare-refactor.js",
-    "compare:local": "node dist/src/cli/compare-local.js"
+    "compare:local": "node dist/src/cli/compare-local.js",
+    "bench:memory": "node dist/src/cli/bench.js memory",
+    "report:run": "node dist/src/cli/report.js"
   },
   "dependencies": {
     "express": "4.22.3",

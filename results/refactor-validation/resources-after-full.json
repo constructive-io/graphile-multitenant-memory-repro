@@ -1,8 +1,0 @@
-{
-  "recordedAt": "2026-10-15T00:07:44.265Z",
-  "note": "After both full matrices and supplemental original C=5000 bridge",
-  "cpuMax": "400000 100000",
-  "memoryMax": "17179869184",
-  "memoryCurrent": "10827161600",
-  "memoryEvents": "low 0\nhigh 0\nmax 7858\noom 0\noom_kill 0\noom_group_kill 0"
-}
