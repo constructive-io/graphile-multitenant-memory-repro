@@ -5,21 +5,44 @@
   "type": "module",
   "license": "MIT",
   "packageManager": "pnpm@11.19.0",
-  "engines": { "node": ">=24" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
+    "build": "tsc -p tsconfig.json && node dist/src/cli/build-stamp.js",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "format:check": "prettier --check src test package.json tsconfig.json",
+    "format": "prettier --write src test package.json tsconfig.json",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
-    "db:fixture": "node scripts/fixture.js",
-    "start": "node src/server.js",
-    "test": "node --test --test-concurrency=1",
-    "bench:a": "node scripts/bench.js a",
-    "bench:b": "node scripts/bench.js b",
-    "bench:c": "node scripts/bench.js c",
-    "bench:d": "node scripts/bench.js d",
-    "bench:all": "node scripts/bench.js all",
-    "report": "node scripts/report.js",
-    "crystal:link": "node scripts/crystal.js link",
-    "crystal:stock": "node scripts/crystal.js stock"
+    "db:fixture": "node dist/src/cli/fixture.js",
+    "start": "node dist/src/cli/server.js",
+    "test": "node --test --test-concurrency=1 dist/test/*.test.js",
+    "bench:a": "node dist/src/cli/bench.js a",
+    "bench:b": "node dist/src/cli/bench.js b",
+    "bench:c": "node dist/src/cli/bench.js c",
+    "bench:d": "node dist/src/cli/bench.js d",
+    "bench:all": "node dist/src/cli/bench.js all",
+    "report": "node dist/src/cli/report.js",
+    "compare": "node dist/src/cli/compare.js",
+    "verify-results": "node dist/src/cli/verify-results.js",
+    "preflight": "node dist/src/cli/preflight.js",
+    "snapshot": "node dist/src/cli/snapshot.js",
+    "provenance": "node dist/src/cli/provenance.js",
+    "crystal:link": "node dist/src/cli/crystal.js link",
+    "crystal:stock": "node dist/src/cli/crystal.js stock",
+    "compare:refactor": "node dist/src/cli/compare-refactor.js"
   },
-  "dependencies": { "express": "4.22.3", "pg": "8.23.1", "postgraphile": "5.1.5" }
+  "dependencies": {
+    "express": "4.22.3",
+    "pg": "8.23.1",
+    "postgraphile": "5.1.5"
+  },
+  "devDependencies": {
+    "@types/express": "4.17.25",
+    "@types/node": "24.19.2",
+    "@types/pg": "8.23.1",
+    "prettier": "3.9.10",
+    "typescript": "5.9.3"
+  }
 }

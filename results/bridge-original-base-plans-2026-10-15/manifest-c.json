@@ -1,0 +1,13 @@
+{
+  "startedAt": "2026-10-15T00:05:59.780Z",
+  "scenario": "c",
+  "repeats": 1,
+  "selected": [
+    "c"
+  ],
+  "points": [
+    "c-5000-r1.json"
+  ],
+  "status": "complete",
+  "completedAt": "2026-10-15T00:07:33.914Z"
+}

@@ -7,12 +7,19 @@ implementation is patched by this harness, and no application plugin, production
 database, application code, or real tenant data is included. All harness code and
 SQL in this repository were written independently for this benchmark.
 
-Completed evidence comprises 126 formal fresh-process samples and 18 separate
+Historical evidence (from the original JavaScript sources) comprises 126 formal fresh-process samples and 18 separate
 snapshot analyses: stock, common base and PR2 each complete the full three-repeat
 matrix. See the [stock findings](results/STOCK-SUMMARY.md),
 [comparison findings](results/COMPARISON-SUMMARY.md),
 [comparison tables](results/COMPARISON.md), and
 [reproduction record](results/REPRODUCTION.md). Raw JSON is linked from each report.
+
+The TypeScript refactor and fresh validation are documented in the
+[refactor validation record](results/refactor-validation/VALIDATION.md). The new
+common-base/PR2 comparison contains 84 formal samples and 12 snapshot analyses:
+[current comparison](results/refactor-validation/COMPARISON.md) and
+[historical versus refactored measurements](results/refactor-validation/REFACTOR-COMPARISON.md).
+Historical figures above remain evidence of their original code.
 
 ## Quick start
 
@@ -23,6 +30,8 @@ binds only `127.0.0.1:55432`, uses a named volume, and creates the dedicated
 
 ```sh
 pnpm install --frozen-lockfile
+pnpm typecheck
+pnpm build
 pnpm db:up
 pnpm db:fixture 2
 NODE_ENV=production GRAPHILE_ENV=production pnpm test
@@ -48,20 +57,48 @@ administrator names. Never point this harness at an existing business database.
 with the same database and administrator names. Record that fallback explicitly.
 `pnpm db:down` stops Docker and preserves its benchmark-only volume.
 
-## Small code map
+## Code map and TypeScript execution
 
-- `src/fixture.js`: ten tables per tenant, two synthetic owners, indexed relations,
-  enum, domain, arrays and five functions. A hidden `bench_types` schema supplies an
-  enum table FK, domain, custom range, function argument/return types and an
-  inheritance parent. It is never exposed as a selected PostGraphile schema.
-- `src/lru.js`, `src/server.js`, `src/instance.js`: Host routing, lazy builds,
-  serialized cache mutations, request leases, awaited eviction/release, shared
-  pool ownership and schema-change invalidation.
-- `scripts/bench.js`, `scripts/worker.js`: serial orchestration and fresh isolated
-  `--expose-gc` workers. `scripts/load.js` runs HTTP clients in another process.
-- `src/cache-probe.js`: read-only actual operation/plan cache counters that fail
-  closed if the pinned library's internal layout changes.
-- `scripts/snapshot.js`, `src/dominators.js`: isolated heap snapshot analysis.
+All implementation, command entry points, and tests are TypeScript. No JavaScript
+configuration exception is needed: configuration is JSON/YAML. TypeScript 5.9.3
+uses strict checking, native ESM/NodeNext and ES2023 output, without a runtime
+loader, bundler, source-map hook or downlevel async transformation. External package
+declarations use `skipLibCheck`; all local source and tests are checked.
+
+- `src/cli/`: executable adapters for the server, fixture, benchmark, worker, load,
+  snapshot, provenance, preflight, reports and Crystal switching.
+- `src/benchmark/scenarios.ts`: typed scenario registration, point validation,
+  fixed fixture/cache sizes and the original A → B → rotation → C → D order.
+- `src/benchmark/orchestrator.ts`: serial fixture setup, manifests and independent
+  workers. `process.ts` resolves children relative to the compiled module, passes
+  `--expose-gc`, and restricts inherited worker settings.
+- `src/benchmark/worker.ts`, `stages.ts`, `results.ts`: disposable warmup, baseline,
+  scenario stages, numeric result contracts, awaited release and result writing.
+  `client.ts` and `load.ts` run requests in a separate client process.
+- `src/measurement/`: unchanged quiet/GC protocol, runtime/source/build provenance,
+  fail-closed operation-cache probing, isolated snapshot analysis and dominators.
+- `src/report/`: validated historical/current JSON readers, aggregation, matrix
+  verification and controlled comparisons. Reporting never runs in measured workers.
+- `src/runtime/`: vanilla Amber instances, Host routing, typed request leases,
+  serialized LRU mutations, NOTIFY invalidation and explicit Crystal profiles.
+- `src/fixture/`: transactional reset, readable tenant definitions/policies/rows,
+  and hidden cross-schema dependencies. Ten tables per tenant, two owners, indexed
+  relations, enum/domain/array/range/function and inheritance fixtures are preserved.
+- `test/`: compiled Node tests for lifecycle/concurrency, RLS and hidden dependencies,
+  real operation counts, dominators, process configuration and original SQL hashes.
+
+This organization takes only architectural inspiration from Constructive's
+`packages/perf-harness` (typed definitions, CLI/runner/measurement/report boundaries).
+No code, dependencies, fixtures, schema, application logic or data were copied from
+that package. Runtime dependencies remain exactly `postgraphile`, `pg`, and `express`.
+
+Run `pnpm build` after editing TypeScript. Every normal package command targets
+`dist/src/cli/*.js`; tests target `dist/test/*.test.js`. Child paths are anchored to
+that compiled tree, and the child working directory is the repository root.
+Compilation finishes before any measured process starts. `dist/build.json` hashes
+source, compiler configuration and emitted JavaScript; workers and preflight reject
+stale/changed output and record the receipt. `dist/` is ignored, never benchmark input
+from a previous checkout. Formatting: `pnpm format:check` (or `pnpm format`).
 
 The cache queues first builds and mutations, but request execution runs concurrently.
 It never releases an instance while a lease is active. A full cache waits for the
@@ -95,7 +132,7 @@ pnpm report stock
 # Or run everything serially:
 BENCH_RUN=stock-full pnpm bench:all
 # Verify the exact requested full matrix after bench:all:
-node scripts/verify-results.js stock-full
+pnpm verify-results stock-full
 ```
 
 | Scenario | Question | Default matrix |
@@ -169,7 +206,7 @@ SHA-256 and are committed. Regenerate them with `bench:d` when needed.
 ## Stock versus a local Crystal checkout
 
 The lockfile pins official registry PostGraphile 5.1.5 and all transitives. Read-only
-version/provenance output is available with `node scripts/provenance.js`.
+version/provenance output is available with `pnpm provenance`.
 
 Build an official [Crystal](https://github.com/graphile/crystal) checkout using its
 own instructions (`yarn` and `yarn build`, or the relevant workspace build). Then:
@@ -201,27 +238,40 @@ as the sole representative of the scoped algorithm shared with
 actual common merge-base are recorded under `results/comparison-provenance/`.
 PR3 has a different integration path but no performance matrix is run for it.
 Build the unmodified common-base and PR2 checkouts with their identical upstream
-lockfile, then run both groups serially:
+lockfile. The exact refs remain common-base
+`3ecd1d7920de38dc5ae6ee61763e8223b3b53908` and PR2
+`434a1f6deddda7786fa2497ad30ca01d598135a1`; do not substitute current branch heads.
+Compile the harness against stock first with `pnpm typecheck && pnpm build`, then
+run both groups serially:
 
 ```sh
 pnpm crystal:link /absolute/path/to/common-base common-base
-node scripts/preflight.js my-common-base
+pnpm preflight my-common-base
 BENCH_RUN=my-common-base pnpm bench:all
-node scripts/verify-results.js my-common-base
+pnpm verify-results my-common-base
 pnpm report my-common-base
 pnpm crystal:stock
 
 pnpm crystal:link /absolute/path/to/pr2 pr2
-node scripts/preflight.js my-pr2
+pnpm preflight my-pr2
 BENCH_RUN=my-pr2 pnpm bench:all
-node scripts/verify-results.js my-pr2
+pnpm verify-results my-pr2
 pnpm report my-pr2
 pnpm crystal:stock
 
-node scripts/compare.js my-common-base my-pr2
+pnpm compare my-common-base my-pr2 results/my-comparison
+# Compare the completed new groups with the preserved historical groups:
+pnpm compare:refactor crystal-common-base my-common-base crystal-pr2 my-pr2 results/my-comparison
 ```
 
-Choose new run directory names when repeating measurements. `preflight.js` runs the
+Choose new run directory names when repeating measurements. Comparison reports use
+an explicit output directory (or default to `results/<base>-vs-<candidate>/`) so new
+runs do not overwrite the original `results/COMPARISON.md`. A single-run report can
+be regenerated elsewhere with `pnpm report <run> <output.md>`; verification accepts
+an optional output JSON path. Analyze a local snapshot with
+`pnpm snapshot <input.heapsnapshot> <output.analysis.json>`.
+
+ `pnpm preflight` runs the
 correctness suite and saves a per-run receipt tied to the current clean source SHA;
 it also records the tested clean Crystal SHA and resolved dependency versions.
 The comparison checks this receipt and requires tests to precede measurements.

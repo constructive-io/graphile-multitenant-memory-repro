@@ -1,0 +1,14 @@
+{
+  "recordedAt": "2026-10-15T00:09:58.144Z",
+  "runs": [
+    "stock-2026-10-13",
+    "crystal-common-base",
+    "crystal-pr2",
+    "refactor-common-base-2026-10-14",
+    "refactor-pr2-2026-10-14",
+    "refactor-stock-smoke-2026-10-14"
+  ],
+  "allRegeneratedReportsByteIdentical": true,
+  "command": "node dist/src/cli/report.js <run> /tmp/refactor-final-reports/<run>.md",
+  "historicalWorkerVerifications": 126
+}
