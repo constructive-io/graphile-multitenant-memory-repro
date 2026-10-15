@@ -5,11 +5,13 @@ from https://github.com/constructive-io/crystal at
 `434a1f6deddda7786fa2497ad30ca01d598135a1` (common base
 `3ecd1d7920de38dc5ae6ee61763e8223b3b53908`). It is a local adaptation, not a
 measurement of that entire checkout. The package licences are retained verbatim
-in `graphile-build/graphile-build-pg/LICENSE.md` and
-`utils/pg-introspection/LICENSE.md`, including the PostgreSQL documentation notices.
+in `plugins/graphile-build/graphile-build-pg/LICENSE.md` and
+`plugins/utils/pg-introspection/LICENSE.md`, including the PostgreSQL documentation
+notices.
 
-The mirrored paths contain the upstream introspection plugin, its watch SQL and
-version context, the complete scoped algorithm, and the query-builder portion of
+The paths under `plugins/` mirror the upstream hierarchy and contain the
+introspection plugin, its watch SQL and version context, the complete scoped
+algorithm, and the query-builder portion of
 `introspection.ts`. `index.ts` re-exports the published catalogue types and parser
 through PostGraphile's forwarding export. This avoids duplicating the registry
 parser, ACL code, smart comments, reserved words and type identity.

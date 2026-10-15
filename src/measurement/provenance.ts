@@ -17,8 +17,7 @@ export type Dependencies = Record<string, Dependency>;
 export const sourcePaths = [
   'src',
   'test',
-  'graphile-build',
-  'utils',
+  'plugins',
   'UPSTREAM.md',
   'package.json',
   'pnpm-lock.yaml',
@@ -126,13 +125,13 @@ export async function environment(pool: Pool) {
             upstreamSha: '434a1f6deddda7786fa2497ad30ca01d598135a1',
             pluginPath: realpathSync(
               new URL(
-                '../../graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js',
+                '../../plugins/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js',
                 import.meta.url,
               ),
             ),
             scopedPath: realpathSync(
               new URL(
-                '../../utils/pg-introspection/src/scopedIntrospection.js',
+                '../../plugins/utils/pg-introspection/src/scopedIntrospection.js',
                 import.meta.url,
               ),
             ),

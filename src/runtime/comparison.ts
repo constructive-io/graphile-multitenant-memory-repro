@@ -10,7 +10,7 @@ export const comparisonProfile = activeProfile();
 const localPlugin =
   comparisonProfile === 'local-scoped'
     ? (
-        await import('../../graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js')
+        await import('../../plugins/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js')
       ).PgIntrospectionPlugin
     : null;
 const scopedProfile =

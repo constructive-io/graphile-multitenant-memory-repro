@@ -1,12 +1,12 @@
-// Adapted from Crystal PR2; see UPSTREAM.md and graphile-build/graphile-build-pg/LICENSE.md.
+// Adapted from Crystal PR2; see UPSTREAM.md and plugins/graphile-build/graphile-build-pg/LICENSE.md.
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 import { postgraphile } from 'postgraphile';
 import { gather } from 'postgraphile/graphile-build';
-import type { SchemaScopedIntrospectionOptions } from '../utils/pg-introspection/src/index.js';
-import { makeIntrospectionQuery } from '../utils/pg-introspection/src/index.js';
+import type { SchemaScopedIntrospectionOptions } from '../plugins/utils/pg-introspection/src/index.js';
+import { makeIntrospectionQuery } from '../plugins/utils/pg-introspection/src/index.js';
 
-import { PgIntrospectionPlugin } from '../graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js';
+import { PgIntrospectionPlugin } from '../plugins/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js';
 import { PostGraphileAmberPreset } from 'postgraphile/presets/amber';
 
 interface IntrospectionQuery {

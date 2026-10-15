@@ -152,15 +152,14 @@ export function compareLocal(
           implementation.upstreamSha,
           '434a1f6deddda7786fa2497ad30ca01d598135a1',
         );
-        assert(
-          implementation.pluginPath.endsWith(
-            '/dist/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js',
-          ),
+        // Historical measurements retain the paths recorded before the plugins move.
+        assert.match(
+          implementation.pluginPath,
+          /\/dist\/(?:plugins\/)?graphile-build\/graphile-build-pg\/src\/plugins\/PgIntrospectionPlugin\.js$/,
         );
-        assert(
-          implementation.scopedPath.endsWith(
-            '/dist/utils/pg-introspection/src/scopedIntrospection.js',
-          ),
+        assert.match(
+          implementation.scopedPath,
+          /\/dist\/(?:plugins\/)?utils\/pg-introspection\/src\/scopedIntrospection\.js$/,
         );
       } else assert.equal(sample.environment.localImplementation, undefined);
     }

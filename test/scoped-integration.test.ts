@@ -12,8 +12,8 @@ import {
   printSchema,
   lexicographicSortSchema,
 } from 'postgraphile/graphql';
-import type { Introspection } from '../utils/pg-introspection/src/index.js';
-import { PgIntrospectionPlugin } from '../graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js';
+import type { Introspection } from '../plugins/utils/pg-introspection/src/index.js';
+import { PgIntrospectionPlugin } from '../plugins/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js';
 import { makePool } from '../src/runtime/config.js';
 import { projectPath } from '../src/paths.js';
 
@@ -88,7 +88,7 @@ test('local scoped dependency closure preserves upstream schema and capabilities
     await pool.query(
       readFileSync(
         projectPath(
-          'graphile-build/graphile-build-pg/__tests__/fixtures/scoped-introspection.sql',
+          'plugins/graphile-build/graphile-build-pg/__tests__/fixtures/scoped-introspection.sql',
         ),
         'utf8',
       ),

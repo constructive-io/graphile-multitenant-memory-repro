@@ -15,10 +15,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": [
-    "src/**/*.ts",
-    "test/**/*.ts",
-    "graphile-build/**/*.ts",
-    "utils/**/*.ts"
-  ]
+  "include": ["src/**/*.ts", "test/**/*.ts", "plugins/**/*.ts"]
 }

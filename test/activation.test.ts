@@ -8,7 +8,7 @@ import {
   parseCrystalState,
   readCrystalState,
 } from '../src/runtime/state.js';
-import type { Introspection } from '../utils/pg-introspection/src/index.js';
+import type { Introspection } from '../plugins/utils/pg-introspection/src/index.js';
 import type { Introspection as PublishedIntrospection } from 'postgraphile/graphile-build-pg/pg-introspection';
 // A compile-time identity check: no duplicate local catalogue interface exists.
 const sameType = (value: Introspection): PublishedIntrospection => value;

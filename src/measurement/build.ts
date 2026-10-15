@@ -30,8 +30,7 @@ function currentBuild() {
     sourceSha256: digest([
       ...files(projectPath('src')),
       ...files(projectPath('test')),
-      ...files(projectPath('graphile-build')),
-      ...files(projectPath('utils')),
+      ...files(projectPath('plugins')),
       projectPath('UPSTREAM.md'),
       ...[
         'package.json',

@@ -1,4 +1,4 @@
-// Adapted from Crystal PR2; see UPSTREAM.md and utils/pg-introspection/LICENSE.md.
+// Adapted from Crystal PR2; see UPSTREAM.md and plugins/utils/pg-introspection/LICENSE.md.
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import { describe, it } from 'node:test';
@@ -9,7 +9,7 @@ import {
   makeSchemaScopedIntrospectionPlan,
   makeSchemaScopedIntrospectionQuery,
   validateSchemaScopedIntrospection,
-} from '../utils/pg-introspection/src/index.js';
+} from '../plugins/utils/pg-introspection/src/index.js';
 
 function makeIntrospection(
   overrides: Partial<Introspection> = {},

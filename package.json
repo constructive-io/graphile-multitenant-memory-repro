@@ -11,8 +11,8 @@
   "scripts": {
     "build": "tsc -p tsconfig.json && node dist/src/cli/build-stamp.js",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "format:check": "prettier --check src test graphile-build utils package.json tsconfig.json",
-    "format": "prettier --write src test graphile-build utils package.json tsconfig.json",
+    "format:check": "prettier --check src test plugins package.json tsconfig.json",
+    "format": "prettier --write src test plugins package.json tsconfig.json",
     "db:up": "docker compose up -d --wait",
     "db:down": "docker compose down",
     "db:fixture": "node dist/src/cli/fixture.js",

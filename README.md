@@ -9,9 +9,14 @@ that plugin, reusing the same published parser, catalogue types and package grap
 Read the single [comparison report](results/COMPARISON.md) for retained-memory
 results, stock/scoped deltas, build timings and limitations. The
 [reproduction note](results/REPRODUCTION.md) gives the exact focused workflow.
-The current result tree contains only the newly measured A/B comparison and its
+The current result tree contains only the A/B comparison and its
 raw evidence. Earlier runs remain in
 [Git history](https://github.com/Zetazzz/graphile-multitenant-memory-repro/tree/20cd35cb7561aa679718be85c79db001038231c3/results).
+
+These measurements were collected at
+[`b9aa76d`](https://github.com/Zetazzz/graphile-multitenant-memory-repro/tree/b9aa76d027d35e14e00a648cf219025df39f1c5d),
+before the local source directories moved under `plugins/`. Recorded paths and
+source/build hashes preserve that measured layout; the result files are unchanged.
 
 ## Install and run
 
@@ -100,8 +105,9 @@ No CNC code, dependencies, production data or application logic is included.
 - `src/benchmark/` and `src/measurement/`: scenario selection, isolated workers,
   unchanged collection protocol, source/build provenance and optional diagnostics.
 - `src/report/`: raw-result validation and the reproducible comparison.
-- `graphile-build/graphile-build-pg/` and `utils/pg-introspection/`: attributed local
-  PR2 sources. [UPSTREAM.md](UPSTREAM.md) records adaptations, licences and pinned refs.
+- `plugins/graphile-build/graphile-build-pg/` and `plugins/utils/pg-introspection/`:
+  attributed local PR2 sources. [UPSTREAM.md](UPSTREAM.md) records adaptations,
+  licences and pinned refs.
 - `test/`: lifecycle, concurrency, RLS, release, invalidation, cache, scoped query,
   service configuration, package identity and reporting checks. Tests use synthetic
   fixtures and do not require previous measurement files.

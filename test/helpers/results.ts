@@ -110,9 +110,9 @@ export function syntheticSample(
             localImplementation: {
               upstreamSha: '434a1f6deddda7786fa2497ad30ca01d598135a1',
               pluginPath:
-                '/synthetic-test-only/dist/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js',
+                '/synthetic-test-only/dist/plugins/graphile-build/graphile-build-pg/src/plugins/PgIntrospectionPlugin.js',
               scopedPath:
-                '/synthetic-test-only/dist/utils/pg-introspection/src/scopedIntrospection.js',
+                '/synthetic-test-only/dist/plugins/utils/pg-introspection/src/scopedIntrospection.js',
             },
           }
         : {}),

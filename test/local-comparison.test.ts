@@ -205,6 +205,27 @@ test('memory comparison rejects mismatched provenance before writing reports or 
     });
 });
 
+test('memory comparison preserves recorded implementation paths from before the plugins move', (t) => {
+  const run = fixture(t);
+  for (const path of run.localPaths)
+    edit(path, (row) => {
+      const implementation = object(
+        object(row.environment).localImplementation,
+      );
+      for (const key of ['pluginPath', 'scopedPath'])
+        implementation[key] = string(implementation[key]).replace(
+          '/dist/plugins/',
+          '/dist/',
+        );
+    });
+  const before = run.localPaths.map((path) => readFileSync(path, 'utf8'));
+  compareLocal([run.stock, run.scoped], run.output);
+  assert.deepEqual(
+    run.localPaths.map((path) => readFileSync(path, 'utf8')),
+    before,
+  );
+});
+
 test('memory comparison requires complete selected workers, unique processes, and correct activation', async (t) => {
   const cases: {
     name: string;
@@ -235,6 +256,16 @@ test('memory comparison requires complete selected workers, unique processes, an
         edit(join(run.scoped, 'a-1-r1.json'), (row) => {
           object(row.comparisonActivation).scoped = false;
         }),
+    },
+    {
+      name: 'unexpected implementation location',
+      change: (run) => {
+        for (const path of run.localPaths)
+          edit(path, (row) => {
+            object(object(row.environment).localImplementation).pluginPath =
+              '/unexpected/PgIntrospectionPlugin.js';
+          });
+      },
     },
     {
       name: 'forged incremental heap',

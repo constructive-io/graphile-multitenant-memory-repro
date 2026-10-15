@@ -5,7 +5,7 @@ import { fileURLToPath } from 'node:url';
 const localLoads: string[] = [];
 registerHooks({
   load(url, context, nextLoad) {
-    if (/\/dist\/(graphile-build|utils)\//.test(url))
+    if (/\/dist\/plugins\/(graphile-build|utils)\//.test(url))
       localLoads.push(fileURLToPath(url));
     return nextLoad(url, context);
   },
@@ -56,7 +56,8 @@ try {
       ),
     );
     assert(localLoads.some((path) => path.endsWith('/scopedIntrospection.js')));
-    const local = await import('../../utils/pg-introspection/src/index.js');
+    const local =
+      await import('../../plugins/utils/pg-introspection/src/index.js');
     assert.equal(
       local.parseIntrospectionResults,
       published('pg-introspection').parseIntrospectionResults,
