@@ -19,11 +19,19 @@ matrix. See the [stock findings](results/STOCK-SUMMARY.md),
 [reproduction record](results/REPRODUCTION.md). Raw JSON is linked from each report.
 
 The TypeScript refactor and fresh validation are documented in the
-[refactor validation record](results/refactor-validation/VALIDATION.md). The new
+[refactor validation record](results/refactor-validation/VALIDATION.md). That
 common-base/PR2 comparison contains 84 formal samples and 12 snapshot analyses:
-[current comparison](results/refactor-validation/COMPARISON.md) and
+[TypeScript refactor comparison](results/refactor-validation/COMPARISON.md) and
 [historical versus refactored measurements](results/refactor-validation/REFACTOR-COMPARISON.md).
 Historical figures above remain evidence of their original code.
+
+The standalone implementation has a fresh **84-sample / 12-analysis** comparison:
+[stock versus local scoped](results/standalone-comparison-2026-10-15/COMPARISON.md),
+[continuity with earlier measurements](results/standalone-validation-2026-10-15/BASELINE-COMPARISON.md),
+and [installation and validation evidence](results/standalone-validation-2026-10-15/VALIDATION.md).
+Memory results remain close to the earlier versions. Build/load timings vary
+materially across runs; [21 interleaved timing controls](results/standalone-timing-bridge-2026-10-15/README.md)
+record the remaining build-time gaps and variable load timings.
 
 ## Quick start
 
@@ -177,9 +185,10 @@ production, so measuring immediately after release would include pending cleanup
 A and D measure a rebuilt target before any query. B warms each retained instance
 with the same correctness query. C first measures one rebuilt, query-warmed instance,
 then subtracts that baseline from the K-plan stage. Warmup and baseline are saved.
-Measured workers inherit only PATH, the explicit benchmark database overrides and
-production mode settings; host credentials and unrelated environment variables are
-not inherited. The measured server process does not retain client responses, query arrays, schema
+Measured workers inherit only PATH, the explicit benchmark database overrides,
+`BENCH_PROFILE` when selected, and production mode settings; host credentials and
+unrelated environment variables are not inherited. The measured server process
+does not retain client responses, query arrays, schema
 arrays, build history, or prior instances. Fixture generation finishes and closes
 its PostgreSQL pool before workers start. HTTP load children exit before collection;
 the lightweight parent orchestrator remains outside the measured process.
@@ -267,7 +276,6 @@ and fixture-resetting benchmarks must remain serial.
 
 The standalone workflow above does not use an external checkout. These commands
 remain available to reproduce the separately labelled historical comparison.
-
 
 The lockfile pins official registry PostGraphile 5.1.5 and all transitives. Read-only
 version/provenance output is available with `pnpm provenance`.

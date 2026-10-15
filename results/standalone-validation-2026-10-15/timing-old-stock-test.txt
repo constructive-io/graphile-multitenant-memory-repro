@@ -1,0 +1,26 @@
+$ node --test --test-concurrency=1 dist/test/*.test.js
+✔ scenario registration preserves the 42-worker matrix and fixture boundaries (2.124523ms)
+✔ compiled worker paths and isolated production environment (4.863093ms)
+✔ synthetic SQL stays byte-equivalent to source 4221f1f for all supported tenant fixtures (12.114789ms)
+✔ historical samples keep their original source identity without new build metadata (0.776028ms)
+✔ private manifest, exact minimal dependencies, and database guard (1.581755ms)
+✔ coalesces concurrent first builds and waits for leases plus asynchronous release (41.705309ms)
+✔ failed build does not poison future builds or close (0.450518ms)
+✔ dominator graph handles shared children, cycles and unreachable nodes (1.330945ms)
+✔ constructor union excludes nested retained size, preserves siblings (0.411269ms)
+✔ dominator results agree with independent deletion reachability on generated graphs (9.322662ms)
+▶ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction
+  ✔ lazy coalescing and concurrent tenant/user isolation (468.116157ms)
+  ✔ transaction-local settings do not survive in the shared pool (3.051592ms)
+  ✔ distinct plan counts grow and replay reuses plans (126.647311ms)
+  ✔ NOTIFY drains, releases, and rebuilds after DDL (127.183081ms)
+  ✔ client abort cannot release a running operation early (473.108479ms)
+✔ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction (1303.555924ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1956.773868

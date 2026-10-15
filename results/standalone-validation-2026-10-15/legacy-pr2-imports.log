@@ -1,0 +1,14 @@
+{
+  "checks": {
+    "postgraphile": true,
+    "ruruHTML": true,
+    "gatherConfig": true,
+    "PgIntrospectionPlugin": true,
+    "scopedPlan": true,
+    "AmberPreset": true,
+    "expressGrafserv": true,
+    "makePgService": true
+  },
+  "postgraphilePath": "/workspace/graphile-crystal-pr2/postgraphile/postgraphile/dist/index.js",
+  "ruruPath": "/workspace/graphile-crystal-pr2/grafast/ruru/dist/server.js"
+}

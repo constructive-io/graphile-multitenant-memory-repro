@@ -1,0 +1,18 @@
+{
+  "status": "passed",
+  "acceptedProfiles": [
+    "stock",
+    "checkout",
+    "common-base",
+    "pr2",
+    "local-scoped"
+  ],
+  "rejectedProfile": "pr3",
+  "parserRejected": true,
+  "savedStateRejected": true,
+  "cliExit": 1,
+  "linkUnchanged": true,
+  "stateFileCreated": false,
+  "environmentSelectionRejected": true,
+  "environmentExit": 1
+}

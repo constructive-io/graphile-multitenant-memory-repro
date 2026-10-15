@@ -1,0 +1,33 @@
+{
+  "activation": {
+    "profile": "pr2",
+    "localPlugin": false,
+    "scoped": true,
+    "pluginPresent": false,
+    "catalogTypes": "all",
+    "capabilityExtensions": []
+  },
+  "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+  "localLoads": [],
+  "resolution": {
+    "postgraphile": "/workspace/graphile-crystal-pr2/postgraphile/postgraphile/dist/index.js",
+    "graphile-build": "/workspace/graphile-crystal-pr2/graphile-build/graphile-build/dist/index.js",
+    "graphile-build-pg": "/workspace/graphile-crystal-pr2/graphile-build/graphile-build-pg/dist/index.js",
+    "grafast": "/workspace/graphile-crystal-pr2/grafast/grafast/dist/index.js",
+    "@dataplan/pg": "/workspace/graphile-crystal-pr2/grafast/dataplan-pg/dist/index.js",
+    "pg-introspection": "/workspace/graphile-crystal-pr2/utils/pg-introspection/dist/index.js",
+    "graphql": "/workspace/graphile-crystal-pr2/node_modules/graphql/index.js",
+    "graphile-config": "/workspace/graphile-crystal-pr2/utils/graphile-config/dist/index.js"
+  },
+  "identities": {
+    "graphileBuild": true,
+    "grafast": true,
+    "dataplanPg": true,
+    "graphileConfig": true,
+    "graphql": true,
+    "pgIntrospection": true
+  },
+  "plugins": [
+    "PgIntrospectionPlugin"
+  ]
+}

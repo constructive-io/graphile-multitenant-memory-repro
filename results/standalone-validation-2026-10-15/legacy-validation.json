@@ -1,0 +1,92 @@
+{
+  "common-base": {
+    "status": "passed",
+    "sha": "3ecd1d7920de38dc5ae6ee61763e8223b3b53908",
+    "gitStatus": "",
+    "activation": {
+      "activation": {
+        "profile": "common-base",
+        "localPlugin": false,
+        "scoped": false,
+        "pluginPresent": false,
+        "catalogTypes": null,
+        "capabilityExtensions": []
+      },
+      "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+      "localLoads": [],
+      "resolution": {
+        "postgraphile": "/workspace/graphile-crystal-common-base/postgraphile/postgraphile/dist/index.js",
+        "graphile-build": "/workspace/graphile-crystal-common-base/graphile-build/graphile-build/dist/index.js",
+        "graphile-build-pg": "/workspace/graphile-crystal-common-base/graphile-build/graphile-build-pg/dist/index.js",
+        "grafast": "/workspace/graphile-crystal-common-base/grafast/grafast/dist/index.js",
+        "@dataplan/pg": "/workspace/graphile-crystal-common-base/grafast/dataplan-pg/dist/index.js",
+        "pg-introspection": "/workspace/graphile-crystal-common-base/utils/pg-introspection/dist/index.js",
+        "graphql": "/workspace/graphile-crystal-common-base/node_modules/graphql/index.js",
+        "graphile-config": "/workspace/graphile-crystal-common-base/utils/graphile-config/dist/index.js"
+      },
+      "identities": {
+        "graphileBuild": true,
+        "grafast": true,
+        "dataplanPg": true,
+        "graphileConfig": true,
+        "graphql": true,
+        "pgIntrospection": true
+      },
+      "plugins": [
+        "PgIntrospectionPlugin"
+      ]
+    },
+    "historicalSdlMatches": true,
+    "restoredRegistry": true
+  },
+  "pr2": {
+    "status": "passed",
+    "sha": "434a1f6deddda7786fa2497ad30ca01d598135a1",
+    "gitStatus": "",
+    "activation": {
+      "activation": {
+        "profile": "pr2",
+        "localPlugin": false,
+        "scoped": true,
+        "pluginPresent": false,
+        "catalogTypes": "all",
+        "capabilityExtensions": []
+      },
+      "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+      "localLoads": [],
+      "resolution": {
+        "postgraphile": "/workspace/graphile-crystal-pr2/postgraphile/postgraphile/dist/index.js",
+        "graphile-build": "/workspace/graphile-crystal-pr2/graphile-build/graphile-build/dist/index.js",
+        "graphile-build-pg": "/workspace/graphile-crystal-pr2/graphile-build/graphile-build-pg/dist/index.js",
+        "grafast": "/workspace/graphile-crystal-pr2/grafast/grafast/dist/index.js",
+        "@dataplan/pg": "/workspace/graphile-crystal-pr2/grafast/dataplan-pg/dist/index.js",
+        "pg-introspection": "/workspace/graphile-crystal-pr2/utils/pg-introspection/dist/index.js",
+        "graphql": "/workspace/graphile-crystal-pr2/node_modules/graphql/index.js",
+        "graphile-config": "/workspace/graphile-crystal-pr2/utils/graphile-config/dist/index.js"
+      },
+      "identities": {
+        "graphileBuild": true,
+        "grafast": true,
+        "dataplanPg": true,
+        "graphileConfig": true,
+        "graphql": true,
+        "pgIntrospection": true
+      },
+      "plugins": [
+        "PgIntrospectionPlugin"
+      ]
+    },
+    "historicalSdlMatches": true,
+    "restoredRegistry": true
+  },
+  "currentStock": {
+    "gitStatus": "",
+    "postgraphile": "/workspace/graphile-standalone-clean/node_modules/.pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile",
+    "tests": "passed"
+  },
+  "oldStock": {
+    "gitStatus": "",
+    "postgraphile": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile",
+    "tests": "passed"
+  }
+}

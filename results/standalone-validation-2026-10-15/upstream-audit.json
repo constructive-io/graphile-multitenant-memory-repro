@@ -1,0 +1,24 @@
+{
+  "status": "passed",
+  "upstreamSha": "434a1f6deddda7786fa2497ad30ca01d598135a1",
+  "commonBase": "3ecd1d7920de38dc5ae6ee61763e8223b3b53908",
+  "comparisonMethod": "Read-only canonical AST/runtime and pure query-plan comparison; no source generation or database actions",
+  "documentedAdaptations": [
+    "published forwarding exports and catalogue type identity reuse",
+    "public getType lookup instead of private _lookups access",
+    "plugin renamed LocalPgIntrospectionPlugin with original provides ordering",
+    "strict catch narrowing; emitted module suffixes; formatter"
+  ],
+  "identicalSqlSha256": {
+    "stock": "c0ed817b912f78e1ea68c70d89ff4b7f9cb4c02d88112a69ac4109d5b996e4c5",
+    "scopedAll": "613213d1f8755fd4fb253a3981388add035fa17136471c4304679b3922be7e1f",
+    "dependencyClosure": "a198e405809ea304137ba1bcb0eb86f554f941a07ca570b9da6d2ea99f12f9a5"
+  },
+  "typeSymbolIdentity": [
+    "Introspection",
+    "PgType",
+    "PgClass",
+    "parseIntrospectionResults"
+  ],
+  "licensesAndFixtureByteEqual": true
+}

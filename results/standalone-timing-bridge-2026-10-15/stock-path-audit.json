@@ -1,0 +1,235 @@
+{
+  "audit": "Read-only old/current registry-stock runtime-path inspection",
+  "recordedAt": "2026-10-15T04:11:30.031Z",
+  "method": "Static source inspection, require.resolve/realpath resolution, and SHA-256 file reads only; no module execution of application or dependencies, workload, build, test, or DB call.",
+  "roots": [
+    {
+      "label": "old",
+      "directory": "/workspace/graphile-old-ts-bridge",
+      "gitHead": "fbcb21cdd054deb5f7fdcfb68c22cb200bd20e9c",
+      "lockfile": {
+        "realpath": "/workspace/graphile-old-ts-bridge/pnpm-lock.yaml",
+        "sha256": "351b6a05e8ef2696ee34af8d0fb855cb6f69e72ef9a83dc191673bc63bae6d01"
+      },
+      "graphileBuildPgResolution": {
+        "fromAmber": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/graphile-build-pg@5.1.5_@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@1_570907438a7252372014207d8e5737e0/node_modules/graphile-build-pg/dist/index.js",
+        "fromForwarder": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/graphile-build-pg@5.1.5_@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@1_570907438a7252372014207d8e5737e0/node_modules/graphile-build-pg/dist/index.js",
+        "forwarderRealpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile/fwd/graphile-build-pg/index.js",
+        "forwarderSource": "module.exports = require(\"graphile-build-pg\");"
+      },
+      "dependencies": {
+        "postgraphile": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile/dist/index.js",
+          "entrySha256": "d46a483cd10683848b7504abf4528d56c0634f0b353e4f60bd14ee8cde43a524"
+        },
+        "grafast": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0/node_modules/grafast/dist/index.js",
+          "entrySha256": "8bd84beef4b37ac78cc1b4848b15214ec4227aa3d8b51f2ac1e1c6ad3277a9fa"
+        },
+        "grafserv": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/grafserv@1.0.2_@types+node@24.19.2_grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0___da0258aaf4e0a36d5c6f1d84da92acde/node_modules/grafserv/dist/index.js",
+          "entrySha256": "84c0e06b7211f3b6eca85c9477aed7c5361f2a7307a39e9f390b8f5f8fee1c29"
+        },
+        "graphile-build": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/graphile-build@5.1.1_grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0__graphile-confi_4ea3da3ff4b60e9bcea43be135fae2f4/node_modules/graphile-build/dist/index.js",
+          "entrySha256": "272495c5633fe5755da13bbe052f500e93a03146c23096dd946b35518a01805f"
+        },
+        "graphile-build-pg": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/graphile-build-pg@5.1.5_@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@1_570907438a7252372014207d8e5737e0/node_modules/graphile-build-pg/dist/index.js",
+          "entrySha256": "fa66674613dbaaf0061bf05852ce8437ebc340ad443fddb88bf9bde48af4b821"
+        },
+        "@dataplan/pg": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@16.14.2_supports-color@7._c40740177dae874243de9c72a305e0be/node_modules/@dataplan/pg/dist/index.js",
+          "entrySha256": "8b75a70fde3162f18bfc1e6afb120410033283a76bdc1bfb9bc5aa7b57e9bc81"
+        },
+        "pg-introspection": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/pg-introspection@1.0.1/node_modules/pg-introspection/dist/index.js",
+          "entrySha256": "f2ca222c4a4ec3d91a354a5716aa4d3926c69fe97801e378b802ab578845b34c"
+        },
+        "graphql": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/index.js",
+          "entrySha256": "9833b66f0502a1ce59d5c7a120edd9206d432bb502045c7f68a2860296dfc52a"
+        },
+        "pg": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/pg@8.23.1/node_modules/pg/lib/index.js",
+          "entrySha256": "3fad6e6d3d976edbabe0cbc9e1d39f4340bcb719bbbb186a0d3a24f3dbd4a94c"
+        },
+        "express": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/express@4.22.3_supports-color@7.2.0/node_modules/express/index.js",
+          "entrySha256": "4d2f5afc192178c5b0dc418d2da5826d52a8b6998771b011aede7fdba9118140"
+        },
+        "graphile-config": {
+          "realpath": "/workspace/graphile-old-ts-bridge/node_modules/.pnpm/graphile-config@1.1.1_supports-color@7.2.0/node_modules/graphile-config/dist/index.js",
+          "entrySha256": "4161f6ce944acdb02f1e0e7c8a6d4db249d6bd20c957c6964c73d5643405d979"
+        }
+      },
+      "sourceFiles": {
+        "src/runtime/comparison.ts": {
+          "sha256": "db3b0b4694c273ac20a6b067030bb1a7dd50be77c41a495347c1aac923d2f634"
+        },
+        "src/runtime/instance.ts": {
+          "sha256": "aaa65361bb8cc7757531e02ffa1e8847a385dd9d785269dc5f0dd64885860f19"
+        },
+        "src/runtime/state.ts": {
+          "sha256": "372fb0b944011f8c1d15a03e3098035c8064ced6229dda5c3bdfc826d2045b6d"
+        },
+        "src/benchmark/worker.ts": {
+          "sha256": "7c8d3ae8e2402bf84ce924a05ac5e2ae3b7fd5747e411aaebe98a50b389e3524"
+        },
+        "src/benchmark/stages.ts": {
+          "sha256": "318ad26f82da0a75239230d88cd1eb39a5e875eb5fbfbc9990ced0b494174d82"
+        },
+        "src/measurement/build.ts": {
+          "sha256": "a9a2e5727e2d30c042972b198afd400b30e200bbae95bb79391b7d4765211075"
+        },
+        "src/measurement/memory.ts": {
+          "sha256": "40695fef658d37e641222df5fe504990d584efd536b49531ad34e3e0d13bdde9"
+        }
+      }
+    },
+    {
+      "label": "current",
+      "directory": "/workspace/graphile-standalone-clean",
+      "gitHead": "f11869bd11d8715c6129e791bdddf8607ee89a43",
+      "lockfile": {
+        "realpath": "/workspace/graphile-standalone-clean/pnpm-lock.yaml",
+        "sha256": "351b6a05e8ef2696ee34af8d0fb855cb6f69e72ef9a83dc191673bc63bae6d01"
+      },
+      "graphileBuildPgResolution": {
+        "fromAmber": "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphile-build-pg@5.1.5_@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@1_570907438a7252372014207d8e5737e0/node_modules/graphile-build-pg/dist/index.js",
+        "fromForwarder": "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphile-build-pg@5.1.5_@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@1_570907438a7252372014207d8e5737e0/node_modules/graphile-build-pg/dist/index.js",
+        "forwarderRealpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile/fwd/graphile-build-pg/index.js",
+        "forwarderSource": "module.exports = require(\"graphile-build-pg\");"
+      },
+      "dependencies": {
+        "postgraphile": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile/dist/index.js",
+          "entrySha256": "d46a483cd10683848b7504abf4528d56c0634f0b353e4f60bd14ee8cde43a524"
+        },
+        "grafast": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0/node_modules/grafast/dist/index.js",
+          "entrySha256": "8bd84beef4b37ac78cc1b4848b15214ec4227aa3d8b51f2ac1e1c6ad3277a9fa"
+        },
+        "grafserv": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/grafserv@1.0.2_@types+node@24.19.2_grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0___da0258aaf4e0a36d5c6f1d84da92acde/node_modules/grafserv/dist/index.js",
+          "entrySha256": "84c0e06b7211f3b6eca85c9477aed7c5361f2a7307a39e9f390b8f5f8fee1c29"
+        },
+        "graphile-build": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphile-build@5.1.1_grafast@1.1.4_graphql@16.14.2_supports-color@7.2.0__graphile-confi_4ea3da3ff4b60e9bcea43be135fae2f4/node_modules/graphile-build/dist/index.js",
+          "entrySha256": "272495c5633fe5755da13bbe052f500e93a03146c23096dd946b35518a01805f"
+        },
+        "graphile-build-pg": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphile-build-pg@5.1.5_@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@1_570907438a7252372014207d8e5737e0/node_modules/graphile-build-pg/dist/index.js",
+          "entrySha256": "fa66674613dbaaf0061bf05852ce8437ebc340ad443fddb88bf9bde48af4b821"
+        },
+        "@dataplan/pg": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/@dataplan+pg@1.1.2_@dataplan+json@1.0.1_grafast@1.1.4_graphql@16.14.2_supports-color@7._c40740177dae874243de9c72a305e0be/node_modules/@dataplan/pg/dist/index.js",
+          "entrySha256": "8b75a70fde3162f18bfc1e6afb120410033283a76bdc1bfb9bc5aa7b57e9bc81"
+        },
+        "pg-introspection": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/pg-introspection@1.0.1/node_modules/pg-introspection/dist/index.js",
+          "entrySha256": "f2ca222c4a4ec3d91a354a5716aa4d3926c69fe97801e378b802ab578845b34c"
+        },
+        "graphql": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphql@16.14.2/node_modules/graphql/index.js",
+          "entrySha256": "9833b66f0502a1ce59d5c7a120edd9206d432bb502045c7f68a2860296dfc52a"
+        },
+        "pg": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/pg@8.23.1/node_modules/pg/lib/index.js",
+          "entrySha256": "3fad6e6d3d976edbabe0cbc9e1d39f4340bcb719bbbb186a0d3a24f3dbd4a94c"
+        },
+        "express": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/express@4.22.3_supports-color@7.2.0/node_modules/express/index.js",
+          "entrySha256": "4d2f5afc192178c5b0dc418d2da5826d52a8b6998771b011aede7fdba9118140"
+        },
+        "graphile-config": {
+          "realpath": "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphile-config@1.1.1_supports-color@7.2.0/node_modules/graphile-config/dist/index.js",
+          "entrySha256": "4161f6ce944acdb02f1e0e7c8a6d4db249d6bd20c957c6964c73d5643405d979"
+        }
+      },
+      "sourceFiles": {
+        "src/runtime/comparison.ts": {
+          "sha256": "92e937ac5f558c330751adea9ad118af6ba79998881cb07467497f06e88b7b12"
+        },
+        "src/runtime/instance.ts": {
+          "sha256": "2e2c2a356c7b4f453e142c02695e195db3f8fa7f5d138b018e09b7bccadcf203"
+        },
+        "src/runtime/state.ts": {
+          "sha256": "de1d008910e58905c636383e025104b4e51b9b42db5d60a3cfcbf1d6987edc4b"
+        },
+        "src/benchmark/worker.ts": {
+          "sha256": "7c8d3ae8e2402bf84ce924a05ac5e2ae3b7fd5747e411aaebe98a50b389e3524"
+        },
+        "src/benchmark/stages.ts": {
+          "sha256": "318ad26f82da0a75239230d88cd1eb39a5e875eb5fbfbc9990ced0b494174d82"
+        },
+        "src/measurement/build.ts": {
+          "sha256": "a1a90b8c8eb2352ce7a8ce27dd539ba35771e9b83653ca18eae3066bad78597c"
+        },
+        "src/measurement/memory.ts": {
+          "sha256": "40695fef658d37e641222df5fe504990d584efd536b49531ad34e3e0d13bdde9"
+        }
+      }
+    }
+  ],
+  "comparisons": {
+    "lockfilesByteIdentical": true,
+    "dependencyEntryCount": 11,
+    "allCheckedEntryHashesMatch": true,
+    "allCheckedResolutionSuffixesMatch": true,
+    "sameGraphileBuildPgRealpathWithinEachClone": true
+  },
+  "findings": [
+    {
+      "finding": "For stock, the local plugin dynamic import is skipped and comparisonOptions is empty. runtimePreset has only extends: [PostGraphileAmberPreset]. buildInstance spreads it into the same top-level configuration; there is no added preset nesting or replacement plugin.",
+      "sources": [
+        "/workspace/graphile-standalone-clean/src/runtime/comparison.ts:10",
+        "/workspace/graphile-standalone-clean/src/runtime/comparison.ts:22",
+        "/workspace/graphile-standalone-clean/src/runtime/comparison.ts:25",
+        "/workspace/graphile-standalone-clean/src/runtime/instance.ts:17",
+        "/workspace/graphile-old-ts-bridge/src/runtime/instance.ts:22"
+      ]
+    },
+    {
+      "finding": "Added work inside each measured build is one filter over resolved plugins, the resulting count/identity guard, and localPlugin:false activation metadata. This does not add an introspection query or schema-build pass. Its timing contribution was not measured by this audit.",
+      "sources": [
+        "/workspace/graphile-standalone-clean/src/runtime/comparison.ts:52",
+        "/workspace/graphile-standalone-clean/src/runtime/comparison.ts:66",
+        "/workspace/graphile-standalone-clean/src/runtime/instance.ts:16",
+        "/workspace/graphile-standalone-clean/src/runtime/instance.ts:46",
+        "/workspace/graphile-standalone-clean/src/runtime/instance.ts:61"
+      ]
+    },
+    {
+      "finding": "The PublishedIntrospectionPlugin import uses a one-line forwarder to graphile-build-pg, resolving to the identical realpath already required by PostGraphile and Amber within each clone. No duplicate graphile-build-pg instance was found on these resolution paths. Static imports occur before buildInstance starts its timer.",
+      "sources": [
+        "/workspace/graphile-standalone-clean/src/runtime/comparison.ts:4",
+        "/workspace/graphile-standalone-clean/node_modules/postgraphile/fwd/graphile-build-pg/index.js:1",
+        "/workspace/graphile-standalone-clean/node_modules/postgraphile/dist/index.js:6",
+        "/workspace/graphile-standalone-clean/node_modules/postgraphile/dist/presets/amber.js:7"
+      ]
+    },
+    {
+      "finding": "Graphile-config reads input extends arrays, recursively builds fresh resolved preset targets, and mutates those targets. No input extends-array mutation or accumulation was found, so reusing runtimePreset.extends does not introduce an observed accumulation path.",
+      "sources": [
+        "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphile-config@1.1.1_supports-color@7.2.0/node_modules/graphile-config/dist/resolvePresets.js:93",
+        "/workspace/graphile-standalone-clean/node_modules/.pnpm/graphile-config@1.1.1_supports-color@7.2.0/node_modules/graphile-config/dist/resolvePresets.js:190"
+      ]
+    },
+    {
+      "finding": "Expanded build-provenance hashing reads vendored files. environment() performs this before warmup, cache clearing, and baseline collection (which includes a 5500 ms quiet interval and three explicit GC passes). It is outside the summed buildInstance buildMs measurement.",
+      "sources": [
+        "/workspace/graphile-standalone-clean/src/measurement/build.ts:30",
+        "/workspace/graphile-standalone-clean/src/benchmark/worker.ts:28",
+        "/workspace/graphile-standalone-clean/src/measurement/memory.ts:2",
+        "/workspace/graphile-standalone-clean/src/benchmark/stages.ts:45"
+      ]
+    }
+  ],
+  "conclusion": "No clear stock behavior regression, added schema/SQL work, or duplicate core package resolution was demonstrated by this inspection. No causal attribution is made for the observed old/current timing differences.",
+  "limitations": [
+    "Package hash evidence covers resolved entry files, not every file within each installed package.",
+    "Static source inspection does not measure timing contribution or prove identical V8 optimization/runtime scheduling.",
+    "No benchmark, test, build, DB activity, or repository edit was performed for this audit."
+  ]
+}

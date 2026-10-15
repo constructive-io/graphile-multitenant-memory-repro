@@ -1,0 +1,120 @@
+{
+  "commandCount": 13,
+  "commandsPassed": true,
+  "historical": {
+    "samplesVerified": 126,
+    "analysesVerified": 18
+  },
+  "refactor": {
+    "samplesVerified": 84,
+    "analysesVerified": 12
+  },
+  "tableChecks": [
+    {
+      "name": "stock-2026-10-13",
+      "tableRows": 72,
+      "unchanged": true
+    },
+    {
+      "name": "crystal-common-base",
+      "tableRows": 72,
+      "unchanged": true
+    },
+    {
+      "name": "crystal-pr2",
+      "tableRows": 72,
+      "unchanged": true
+    },
+    {
+      "name": "refactor-common-base-2026-10-14",
+      "tableRows": 72,
+      "unchanged": true
+    },
+    {
+      "name": "refactor-pr2-2026-10-14",
+      "tableRows": 72,
+      "unchanged": true
+    },
+    {
+      "name": "historical-comparison",
+      "tableRows": 38,
+      "unchanged": true
+    },
+    {
+      "name": "current-comparison",
+      "tableRows": 38,
+      "unchanged": true
+    },
+    {
+      "name": "refactor-comparison",
+      "tableRows": 122,
+      "unchanged": true
+    }
+  ],
+  "verifierChecks": [
+    {
+      "name": "stock-2026-10-13",
+      "unchanged": true
+    },
+    {
+      "name": "crystal-common-base",
+      "unchanged": true
+    },
+    {
+      "name": "crystal-pr2",
+      "unchanged": true
+    },
+    {
+      "name": "refactor-common-base-2026-10-14",
+      "unchanged": true
+    },
+    {
+      "name": "refactor-pr2-2026-10-14",
+      "unchanged": true
+    },
+    {
+      "name": "historical-comparison",
+      "unchanged": true,
+      "removedZeroField": true
+    },
+    {
+      "name": "current-comparison",
+      "unchanged": true,
+      "removedZeroField": true
+    }
+  ],
+  "refactorDeltaByteEqual": true,
+  "generatedPr3Residuals": [],
+  "localLinksChecked": 219,
+  "brokenLocalLinks": [],
+  "readmeCommands": [
+    "bench:a",
+    "bench:all",
+    "bench:b",
+    "bench:c",
+    "bench:d",
+    "build",
+    "compare",
+    "compare:local",
+    "compare:refactor",
+    "crystal:link",
+    "crystal:stock",
+    "db:down",
+    "db:fixture",
+    "db:up",
+    "format",
+    "format:check",
+    "install",
+    "link",
+    "preflight",
+    "provenance",
+    "report",
+    "snapshot",
+    "start",
+    "test",
+    "typecheck",
+    "verify-results"
+  ],
+  "unknownReadmeCommands": [],
+  "scannerCorrection": "The prose reference to the previous pnpm link is a valid pnpm built-in, not an unknown script."
+}

@@ -1,0 +1,7 @@
+graphile-build/graphile-build/src/utils.ts(11,16): error TS2307: Cannot find module 'tamedevil' or its corresponding type declarations.
+graphile-build/graphile-build-pg/src/plugins/PgMutationUpdateDeletePlugin.ts(25,46): error TS2307: Cannot find module 'tamedevil' or its corresponding type declarations.
+graphile-build/graphile-build-pg/src/plugins/PgPolymorphismPlugin.ts(51,46): error TS2307: Cannot find module 'tamedevil' or its corresponding type declarations.
+graphile-build/graphile-build-pg/src/plugins/PgRegistryReductionPlugin.ts(1,42): error TS2307: Cannot find module 'tamedevil' or its corresponding type declarations.
+graphile-build/graphile-build-pg/src/plugins/PgRelationsPlugin.ts(26,25): error TS2307: Cannot find module 'tamedevil' or its corresponding type declarations.
+graphile-build/graphile-build-pg/src/plugins/PgRelationsPlugin.ts(27,54): error TS2307: Cannot find module 'tamedevil' or its corresponding type declarations.
+graphile-build/graphile-build-pg/src/plugins/PgRowByUniquePlugin.ts(11,46): error TS2307: Cannot find module 'tamedevil' or its corresponding type declarations.

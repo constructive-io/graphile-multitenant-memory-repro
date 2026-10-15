@@ -1,0 +1,129 @@
+✔ stock resolves one shared package graph and the selected implementation (599.890807ms)
+✔ local-scoped resolves one shared package graph and the selected implementation (947.868ms)
+✔ removed profiles are rejected at parser and CLI boundaries (40.510374ms)
+✔ scenario registration preserves the 42-worker matrix and fixture boundaries (2.285163ms)
+✔ compiled worker paths and isolated production environment (4.530634ms)
+✔ synthetic SQL stays byte-equivalent to source 4221f1f for all supported tenant fixtures (13.514986ms)
+✔ historical samples keep their original source identity without new build metadata (0.882093ms)
+✔ private manifest, exact minimal dependencies, and database guard (1.548745ms)
+✔ coalesces concurrent first builds and waits for leases plus asynchronous release (42.854323ms)
+✔ failed build does not poison future builds or close (0.615652ms)
+✔ dominator graph handles shared children, cycles and unreachable nodes (1.396442ms)
+✔ constructor union excludes nested retained size, preserves siblings (0.364204ms)
+✔ dominator results agree with independent deletion reachability on generated graphs (8.428091ms)
+▶ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction
+  ✔ lazy coalescing and concurrent tenant/user isolation (540.66226ms)
+  ✔ transaction-local settings do not survive in the shared pool (3.093213ms)
+  ✔ distinct plan counts grow and replay reuses plans (148.268085ms)
+  ✔ NOTIFY drains, releases, and rebuilds after DDL (152.327102ms)
+  ✔ client abort cannot release a running operation early (464.268729ms)
+✔ real HTTP: cross-schema dependencies, RLS, cache, invalidation and active eviction (1424.629459ms)
+{
+  "status": "review-only",
+  "reviewOnly": true,
+  "sourceSha": "66b157deefa9ba682822f39e17b05387a1d3b94f",
+  "sourceDirty": true,
+  "workers": 42,
+  "repetitions": 3,
+  "matrix": {
+    "a": [
+      1,
+      20,
+      60,
+      150
+    ],
+    "b": [
+      1,
+      10,
+      50
+    ],
+    "rotation": [
+      10
+    ],
+    "c": [
+      10,
+      100,
+      1000,
+      5000
+    ],
+    "d": [
+      1,
+      150
+    ]
+  },
+  "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+  "postgresSettings": [
+    {
+      "name": "max_connections",
+      "setting": "100",
+      "unit": null
+    },
+    {
+      "name": "max_locks_per_transaction",
+      "setting": "512",
+      "unit": null
+    },
+    {
+      "name": "shared_buffers",
+      "setting": "16384",
+      "unit": "8kB"
+    }
+  ],
+  "dependencies": {
+    "postgraphile": "5.1.5",
+    "grafast": "1.1.3",
+    "grafserv": "1.0.2",
+    "graphile-build": "5.1.1",
+    "graphile-build-pg": "5.1.4",
+    "@dataplan/pg": "1.1.2",
+    "pg-introspection": "1.0.1",
+    "graphql": "16.13.2",
+    "pg": "8.23.1",
+    "express": "4.22.3"
+  },
+  "crystal": {
+    "checkout": "/workspace/graphile-crystal-common-base",
+    "profile": "common-base",
+    "sha": "3ecd1d7920de38dc5ae6ee61763e8223b3b53908",
+    "dirty": false,
+    "originalLink": ".pnpm/postgraphile@5.1.5_511bb08d35125d08c91c0e7686373770/node_modules/postgraphile",
+    "linkedAt": "2026-10-14T23:06:23.429Z"
+  },
+  "comparisonProfile": "common-base"
+}
+✔ uncommitted results cannot pass default acceptance and retain truthful review provenance (18.667322ms)
+▶ local scoped dependency closure preserves upstream schema and capabilities
+  ✔ stock and local schemas and runtime match (2.984814ms)
+  ✔ transitive tables, functions, ranges, arrays, inheritance and foreign keys survive (0.636396ms)
+  ✔ indexes and owning extension survive while unrelated objects are excluded (0.270837ms)
+  ✔ explicit extension capabilities survive without an index dependency (293.096485ms)
+  ✔ partitioned access method retains extension metadata (288.241977ms)
+  ✔ missing root schema fails closed (270.17212ms)
+✔ local scoped dependency closure preserves upstream schema and capabilities (1458.200406ms)
+▶ schema-scoped introspection query
+  ✔ does not change the stock introspection query (1.143305ms)
+  ✔ keeps schema and extension names in query parameters (0.931999ms)
+  ✔ rejects invalid schema and extension names (0.559026ms)
+  ✔ supports full and dependency-closure catalog type policies (0.355339ms)
+  ✔ rejects invalid catalog type policies from JSON configuration (0.287028ms)
+  ✔ keeps normalized scope data independent of mutable query parameters (0.370084ms)
+  ✔ fails fast when a required root schema is missing (0.141354ms)
+  ✔ fails fast when a function dependency type is missing (0.574313ms)
+  ✔ fails fast on a dangling column type (0.381269ms)
+  ✔ accepts dependency types retained in internal lookups (0.288086ms)
+✔ schema-scoped introspection query (6.383431ms)
+✔ local plugin uses stock introspection for undefined (12.705614ms)
+✔ local plugin uses stock introspection for false (22.707092ms)
+✔ local plugin defaults and parameterized service configuration (8.977445ms)
+✔ local plugin rejects unknown services before querying (8.998966ms)
+✔ local plugin identifies bad service configuration: requires at least one schema (3.344203ms)
+✔ local plugin identifies bad service configuration: cannot expose system schema (3.531128ms)
+✔ local plugin identifies bad service configuration: catalogTypes must be (4.538133ms)
+ℹ tests 44
+ℹ suites 1
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5948.77485

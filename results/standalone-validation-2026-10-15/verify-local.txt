@@ -1,0 +1,66 @@
+$ node dist/src/cli/verify-results.js standalone-local-2026-10-15
+{
+  "status": "passed",
+  "sourceSha": "f11869bd11d8715c6129e791bdddf8607ee89a43",
+  "sourceDirty": false,
+  "workers": 42,
+  "repetitions": 3,
+  "matrix": {
+    "a": [
+      1,
+      20,
+      60,
+      150
+    ],
+    "b": [
+      1,
+      10,
+      50
+    ],
+    "rotation": [
+      10
+    ],
+    "c": [
+      10,
+      100,
+      1000,
+      5000
+    ],
+    "d": [
+      1,
+      150
+    ]
+  },
+  "sdlHash": "d01a0e83334d47a180bf6f0b4ead295db6e8dde7c449aa82a09770e09c66c5eb",
+  "postgresSettings": [
+    {
+      "name": "max_connections",
+      "setting": "100",
+      "unit": null
+    },
+    {
+      "name": "max_locks_per_transaction",
+      "setting": "512",
+      "unit": null
+    },
+    {
+      "name": "shared_buffers",
+      "setting": "16384",
+      "unit": "8kB"
+    }
+  ],
+  "dependencies": {
+    "postgraphile": "5.1.5",
+    "grafast": "1.1.4",
+    "grafserv": "1.0.2",
+    "graphile-build": "5.1.1",
+    "graphile-build-pg": "5.1.5",
+    "@dataplan/pg": "1.1.2",
+    "pg-introspection": "1.0.1",
+    "graphql": "16.14.2",
+    "pg": "8.23.1",
+    "express": "4.22.3"
+  },
+  "crystal": null,
+  "comparisonProfile": "local-scoped"
+}

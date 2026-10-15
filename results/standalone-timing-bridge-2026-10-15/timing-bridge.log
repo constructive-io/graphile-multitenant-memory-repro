@@ -1,0 +1,609 @@
+{"bridge":{"scenario":"b","value":10,"totalTenants":60,"repetition":1,"label":"old","source":"old","profile":"stock","filename":"old-b-10-r1.json"},"startedAt":"2026-10-15T04:04:55.881Z"}
+{"scenario":"b","value":10,"heapMiB":280.59088134765625,"deltaMiB":251.70134735107422,"buildMs":3425.8803199999984}
+{"bridge":{"scenario":"b","value":10,"totalTenants":60,"repetition":1,"label":"current","source":"current","profile":"stock","filename":"current-b-10-r1.json"},"startedAt":"2026-10-15T04:05:19.847Z"}
+{"scenario":"b","value":10,"heapMiB":278.1449432373047,"deltaMiB":249.203125,"buildMs":3746.5550240000002}
+{"bridge":{"scenario":"b","value":10,"totalTenants":60,"repetition":2,"label":"current","source":"current","profile":"stock","filename":"current-b-10-r2.json"},"startedAt":"2026-10-15T04:05:44.126Z"}
+{"scenario":"b","value":10,"heapMiB":280.64844512939453,"deltaMiB":251.70317840576172,"buildMs":2916.425475000001}
+{"bridge":{"scenario":"b","value":10,"totalTenants":60,"repetition":2,"label":"old","source":"old","profile":"stock","filename":"old-b-10-r2.json"},"startedAt":"2026-10-15T04:06:07.263Z"}
+{"scenario":"b","value":10,"heapMiB":280.6006851196289,"deltaMiB":251.7075653076172,"buildMs":2783.475688999999}
+{"bridge":{"scenario":"b","value":10,"totalTenants":60,"repetition":3,"label":"old","source":"old","profile":"stock","filename":"old-b-10-r3.json"},"startedAt":"2026-10-15T04:06:30.206Z"}
+{"scenario":"b","value":10,"heapMiB":280.5873489379883,"deltaMiB":251.7034912109375,"buildMs":2735.880407999998}
+{"bridge":{"scenario":"b","value":10,"totalTenants":60,"repetition":3,"label":"current","source":"current","profile":"stock","filename":"current-b-10-r3.json"},"startedAt":"2026-10-15T04:06:53.052Z"}
+{"scenario":"b","value":10,"heapMiB":280.61901092529297,"deltaMiB":251.6747817993164,"buildMs":3100.1359919999986}
+{"bridge":{"scenario":"b","value":50,"totalTenants":60,"repetition":1,"label":"current","source":"current","profile":"stock","filename":"current-b-50-r1.json"},"startedAt":"2026-10-15T04:07:17.928Z"}
+{"scenario":"b","value":50,"heapMiB":1272.9368438720703,"deltaMiB":1243.9913635253906,"buildMs":16916.651423999996}
+{"bridge":{"scenario":"b","value":50,"totalTenants":60,"repetition":1,"label":"old","source":"old","profile":"stock","filename":"old-b-50-r1.json"},"startedAt":"2026-10-15T04:08:05.154Z"}
+{"scenario":"b","value":50,"heapMiB":1272.9899368286133,"deltaMiB":1244.1024169921875,"buildMs":13016.054381999995}
+{"bridge":{"scenario":"b","value":50,"totalTenants":60,"repetition":2,"label":"old","source":"old","profile":"stock","filename":"old-b-50-r2.json"},"startedAt":"2026-10-15T04:08:48.427Z"}
+{"scenario":"b","value":50,"heapMiB":1272.9570236206055,"deltaMiB":1244.069221496582,"buildMs":13729.221871999991}
+{"bridge":{"scenario":"b","value":50,"totalTenants":60,"repetition":2,"label":"current","source":"current","profile":"stock","filename":"current-b-50-r2.json"},"startedAt":"2026-10-15T04:09:32.162Z"}
+{"scenario":"b","value":50,"heapMiB":1273.0514221191406,"deltaMiB":1244.1055603027344,"buildMs":14968.414802000008}
+{"bridge":{"scenario":"b","value":50,"totalTenants":60,"repetition":3,"label":"current","source":"current","profile":"stock","filename":"current-b-50-r3.json"},"startedAt":"2026-10-15T04:10:17.775Z"}
+{"scenario":"b","value":50,"heapMiB":1272.9035873413086,"deltaMiB":1243.9568328857422,"buildMs":22715.262364000006}
+{"bridge":{"scenario":"b","value":50,"totalTenants":60,"repetition":3,"label":"old","source":"old","profile":"stock","filename":"old-b-50-r3.json"},"startedAt":"2026-10-15T04:11:15.587Z"}
+{"scenario":"b","value":50,"heapMiB":1272.8467025756836,"deltaMiB":1243.9595642089844,"buildMs":19395.247119000007}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":1,"label":"old","source":"old","profile":"stock","filename":"old-c-5000-r1.json"},"startedAt":"2026-10-15T04:12:11.580Z"}
+{"scenario":"c","value":5000,"heapMiB":1499.9632873535156,"deltaMiB":1465.7872161865234}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":1,"label":"current","source":"current","profile":"stock","filename":"current-c-5000-r1.json"},"startedAt":"2026-10-15T04:13:29.123Z"}
+{"scenario":"c","value":5000,"heapMiB":1496.2074890136719,"deltaMiB":1461.987533569336}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":1,"label":"current-local","source":"current","profile":"local-scoped","filename":"current-local-c-5000-r1.json"},"startedAt":"2026-10-15T04:14:45.462Z"}
+{"scenario":"c","value":5000,"heapMiB":1497.9827117919922,"deltaMiB":1464.068374633789}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":2,"label":"current","source":"current","profile":"stock","filename":"current-c-5000-r2.json"},"startedAt":"2026-10-15T04:16:02.283Z"}
+{"scenario":"c","value":5000,"heapMiB":1497.9725723266602,"deltaMiB":1463.7538604736328}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":2,"label":"current-local","source":"current","profile":"local-scoped","filename":"current-local-c-5000-r2.json"},"startedAt":"2026-10-15T04:17:03.542Z"}
+{"scenario":"c","value":5000,"heapMiB":1499.6674346923828,"deltaMiB":1465.7393188476562}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":2,"label":"old","source":"old","profile":"stock","filename":"old-c-5000-r2.json"},"startedAt":"2026-10-15T04:18:10.733Z"}
+{"scenario":"c","value":5000,"heapMiB":1495.8449020385742,"deltaMiB":1461.6886138916016}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":3,"label":"current-local","source":"current","profile":"local-scoped","filename":"current-local-c-5000-r3.json"},"startedAt":"2026-10-15T04:19:10.070Z"}
+{"scenario":"c","value":5000,"heapMiB":1495.2532196044922,"deltaMiB":1461.3373794555664}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":3,"label":"old","source":"old","profile":"stock","filename":"old-c-5000-r3.json"},"startedAt":"2026-10-15T04:20:10.318Z"}
+{"scenario":"c","value":5000,"heapMiB":1497.6025161743164,"deltaMiB":1463.4072952270508}
+{"bridge":{"scenario":"c","value":5000,"totalTenants":2,"repetition":3,"label":"current","source":"current","profile":"stock","filename":"current-c-5000-r3.json"},"startedAt":"2026-10-15T04:21:47.719Z"}
+{"scenario":"c","value":5000,"heapMiB":1495.8780822753906,"deltaMiB":1461.6641235351562}
+[
+  {
+    "scenario": "b",
+    "value": 10,
+    "totalTenants": 60,
+    "series": {
+      "old": {
+        "samples": 3,
+        "heapDeltaMiB": {
+          "min": 251.70134735107422,
+          "median": 251.7034912109375,
+          "max": 251.7075653076172
+        },
+        "baselineMiB": {
+          "min": 28.88385772705078,
+          "median": 28.88953399658203,
+          "max": 28.89311981201172
+        },
+        "baselineRssMiB": {
+          "min": 174.79296875,
+          "median": 174.94921875,
+          "max": 175
+        },
+        "baselineGcMs": {
+          "min": 11.082978999999796,
+          "median": 12.256042999999408,
+          "max": 13.254461000000447
+        },
+        "retainedMiB": {
+          "min": 280.5873489379883,
+          "median": 280.59088134765625,
+          "max": 280.6006851196289
+        },
+        "retainedRssMiB": {
+          "min": 567.96875,
+          "median": 573.22265625,
+          "max": 575.9375
+        },
+        "retainedPeakRssMiB": {
+          "min": 568.09375,
+          "median": 573.43359375,
+          "max": 576.02734375
+        },
+        "forcedGcMs": {
+          "min": 147.81840899999952,
+          "median": 168.83964500000002,
+          "max": 184.48455000000104
+        },
+        "afterReleaseMiB": {
+          "min": 31.118972778320312,
+          "median": 31.121673583984375,
+          "max": 31.130661010742188
+        },
+        "afterReleaseGcMs": {
+          "min": 12.72061400000166,
+          "median": 13.251723999997921,
+          "max": 20.487370999999257
+        },
+        "buildMs": {
+          "min": 2735.880407999998,
+          "median": 2783.475688999999,
+          "max": 3425.8803199999984
+        }
+      },
+      "current": {
+        "samples": 3,
+        "heapDeltaMiB": {
+          "min": 249.203125,
+          "median": 251.6747817993164,
+          "max": 251.70317840576172
+        },
+        "baselineMiB": {
+          "min": 28.941818237304688,
+          "median": 28.944229125976562,
+          "max": 28.945266723632812
+        },
+        "baselineRssMiB": {
+          "min": 174.2578125,
+          "median": 175.19140625,
+          "max": 175.65625
+        },
+        "baselineGcMs": {
+          "min": 10.966099000000213,
+          "median": 11.549329999999827,
+          "max": 12.395441000000574
+        },
+        "retainedMiB": {
+          "min": 278.1449432373047,
+          "median": 280.61901092529297,
+          "max": 280.64844512939453
+        },
+        "retainedRssMiB": {
+          "min": 573.84375,
+          "median": 576.12890625,
+          "max": 600.44140625
+        },
+        "retainedPeakRssMiB": {
+          "min": 573.9296875,
+          "median": 576.30859375,
+          "max": 600.44140625
+        },
+        "forcedGcMs": {
+          "min": 168.91678899999897,
+          "median": 181.7719709999983,
+          "max": 184.1889050000027
+        },
+        "afterReleaseMiB": {
+          "min": 28.656295776367188,
+          "median": 31.161453247070312,
+          "max": 31.183921813964844
+        },
+        "afterReleaseGcMs": {
+          "min": 13.335510999997496,
+          "median": 13.425836999998864,
+          "max": 14.083141999999498
+        },
+        "buildMs": {
+          "min": 2916.425475000001,
+          "median": 3100.1359919999986,
+          "max": 3746.5550240000002
+        }
+      }
+    },
+    "timingMetric": "buildMs",
+    "stockSourceComparison": {
+      "numerator": "current",
+      "denominator": "old",
+      "pairedRatios": {
+        "buildMs": [
+          1.0936035920834508,
+          1.0477639472568074,
+          1.1331401705041197
+        ],
+        "forcedGcMs": [
+          0.9156148251980886,
+          1.0909102835415383,
+          1.229697790888812
+        ]
+      }
+    }
+  },
+  {
+    "scenario": "b",
+    "value": 50,
+    "totalTenants": 60,
+    "series": {
+      "current": {
+        "samples": 3,
+        "heapDeltaMiB": {
+          "min": 1243.9568328857422,
+          "median": 1243.9913635253906,
+          "max": 1244.1055603027344
+        },
+        "baselineMiB": {
+          "min": 28.945480346679688,
+          "median": 28.94586181640625,
+          "max": 28.946754455566406
+        },
+        "baselineRssMiB": {
+          "min": 173.13671875,
+          "median": 174.21484375,
+          "max": 174.453125
+        },
+        "baselineGcMs": {
+          "min": 11.452949000000444,
+          "median": 11.880898000000343,
+          "max": 14.427709999999934
+        },
+        "retainedMiB": {
+          "min": 1272.9035873413086,
+          "median": 1272.9368438720703,
+          "max": 1273.0514221191406
+        },
+        "retainedRssMiB": {
+          "min": 1845.28515625,
+          "median": 1845.30078125,
+          "max": 1847.20703125
+        },
+        "retainedPeakRssMiB": {
+          "min": 1845.30078125,
+          "median": 1845.30859375,
+          "max": 1847.35546875
+        },
+        "forcedGcMs": {
+          "min": 761.8923540000033,
+          "median": 872.0479469999991,
+          "max": 895.208034000003
+        },
+        "afterReleaseMiB": {
+          "min": 29.73291778564453,
+          "median": 29.73833465576172,
+          "max": 29.92023468017578
+        },
+        "afterReleaseGcMs": {
+          "min": 14.192712000003667,
+          "median": 15.188714999996591,
+          "max": 38.87560000000667
+        },
+        "buildMs": {
+          "min": 14968.414802000008,
+          "median": 16916.651423999996,
+          "max": 22715.262364000006
+        }
+      },
+      "old": {
+        "samples": 3,
+        "heapDeltaMiB": {
+          "min": 1243.9595642089844,
+          "median": 1244.069221496582,
+          "max": 1244.1024169921875
+        },
+        "baselineMiB": {
+          "min": 28.88713836669922,
+          "median": 28.88751983642578,
+          "max": 28.887802124023438
+        },
+        "baselineRssMiB": {
+          "min": 173.73046875,
+          "median": 173.875,
+          "max": 174.09375
+        },
+        "baselineGcMs": {
+          "min": 12.772861999999805,
+          "median": 16.23693800000001,
+          "max": 17.777538999999706
+        },
+        "retainedMiB": {
+          "min": 1272.8467025756836,
+          "median": 1272.9570236206055,
+          "max": 1272.9899368286133
+        },
+        "retainedRssMiB": {
+          "min": 1842.95703125,
+          "median": 1843.9765625,
+          "max": 1847.68359375
+        },
+        "retainedPeakRssMiB": {
+          "min": 1843.91015625,
+          "median": 1844.1328125,
+          "max": 1847.71875
+        },
+        "forcedGcMs": {
+          "min": 795.1335949999993,
+          "median": 797.3570959999997,
+          "max": 865.5075150000048
+        },
+        "afterReleaseMiB": {
+          "min": 29.678260803222656,
+          "median": 29.68347930908203,
+          "max": 29.700363159179688
+        },
+        "afterReleaseGcMs": {
+          "min": 15.961050999998406,
+          "median": 15.982475999997405,
+          "max": 24.6254670000053
+        },
+        "buildMs": {
+          "min": 13016.054381999995,
+          "median": 13729.221871999991,
+          "max": 19395.247119000007
+        }
+      }
+    },
+    "timingMetric": "buildMs",
+    "stockSourceComparison": {
+      "numerator": "current",
+      "denominator": "old",
+      "pairedRatios": {
+        "buildMs": [
+          1.2996758408903215,
+          1.0902595166392703,
+          1.1711767436955025
+        ],
+        "forcedGcMs": [
+          0.955522134087841,
+          1.096731357451951,
+          1.0343157263053897
+        ]
+      }
+    }
+  },
+  {
+    "scenario": "c",
+    "value": 5000,
+    "totalTenants": 2,
+    "series": {
+      "old": {
+        "samples": 3,
+        "heapDeltaMiB": {
+          "min": 1461.6886138916016,
+          "median": 1463.4072952270508,
+          "max": 1465.7872161865234
+        },
+        "baselineMiB": {
+          "min": 28.812591552734375,
+          "median": 28.815818786621094,
+          "max": 28.817291259765625
+        },
+        "baselineRssMiB": {
+          "min": 112.8515625,
+          "median": 113.66796875,
+          "max": 114.0703125
+        },
+        "baselineGcMs": {
+          "min": 11.598152000000482,
+          "median": 11.638394999999946,
+          "max": 16.596489999999903
+        },
+        "retainedMiB": {
+          "min": 1495.8449020385742,
+          "median": 1497.6025161743164,
+          "max": 1499.9632873535156
+        },
+        "retainedRssMiB": {
+          "min": 1793.79296875,
+          "median": 1796.47265625,
+          "max": 1819.90625
+        },
+        "retainedPeakRssMiB": {
+          "min": 1793.9765625,
+          "median": 1796.60546875,
+          "max": 1819.90625
+        },
+        "forcedGcMs": {
+          "min": 679.5792110000039,
+          "median": 842.841677999997,
+          "max": 1021.4089600000007
+        },
+        "afterReleaseMiB": {
+          "min": 28.56689453125,
+          "median": 28.586044311523438,
+          "max": 28.613845825195312
+        },
+        "afterReleaseGcMs": {
+          "min": 14.47387100000924,
+          "median": 15.39356100000441,
+          "max": 15.498544000001857
+        },
+        "loadMs": {
+          "min": 24231.004924,
+          "median": 36537.547275000004,
+          "max": 48240.500751
+        },
+        "perOperationKiB": {
+          "min": 299.353828125,
+          "median": 299.7058140625,
+          "max": 300.193221875
+        },
+        "planBaselineMiB": {
+          "min": 34.156288146972656,
+          "median": 34.17607116699219,
+          "max": 34.195220947265625
+        },
+        "planBaselineRssMiB": {
+          "min": 115.21484375,
+          "median": 115.80859375,
+          "max": 116.1484375
+        },
+        "planBaselineGcMs": {
+          "min": 12.088033999998515,
+          "median": 20.13127700000041,
+          "max": 32.294622999999774
+        }
+      },
+      "current": {
+        "samples": 3,
+        "heapDeltaMiB": {
+          "min": 1461.6641235351562,
+          "median": 1461.987533569336,
+          "max": 1463.7538604736328
+        },
+        "baselineMiB": {
+          "min": 28.868057250976562,
+          "median": 28.869659423828125,
+          "max": 28.871505737304688
+        },
+        "baselineRssMiB": {
+          "min": 113.48828125,
+          "median": 114.015625,
+          "max": 114.71484375
+        },
+        "baselineGcMs": {
+          "min": 11.465785999999753,
+          "median": 24.902804000000287,
+          "max": 33.2670190000008
+        },
+        "retainedMiB": {
+          "min": 1495.8780822753906,
+          "median": 1496.2074890136719,
+          "max": 1497.9725723266602
+        },
+        "retainedRssMiB": {
+          "min": 1777.6640625,
+          "median": 1806.140625,
+          "max": 1939.99609375
+        },
+        "retainedPeakRssMiB": {
+          "min": 1781.44140625,
+          "median": 1806.80078125,
+          "max": 1941.18359375
+        },
+        "forcedGcMs": {
+          "min": 683.2147030000051,
+          "median": 917.890950999994,
+          "max": 1023.4014259999967
+        },
+        "afterReleaseMiB": {
+          "min": 28.630355834960938,
+          "median": 28.65204620361328,
+          "max": 29.386459350585938
+        },
+        "afterReleaseGcMs": {
+          "min": 14.234640999995463,
+          "median": 14.652253000007477,
+          "max": 15.812705999996979
+        },
+        "loadMs": {
+          "min": 25241.690513999994,
+          "median": 34880.728428999995,
+          "max": 52959.15868
+        },
+        "perOperationKiB": {
+          "min": 299.3488125,
+          "median": 299.415046875,
+          "max": 299.776790625
+        },
+        "planBaselineMiB": {
+          "min": 34.213958740234375,
+          "median": 34.218711853027344,
+          "max": 34.21995544433594
+        },
+        "planBaselineRssMiB": {
+          "min": 115.43359375,
+          "median": 116.10546875,
+          "max": 116.25390625
+        },
+        "planBaselineGcMs": {
+          "min": 13.388163000001441,
+          "median": 15.684330000000045,
+          "max": 20.474445999998352
+        }
+      },
+      "current-local": {
+        "samples": 3,
+        "heapDeltaMiB": {
+          "min": 1461.3373794555664,
+          "median": 1464.068374633789,
+          "max": 1465.7393188476562
+        },
+        "baselineMiB": {
+          "min": 29.054527282714844,
+          "median": 29.057228088378906,
+          "max": 29.05963134765625
+        },
+        "baselineRssMiB": {
+          "min": 113.3984375,
+          "median": 114.70703125,
+          "max": 115.0234375
+        },
+        "baselineGcMs": {
+          "min": 11.895497999999861,
+          "median": 13.180975000000217,
+          "max": 14.653905999999552
+        },
+        "retainedMiB": {
+          "min": 1495.2532196044922,
+          "median": 1497.9827117919922,
+          "max": 1499.6674346923828
+        },
+        "retainedRssMiB": {
+          "min": 1792.5546875,
+          "median": 1799.75,
+          "max": 1902.7109375
+        },
+        "retainedPeakRssMiB": {
+          "min": 1792.87109375,
+          "median": 1801.1015625,
+          "max": 1904.203125
+        },
+        "forcedGcMs": {
+          "min": 737.7226250000094,
+          "median": 753.1333620000005,
+          "max": 846.0026959999959
+        },
+        "afterReleaseMiB": {
+          "min": 28.783370971679688,
+          "median": 28.810791015625,
+          "max": 29.554107666015625
+        },
+        "afterReleaseGcMs": {
+          "min": 13.86443600000348,
+          "median": 27.884215999991284,
+          "max": 33.881922000000486
+        },
+        "loadMs": {
+          "min": 23891.403703999997,
+          "median": 29051.517490000002,
+          "max": 37464.001585
+        },
+        "perOperationKiB": {
+          "min": 299.2818953125,
+          "median": 299.841203125,
+          "max": 300.1834125
+        },
+        "planBaselineMiB": {
+          "min": 33.914337158203125,
+          "median": 33.91584014892578,
+          "max": 33.92811584472656
+        },
+        "planBaselineRssMiB": {
+          "min": 115.5,
+          "median": 116.2734375,
+          "max": 116.390625
+        },
+        "planBaselineGcMs": {
+          "min": 12.477947000001222,
+          "median": 14.439641000000847,
+          "max": 29.741759000000457
+        }
+      }
+    },
+    "timingMetric": "loadMs",
+    "stockSourceComparison": {
+      "numerator": "current",
+      "denominator": "old",
+      "pairedRatios": {
+        "loadMs": [
+          0.9546543495782583,
+          1.041710428154754,
+          1.0978152766978104
+        ],
+        "forcedGcMs": [
+          1.0890431441146615,
+          1.0053496221502296,
+          1.0019507034674888
+        ],
+        "perOperationKiB": [
+          0.9974077529294647,
+          1.0014129182935432,
+          0.9988088267035569
+        ]
+      }
+    },
+    "currentProfileComparison": {
+      "numerator": "current-local",
+      "denominator": "current",
+      "source": "f11869bd11d8715c6129e791bdddf8607ee89a43",
+      "pairedRatios": {
+        "loadMs": [
+          1.074060183727478,
+          1.1509339072946376,
+          0.45112883775894597
+        ],
+        "forcedGcMs": [
+          0.8037148903105531,
+          1.1023377551639062,
+          0.8266577263885878
+        ],
+        "perOperationKiB": [
+          1.001423296038218,
+          1.0013564154654944,
+          0.9997764574813538
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "status": "passed",
+  "recordedAt": "2026-10-15T04:26:15.370253+00:00",
+  "auditScope": "Independent read-only recomputation from raw results, manifest, summary, preservation hashes, source/dependency receipts and documentation; only this external receipt was written.",
+  "bridgeDirectory": "results/standalone-timing-bridge-2026-10-15",
+  "externalOriginals": "/workspace/pr3-removal-validation/stock-timing-bridge",
+  "counts": {
+    "workers": 21,
+    "distinctWorkerPids": 21,
+    "copiedArtifactsHashed": 23,
+    "c5000CacheChecks": 9,
+    "historicalFilesUnchanged": 382,
+    "checkedDependencyEntriesPerClone": 11
+  },
+  "checks": {
+    "rawFileSetMatchesManifest": true,
+    "manifestCompleteAndSerialTimestamps": true,
+    "rawManifestSummaryCopiesByteIdenticalToExternalOriginals": true,
+    "preservationSha256sMatch": true,
+    "sourceBuildProfileActivationAndRecordedEnvironmentMatch": true,
+    "c5000Plans1To5001Capacity5100ZeroErrors": true,
+    "allManifestAndSummaryMetricsIndependentlyRecomputed": true,
+    "allSummaryRangesMediansAndPairedRatiosMatchRaw": true,
+    "readmeTimingChangesRatiosAndMemoryMetricsMatchRounding": true,
+    "driverSha256MatchesManifest": true,
+    "historicalEvidenceHashesUnchanged": true,
+    "dependencyEntryHashesVerifiedInBothClones": true,
+    "correctedResourceWordingMatchesReceiptsWithoutWorkloadAttribution": true,
+    "dependencyAuditClaimsLimitedToCheckedEntries": true,
+    "interpretationDoesNotClaimCausationOrTimingEquivalence": true
+  },
+  "resourceObservations": {
+    "recordedMemoryMaxSequence": [
+      0,
+      7419,
+      21917,
+      21917
+    ],
+    "bridgeMemoryEventsDeltas": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0
+    },
+    "bridgeThrottledPeriodsDelta": 649,
+    "bridgeThrottledSecondsDelta": 51.749727,
+    "cpuQuotaUsec": 400000,
+    "cpuPeriodUsec": 100000,
+    "causalAttribution": "Earlier event timing is not isolated by these receipts; no workload attribution or timing-cause claim is made."
+  },
+  "reviewedDocumentationSha256": {
+    "results/standalone-timing-bridge-2026-10-15/README.md": "e283a13ae28f9119976df3a5b9540533f862c6d26059edc6f9e05ee3be279f88",
+    "results/standalone-validation-2026-10-15/VALIDATION.md": "ca178f741e77cf649ec5d1fd82b5a5cd0ce7364e1de5e6da236da5130d2f3947"
+  },
+  "remainingBlockers": []
+}
