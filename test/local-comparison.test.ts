@@ -13,6 +13,7 @@ import { join, resolve } from 'node:path';
 import test from 'node:test';
 import type { TestContext } from 'node:test';
 import { array, number, object, readJson, string } from '../src/json.js';
+import { projectPath } from '../src/paths.js';
 import { compareLocal } from '../src/report/local-comparison.js';
 import { writeSyntheticResults } from './helpers/results.js';
 
@@ -145,6 +146,14 @@ test('memory comparison aggregates worker deltas, reports ranges, and links all 
   assert.equal(rawLinks.length, 42);
   assert.equal(new Set(rawLinks).size, 42);
   rawLinks.forEach((path) => assert(existsSync(resolve(run.output, path))));
+  const diagramLinks = [...report.matchAll(/!\[[^\]]+\]\(([^)]+\.svg)\)/g)].map(
+    (match) => resolve(run.output, match[1]),
+  );
+  assert.deepEqual(diagramLinks, [
+    projectPath('docs', 'diagrams', 'other-schemas.svg'),
+    projectPath('docs', 'diagrams', 'tenant-instances.svg'),
+  ]);
+  diagramLinks.forEach((path) => assert(existsSync(path)));
   assert.match(report, /21 per profile/);
   assert.match(report, /Appendix: build timing/);
   assert.match(report, /A: Unrelated schema growth/);

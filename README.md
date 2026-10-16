@@ -90,6 +90,23 @@ shared runtime costs, so dividing by M is an average per instance, not an exclus
 object-ownership measurement. A/B and N/M remain the machine identifiers; raw
 fields such as `scenario`, `value`, `totalTenants` and `loadedInstances` are unchanged.
 
+![Scenario A: one retained target instance as unrelated schemas grow in one PostgreSQL database](docs/diagrams/other-schemas.svg)
+
+*A — Other schemas.* The database contains `tenant_000`, N unrelated tenant
+schemas and the shared `bench_types` schema. Only one built, unqueried Graphile
+instance is retained as N varies.
+
+![Scenario B: more warmed tenant instances retained against the same 60-tenant PostgreSQL database](docs/diagrams/tenant-instances.svg)
+
+*B — Tenant instances.* The database stays at 60 tenant schemas plus `bench_types`.
+Each of the M retained Graphile instances is warmed once with the same Host-routed
+correctness query.
+
+The diagrams show catalogue metadata and retained instances, not data-row growth
+or concurrent request load. Stock gathers broad catalogue metadata; Scoped focuses
+on the target and required cross-schema dependencies. The measured
+`catalogTypes=all` setting also includes all `pg_catalog` types.
+
 Two profiles produce **42 samples total**. Each worker first discards a separate
 five-request warmup instance, awaits its release and collects the baseline. The
 runner keeps the same 5.5-second quiet periods, three forced GCs at each memory

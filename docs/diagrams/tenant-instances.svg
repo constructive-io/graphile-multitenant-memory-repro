@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="752" viewBox="0 0 1120 752" role="img" aria-labelledby="title desc">
+  <title id="title">B: Tenant instances — Retained tenant instances</title>
+  <desc id="desc">One fixed PostgreSQL database contains 60 tenant schemas, tenant_000 through tenant_059, plus shared bench_types. M is 1, 10, or 50 retained Graphile instances within one Node worker. Each instance is built and warmed serially by one identical Host-routed correctness query, then all M remain alive during memory collection. Stock and Scoped run separately. Scoped includes target and required cross-schema metadata plus all pg_catalog types with catalogTypes=all. Database contents stay fixed; this is not data-row growth or concurrent-request throughput.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#64748b"/>
+    </marker>
+    <style>
+      text { font-family: Arial, Helvetica, sans-serif; fill: #172b43; }
+      .title { font-size: 30px; font-weight: 700; }
+      .heading { font-size: 22px; font-weight: 700; }
+      .label { font-size: 16px; font-weight: 700; letter-spacing: 1px; }
+      .body { font-size: 19px; }
+      .small { font-size: 17px; }
+      .muted { fill: #41566f; }
+      .blue { fill: #154e83; }
+      .green { fill: #12684e; }
+      .line { fill: none; stroke: #64748b; stroke-width: 2; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1120" height="752" rx="16" fill="#ffffff"/>
+  <text x="32" y="49" class="title">B · Tenant instances</text>
+  <text x="32" y="78" class="body muted">Retained tenant instances</text>
+
+  <rect x="32" y="100" width="508" height="64" rx="10" fill="#eaf3ff"/>
+  <text x="50" y="125" class="label blue">FIXED · DATABASE</text>
+  <text x="50" y="149" class="body">60 tenant schemas + shared bench_types</text>
+  <rect x="556" y="100" width="532" height="64" rx="10" fill="#fff3dd"/>
+  <text x="574" y="125" class="label">VARYING · RETAINED INSTANCES</text>
+  <text x="574" y="149" class="body">M = 1 / 10 / 50 · built, warmed, held alive</text>
+
+  <rect x="32" y="188" width="410" height="322" rx="12" fill="#f8fafc" stroke="#bdcbd9" stroke-width="2"/>
+  <text x="52" y="221" class="heading">One PostgreSQL database</text>
+  <text x="52" y="247" class="small muted">Same catalogue at every M</text>
+  <rect x="52" y="267" width="370" height="44" rx="7" fill="#eaf3ff" stroke="#8eb7e1"/>
+  <text x="237" y="295" text-anchor="middle" class="body blue">tenant_000</text>
+  <text x="237" y="339" text-anchor="middle" class="heading muted">⋮</text>
+  <rect x="52" y="358" width="370" height="44" rx="7" fill="#eaf3ff" stroke="#8eb7e1"/>
+  <text x="237" y="386" text-anchor="middle" class="body blue">tenant_059</text>
+  <rect x="52" y="422" width="370" height="64" rx="7" fill="#eaf7f1" stroke="#8cc4ad"/>
+  <text x="237" y="448" text-anchor="middle" class="body green">bench_types</text>
+  <text x="237" y="472" text-anchor="middle" class="small">Shared cross-schema dependencies</text>
+
+  <path d="M 442 349 H 488" class="line"/>
+  <rect x="504" y="188" width="584" height="322" rx="12" fill="#f8fafc" stroke="#bdcbd9" stroke-width="2"/>
+  <text x="524" y="221" class="heading">One Node worker · M Graphile instances</text>
+  <text x="524" y="247" class="small muted">Schema / catalogue metadata loaded per instance</text>
+  <rect x="524" y="271" width="202" height="110" rx="8" fill="#fff3dd" stroke="#dec28b"/>
+  <text x="625" y="300" text-anchor="middle" class="heading">Instance 1</text>
+  <text x="625" y="330" text-anchor="middle" class="body">tenant_000</text>
+  <text x="625" y="359" text-anchor="middle" class="small">Built + warmed</text>
+  <text x="789" y="331" text-anchor="middle" class="title muted">…</text>
+  <rect x="852" y="271" width="216" height="110" rx="8" fill="#fff3dd" stroke="#dec28b"/>
+  <text x="960" y="300" text-anchor="middle" class="heading">Instance M</text>
+  <text x="960" y="330" text-anchor="middle" class="body">tenant_(M−1)</text>
+  <text x="960" y="359" text-anchor="middle" class="small">Built + warmed</text>
+  <text x="524" y="411" class="small">For M = 1, only the first instance is present.</text>
+  <text x="524" y="441" class="small">Warm serially: 1 identical Host-routed correctness query each</text>
+  <text x="524" y="479" class="body">Retain all M → quiet period + GC → measure</text>
+
+  <text x="32" y="548" class="label">METADATA COMPARISON · STOCK AND SCOPED RUN SEPARATELY</text>
+  <rect x="32" y="564" width="508" height="100" rx="10" fill="#fff3dd"/>
+  <text x="52" y="595" class="heading">Stock</text>
+  <text x="52" y="623" class="body">Broad catalogue metadata per instance</text>
+  <text x="52" y="647" class="small">Includes unrelated tenant schemas</text>
+  <rect x="556" y="564" width="532" height="100" rx="10" fill="#eaf7f1"/>
+  <text x="576" y="595" class="heading green">Scoped</text>
+  <text x="576" y="623" class="body">Target + required cross-schema dependencies</text>
+  <text x="576" y="647" class="small">catalogTypes=all also includes all pg_catalog types.</text>
+
+  <text x="32" y="701" class="body">The database stays fixed as M grows; aggregate retained process memory is the outcome.</text>
+  <text x="32" y="728" class="small muted">This is not data-row growth or concurrent-request throughput. The per-instance average includes shared costs.</text>
+</svg>
