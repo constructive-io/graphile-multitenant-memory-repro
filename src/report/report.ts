@@ -48,10 +48,12 @@ export function report(run: string, output?: string): void {
     env = first.environment;
   const lines = [
     env.comparisonProfile === 'local-scoped'
-      ? '# Local scoped-introspection memory measurements'
+      ? '# Scoped memory measurements'
       : env.crystal
         ? '# Crystal checkout memory measurements'
         : '# Stock Graphile memory measurements',
+    '',
+    'A separates the cost of unrelated schemas from the cost of retaining more tenant instances in B. Read incremental heap alongside total heap, RSS and build time; this single-profile report does not establish an implementation improvement.',
     '',
     `Generated from ${samples.length} fresh-process raw measurements in this directory. Values are medians; MiB = 2^20 bytes.`,
     '',
@@ -63,7 +65,19 @@ export function report(run: string, output?: string): void {
     '',
     `Profile: ${env.comparisonProfile ?? (env.crystal ? 'checkout' : 'stock')}. Crystal SHA: ${env.crystal?.sha ?? 'not linked'}.`,
     '',
+    env.crystal
+      ? 'This is an external checkout run. Its recorded profile identifies the implementation; common-base and PR2 belong to the optional checkout comparison.'
+      : 'Human-readable profile names: Stock = `BENCH_PROFILE=stock`; Scoped = `BENCH_PROFILE=local-scoped`. Both use the published dependency graph; Scoped adds the local introspection adaptation.',
+    '',
     'Every point has a discarded five-request warmup instance. Memory collection waits 5.5 seconds and forces GC three times. Peak RSS is the process lifetime high-water mark, including warmup. Clients execute in separate processes and exit before sampling.',
+    '',
+    '## Reading the metrics',
+    '',
+    '- **Incremental heap** is the within-process increase in used JavaScript heap after GC (`heapDelta`). A/B subtract the post-warmup `baseline.heapUsed` from `retained.heapUsed`; C subtracts `planBaseline.heapUsed`. It includes shared runtime and cache costs, not just the instance or plan objects.',
+    '- **Total heap** is all used JavaScript heap at the retained measurement (`retained.heapUsed`), including the baseline. It is not the allocated V8 heap capacity (`heapTotal`).',
+    '- **RSS** is resident memory for the whole process (`retained.rss`), including JavaScript heap, native allocations, code and stacks. It is not interchangeable with either heap metric.',
+    '- A percentage reduction in incremental heap does not imply the same reduction in total heap or RSS. Build time is a separate tradeoff; lower retained memory does not establish faster construction.',
+    '- Repeats are independent fresh processes. The default three repeats per point are a limited sample; medians are descriptive, not confidence intervals or production capacity estimates.',
     '',
   ];
   if (samples.some((row) => row.environment.sourceDirty)) {
@@ -94,17 +108,22 @@ export function report(run: string, output?: string): void {
   }
   const a = grouped('a');
   if (a.length) {
-    lines.push('## A: unrelated tenant schemas', '');
+    lines.push(
+      '## A: Unrelated schema growth',
+      '',
+      '**Fixed:** one live target tenant instance and its schema. **Varied:** the number N of other tenant schemas in the database. **Purpose:** measure how unrelated catalog growth affects the memory and build time of that one target.',
+      '',
+    );
     const hashes = new Set(a.flatMap(([, r]) => r.map((x) => x.sdlHash)));
     assert.equal(hashes.size, 1, 'Target SDL differs with N');
     table(
       [
-        'Other tenants N',
+        'Other schemas',
         'Total tenants',
         'Repeats',
-        'Heap MiB',
+        'Total heap MiB',
         'Baseline MiB',
-        'Increment MiB',
+        'Incremental heap MiB',
         'RSS MiB',
         'Peak RSS MiB',
         'Build ms',
@@ -124,28 +143,33 @@ export function report(run: string, output?: string): void {
       ]),
     );
     lines.push(
-      `Target SDL SHA-256 is invariant: \`${[...hashes][0]}\`. The measured target is built but unqueried; the discarded warmup validates the same catalog through real queries.`,
+      `Read down the table to isolate unrelated schema growth while one target remains live. Target SDL SHA-256 is invariant: \`${[...hashes][0]}\`. The measured target is built but unqueried; the discarded warmup executes the bounded smoke query against the same catalog and checks success and request identity.`,
       '',
     );
     if (a.length > 1) {
       const [low, lr] = a[0],
         [high, hr] = a[a.length - 1];
       lines.push(
-        `From N=${low} to N=${high}, process heap with the target live changes by ${mib(med(hr, (x) => x.retained.heapUsed) - med(lr, (x) => x.retained.heapUsed))} MiB (${mib((med(hr, (x) => x.retained.heapUsed) - med(lr, (x) => x.retained.heapUsed)) / (high - low))} MiB per added co-tenant). This measures the progressive-introspection problem area. Use the separate same-base comparison to attribute differences between candidate implementations.`,
+        `From N=${low} to N=${high}, total heap with the target live changes by ${mib(med(hr, (x) => x.retained.heapUsed) - med(lr, (x) => x.retained.heapUsed))} MiB (${mib((med(hr, (x) => x.retained.heapUsed) - med(lr, (x) => x.retained.heapUsed)) / (high - low))} MiB per added other schema). This measures the progressive-introspection problem area. Use the corresponding comparison report to evaluate implementation differences.`,
         '',
       );
     }
   }
   const b = grouped('b');
   if (b.length) {
-    lines.push('## B: simultaneous live instances', '');
+    lines.push(
+      '## B: Retained tenant instances',
+      '',
+      '**Fixed:** a database catalog containing 60 tenant schemas and the bounded query workload. **Varied:** the number M of tenant instances retained together. **Purpose:** measure the process cost of keeping more tenant runtimes live, then releasing them.',
+      '',
+    );
     table(
       [
-        'Instances M',
+        'Tenant instances',
         'Repeats',
-        'Heap MiB',
-        'Increment MiB',
-        'Increment per instance MiB',
+        'Total heap MiB',
+        'Incremental heap MiB',
+        'Incremental heap per instance MiB',
         'RSS MiB',
         'Peak RSS MiB',
         'Total build ms',
@@ -166,20 +190,25 @@ export function report(run: string, output?: string): void {
       ]),
     );
     lines.push(
-      'The catalog stays at 60 tenants. Every instance is built by a real Host-routed request and runs one identical bounded correctness query. Increment per instance divides the process delta by M; it includes shared and per-instance runtime costs.',
+      'Read down the table to isolate instance growth while the catalog stays fixed. Every instance is built by a real Host-routed request and runs one identical bounded smoke query. Incremental heap per instance divides the process delta by M; it includes shared and per-instance runtime costs. After-release heap is a separate observation, not a guarantee that RSS returns to baseline.',
       '',
     );
   }
   const rotations = samples.filter((x) => x.scenario === 'rotation');
   if (rotations.length) {
-    lines.push('## Fixed-capacity rotation', '');
+    lines.push(
+      '## Fixed-capacity rotation',
+      '',
+      '**Fixed:** 60 tenant schemas and capacity for 10 live instances. **Varied:** completed tenant builds over five full passes. **Purpose:** observe settling and drift as instances are repeatedly evicted and rebuilt.',
+      '',
+    );
     table(
       [
         'Completed tenant builds',
         'Live instances',
         'Repeats',
-        'Heap MiB',
-        'Increment MiB',
+        'Total heap MiB',
+        'Incremental heap MiB',
         'Released instances',
       ],
       rotations[0].rounds.map((_, i) => [
@@ -204,15 +233,20 @@ export function report(run: string, output?: string): void {
   }
   const c = grouped('c');
   if (c.length) {
-    lines.push('## C: retained distinct cached operations', '');
+    lines.push(
+      '## C: retained distinct cached operations',
+      '',
+      '**Fixed:** two tenant schemas, one live target instance and one warmup plan. **Varied:** K additional distinct operations, with cache capacity K+100 to retain them. **Purpose:** measure retained operation-cache growth and verify replay reuse.',
+      '',
+    );
     table(
       [
         'New operations K',
         'Repeats',
         'Verified total plans',
-        'Heap MiB',
+        'Total heap MiB',
         'Plan baseline MiB',
-        'Increment MiB',
+        'Incremental heap MiB',
         'KiB per new operation',
         'Forced-GC median ms',
         'RSS MiB',
@@ -237,12 +271,21 @@ export function report(run: string, output?: string): void {
     );
   }
   const d = grouped('d');
-  if (d.length) lines.push('## D: isolated build-only snapshots', '');
+  if (d.length)
+    lines.push(
+      '## D: isolated build-only snapshots',
+      '',
+      '**Fixed:** one built, unqueried target instance. **Varied:** the number N of other tenant schemas. **Purpose:** inspect which catalog and build objects remain reachable after construction in separate snapshot processes.',
+      '',
+    );
   for (const [n, rows] of d) {
     const analyses = rows.map((r) =>
       readAnalysis(`${dir}/${r.file}.analysis.json`),
     );
-    lines.push(`### N=${n} co-tenants (${rows.length} separate snapshots)`, '');
+    lines.push(
+      `### N=${n} other schemas (${rows.length} separate snapshots)`,
+      '',
+    );
     const names = [
       ...new Set(analyses.flatMap((x) => x.signatures.map((s) => s.label))),
     ];
@@ -308,7 +351,7 @@ export function report(run: string, output?: string): void {
   lines.push(
     '## Coverage and comparison limits',
     '',
-    '- Registry stock and the common-base control use Amber only. The local-scoped profile adapts PR2 to the published dependency graph; the PR2 checkout profile uses its recorded external source. No installed implementation is patched by the harness. Checkout provenance distinguishes groups.',
+    '- Stock (`stock`) and the common-base checkout control use Amber only. Scoped (`local-scoped`) adapts PR2 to the published dependency graph; the PR2 checkout profile uses its recorded external source. These are separate comparison workflows. No installed implementation is patched by the harness. Checkout provenance distinguishes groups.',
     ...[
       ...(a.length ? ['A covers catalog retention with one live target.'] : []),
       ...(b.length
@@ -328,7 +371,8 @@ export function report(run: string, output?: string): void {
         ? ['D covers build-state survival in isolated snapshots.']
         : []),
     ].map((limit) => `- ${limit}`),
-    '- RLS and cross-schema correctness are tested independently and exercised by each discarded warmup. Lower memory obtained by dropping required dependencies would fail the intended comparison.',
+    '- The HTTP integration suite checks concurrent tenant/user isolation, RLS, transaction-local setting cleanup, cross-schema type and range behavior, hidden roots, invalid requests, plan reuse, DDL invalidation and release after an aborted request. Warmup exercises a narrower smoke query and identity check; it does not repeat all of those assertions.',
+    '- Scoped tests also check dependency closure, schema equality, selected extension capabilities and missing-root rejection. These synthetic fixtures do not prove correctness for every PostgreSQL schema, extension, mutation, subscription or production workload. Consult the recorded preflight and validation files for the suites run with a particular measurement.',
     '- This harness uses ten tables per tenant, in-process disposable warmup and PostGraphile/Grafserv readiness timing. Cross-version results are not a causal optimization comparison; compare candidates against their exact common base.',
     '- RSS allocator behavior is separate from retained JS heap. A high RSS after release does not establish a JS leak.',
     '',

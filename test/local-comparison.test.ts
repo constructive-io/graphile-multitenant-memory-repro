@@ -106,8 +106,22 @@ test('memory comparison aggregates worker deltas, reports ranges, and links all 
   ]);
   const metrics = object(readJson(join(run.output, 'local-metrics.json')));
   assert.equal(metrics.selection, 'memory');
+  assert.equal(metrics.delta, 'scoped minus stock');
   const rows = array(metrics.rows).map(object);
   assert.equal(rows.length, 7);
+  assert.deepEqual(
+    rows.map((row) => [row.scenario, row.value]),
+    [
+      ['a', 1],
+      ['a', 20],
+      ['a', 60],
+      ['a', 150],
+      ['b', 1],
+      ['b', 10],
+      ['b', 50],
+    ],
+  );
+  assert.deepEqual(Object.keys(object(rows[0].raw)), ['stock', 'local-scoped']);
   const a1 = rows.find((row) => row.scenario === 'a' && row.value === 1)!;
   assert.equal(object(object(a1.incrementalHeapMiB).scoped).median, 10);
   assert.equal(object(object(a1.releaseMinusBaselineMiB).scoped).median, 0.5);
@@ -133,6 +147,43 @@ test('memory comparison aggregates worker deltas, reports ranges, and links all 
   rawLinks.forEach((path) => assert(existsSync(resolve(run.output, path))));
   assert.match(report, /21 per profile/);
   assert.match(report, /Appendix: build timing/);
+  assert.match(report, /A: Unrelated schema growth/);
+  assert.match(report, /B: Retained tenant instances/);
+  assert.match(report, /Other schemas: 150 \(A\)/);
+  assert.match(report, /Tenant instances: 50 \(B\)/);
+  assert.match(report, /Stock \(`BENCH_PROFILE=stock`\)/);
+  assert.match(report, /Scoped \(`BENCH_PROFILE=local-scoped`\)/);
+  assert.match(report, /retained\.heapUsed - baseline\.heapUsed/);
+  assert.match(report, /not V8's allocated `heapTotal`/);
+  assert.match(report, /applies only to incremental heap/);
+  assert.match(report, /Three repetitions per point are a limited sample/);
+  assert.match(
+    report,
+    /direct Stock\/Scoped execution equality check is only `\{ __typename \}`/,
+  );
+  assert.match(report, /not proof of full production compatibility/);
+  const a150 = rows.find((row) => row.scenario === 'a' && row.value === 150)!;
+  const a150Increment = object(a150.incrementalHeapMiB);
+  assert.match(
+    report,
+    new RegExp(
+      `At 150 other schemas, incremental heap is ${number(object(a150Increment.stock).median).toFixed(2)} MiB for Stock and ${number(object(a150Increment.scoped).median).toFixed(2)} MiB for Scoped`,
+    ),
+  );
+  assert.match(report, /higher median build time at 0 of 7 points/);
+  assert.doesNotMatch(report, /93\.28%|58\.28 MiB|1244\.02 MiB/);
+  const anchors = [...report.matchAll(/\]\(#([\w-]+)\)/g)].map(
+    (match) => match[1],
+  );
+  const headings = new Set(
+    report
+      .split('\n')
+      .filter((line) => /^#+ /.test(line))
+      .map((line) =>
+        line.replace(/^#+ /, '').toLowerCase().replaceAll(' ', '-'),
+      ),
+  );
+  anchors.forEach((anchor) => assert(headings.has(anchor), anchor));
   assert.doesNotMatch(
     report,
     /REPORT\.md|84 independent|12 separate snapshot|historical/i,

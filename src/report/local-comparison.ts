@@ -271,25 +271,70 @@ export function compareLocal(
   );
   const reviewOnly = stock.verification.sourceDirty;
   const point = (row: (typeof rows)[number]) =>
-    `${row.scenario.toUpperCase()} ${row.scenario === 'a' ? 'N' : 'M'}=${row.value}`;
+    `${row.scenario === 'a' ? 'Other schemas' : 'Tenant instances'}: ${row.value} (${row.scenario.toUpperCase()})`;
   const comparisonCells = (metric: Difference) =>
     `${format(metric.stock.median)} | ${format(metric.scoped.median)} | ${format(metric.delta)} | ${percent(metric.percent)}`;
+  const largestA = rows.find(
+    (row) => row.scenario === 'a' && row.value === 150,
+  )!;
+  const largestB = rows.find(
+    (row) => row.scenario === 'b' && row.value === 50,
+  )!;
+  const slowerBuilds = rows.filter((row) => row.buildMs.delta > 0).length;
+  const lowerHeapPoints = rows.filter(
+    (row) => row.incrementalHeapMiB.delta < 0,
+  ).length;
+  const smallestA = rows.find(
+    (row) => row.scenario === 'a' && row.value === 1,
+  )!;
   const lines = [
-    '# Stock versus local scoped introspection: memory',
+    '# Stock versus Scoped: memory comparison',
+    '',
+    '## Conclusion',
+    '',
+    `Scoped uses less incremental heap at ${lowerHeapPoints} of ${rows.length} measured points. At 150 other schemas, incremental heap is ${format(largestA.incrementalHeapMiB.stock.median)} MiB for Stock and ${format(largestA.incrementalHeapMiB.scoped.median)} MiB for Scoped (${percent(largestA.incrementalHeapMiB.percent)} versus Stock). At 50 retained tenant instances, it is ${format(largestB.incrementalHeapMiB.stock.median)} MiB and ${format(largestB.incrementalHeapMiB.scoped.median)} MiB respectively (${percent(largestB.incrementalHeapMiB.percent)}). These results describe the synthetic workloads below.`,
+    '',
+    `The ${percent(largestA.incrementalHeapMiB.percent)} change at 150 other schemas applies only to incremental heap. Total heap changes by ${percent(largestA.retainedHeapMiB.percent)} and RSS by ${percent(largestA.rssMiB.percent)} at that point. Scoped has higher median build time at ${slowerBuilds} of ${rows.length} points. Three repetitions per point are a limited sample, not confidence intervals or production performance guarantees.`,
+    '',
+    `Read [the scenarios](#scenarios) and [memory definitions](#memory-definitions) to interpret the tables; use the [reproduction guide](${link(projectPath('results', 'REPRODUCTION.md'))}) to run or regenerate the comparison; follow [verified run identity](#verified-run-identity) and [raw measurements](#raw-measurements) to audit it.`,
     '',
     reviewOnly
       ? '**Review-only: uncommitted source.** The source and emitted hashes below identify these observations; they do not pass the clean-source acceptance gate.'
       : 'Both profiles passed clean-source verification and their correctness preflights.',
     '',
-    '42 independent workers: 21 per profile, with three repetitions at each of seven points. Selection: `memory` (A: 1, 20, 60, 150 other tenants; B: 1, 10, 50 live instances).',
+    '42 independent workers: 21 per profile, with three repetitions at each of seven points. Selection: `memory` (A: 1, 20, 60, 150 other schemas; B: 1, 10, 50 tenant instances).',
     '',
     'Only A/B retention and release are measured. This selection does not measure cached-operation growth, rotation, or heap-snapshot ownership.',
     '',
-    'Stock uses published PostGraphile Amber. Scoped replaces only its introspection plugin with the local implementation, using `catalogTypes=all` and no capability extensions. Both groups use the same installed dependency graph, source commit, compiled build, recorded environment, warmup and GC settings.',
+    'Stock (`BENCH_PROFILE=stock`) uses published PostGraphile Amber. Scoped (`BENCH_PROFILE=local-scoped`) replaces only its introspection plugin with the local PR2 adaptation, using `catalogTypes=all` and no capability extensions. Both groups use the same installed dependency graph, source commit, compiled build, recorded environment, warmup and GC settings. These reader names map to the unchanged `stock` and `local-scoped` commands, directories and raw profile values.',
     '',
-    '## Incremental retained heap',
+    '## Scenarios',
     '',
-    'Each worker subtracts its discarded-warmup baseline from its retained heap before the three-worker median is taken. Δ is scoped minus stock; a negative value means lower memory. Percentages use stock as the denominator.',
+    '### A: Unrelated schema growth',
+    '',
+    '- Fixed: one built, unqueried target tenant instance, with the same target schema and an invariant SDL hash.',
+    '- Varies: **Other schemas**, the number of unrelated tenant schemas (N = 1, 20, 60, 150); the fixture contains N + 1 tenants.',
+    '- Purpose: measure how much one target retains as the surrounding database catalogue grows, without target query-plan warmup.',
+    '',
+    '### B: Retained tenant instances',
+    '',
+    '- Fixed: a 60-tenant catalogue and the same single correctness query for each retained instance.',
+    '- Varies: **Tenant instances**, the number retained simultaneously (M = 1, 10, 50), each built through a real Host-routed request.',
+    '- Purpose: measure aggregate process memory as more tenant instances stay live; the per-instance average includes shared runtime costs.',
+    '',
+    'A/B remain the scenario identifiers (raw `scenario` values `a`/`b`, with N or M in `value`). The short labels above change only presentation; raw field names and measurements are unchanged.',
+    '',
+    '## Memory definitions',
+    '',
+    '- **Incremental heap**: `retained.heapUsed - baseline.heapUsed` for each worker (`heapDelta`), then the median of three workers. The baseline follows a discarded five-request warmup instance, awaited release, a 5.5-second quiet period and three forced GCs.',
+    "- **Total heap**: `retained.heapUsed`, the whole worker's used JavaScript heap while the measured instances are live, after the same quiet period and GC protocol. It includes the baseline runtime; it is not V8's allocated `heapTotal` field or the exclusive retained size of tenant objects.",
+    "- **RSS**: `retained.rss`, the worker process's resident memory, including JavaScript heap and native/allocator memory. It excludes the separate PostgreSQL and client processes. Peak RSS is the process lifetime high-water mark and includes discarded warmup.",
+    '',
+    'MiB = 2^20 bytes. Each metric is aggregated independently. In particular, the median of worker increments need not equal the median total heap minus the median baseline. RSS and total heap percentages must not be read as incremental-heap percentages.',
+    '',
+    '## Incremental heap',
+    '',
+    'Δ is Scoped minus Stock; a negative value means lower memory. Percentages use Stock as the denominator.',
     '',
     '| Point | Stock MiB | Scoped MiB | Δ MiB | Δ % |',
     '| --- | ---: | ---: | ---: | ---: |',
@@ -297,11 +342,11 @@ export function compareLocal(
       (row) => `| ${point(row)} | ${comparisonCells(row.incrementalHeapMiB)} |`,
     ),
     '',
-    'A retains one built, unqueried target among N unrelated tenant schemas. B retains M queried instances in a fixed 60-tenant catalogue; its incremental heap includes shared runtime costs.',
+    `As Other schemas grows from 1 to 150 in A, Stock incremental heap moves from ${format(smallestA.incrementalHeapMiB.stock.median)} to ${format(largestA.incrementalHeapMiB.stock.median)} MiB; Scoped moves from ${format(smallestA.incrementalHeapMiB.scoped.median)} to ${format(largestA.incrementalHeapMiB.scoped.median)} MiB. B measures a different cost: keeping more queried tenant instances alive within one fixed catalogue. The two scenarios hold different variables fixed, so their rows are not interchangeable.`,
     '',
-    '### Increment per live instance',
+    '### Increment per tenant instance',
     '',
-    '| Instances | Stock MiB/instance | Scoped MiB/instance | Δ MiB/instance | Δ % |',
+    '| Tenant instances | Stock MiB/instance | Scoped MiB/instance | Δ MiB/instance | Δ % |',
     '| ---: | ---: | ---: | ---: | ---: |',
     ...rows.flatMap((row) =>
       row.perInstanceMiB
@@ -309,14 +354,18 @@ export function compareLocal(
         : [],
     ),
     '',
-    '### Total retained heap and process baseline',
+    'Each B worker divides its incremental heap by its retained instance count before aggregation. This is an average process increment, including shared costs; it does not isolate the ownership or marginal cost of one additional instance.',
     '',
-    '| Point | Stock retained MiB | Scoped retained MiB | Δ MiB | Δ % | Stock baseline MiB | Scoped baseline MiB |',
+    '### Total heap and process baseline',
+    '',
+    '| Point | Stock total heap MiB | Scoped total heap MiB | Δ MiB | Δ % | Stock baseline MiB | Scoped baseline MiB |',
     '| --- | ---: | ---: | ---: | ---: | ---: | ---: |',
     ...rows.map(
       (row) =>
         `| ${point(row)} | ${comparisonCells(row.retainedHeapMiB)} | ${format(row.baselineHeapMiB.stock.median)} | ${format(row.baselineHeapMiB.scoped.median)} |`,
     ),
+    '',
+    `At 150 other schemas, total heap is ${format(largestA.retainedHeapMiB.stock.median)} MiB for Stock and ${format(largestA.retainedHeapMiB.scoped.median)} MiB for Scoped (${percent(largestA.retainedHeapMiB.percent)}). Including the baseline changes the quantities being compared, so this percentage differs from the incremental-heap comparison.`,
     '',
     '## Appendix: build timing',
     '',
@@ -329,6 +378,8 @@ export function compareLocal(
         `| ${point(row)} | ${range(row.buildMs.stock)} | ${range(row.buildMs.scoped)} | ${format(row.buildMs.delta)} | ${percent(row.buildMs.percent)} |`,
     ),
     '',
+    `Scoped has higher median build time at ${slowerBuilds} of ${rows.length} measured points. Read this as the observed memory/build-time tradeoff for this implementation; the three unpaired repetitions cannot establish a general speed claim. B totals sum instance build durations, not concurrent request latency.`,
+    '',
     '## Appendix: GC and release',
     '',
     'Forced-GC values are median [minimum, maximum] of the three worker pause medians. Each worker waits 5.5 seconds and performs three explicit collections. These are controlled collection costs, not automatic-GC or request-latency percentiles.',
@@ -340,6 +391,8 @@ export function compareLocal(
         `| ${point(row)} | ${range(row.forcedGcMs.stock)} | ${range(row.forcedGcMs.scoped)} | ${format(row.forcedGcMs.delta)} | ${percent(row.forcedGcMs.percent)} |`,
     ),
     '',
+    'Compare the pause ranges as well as their medians: these small samples describe explicit collection under the retained workload and do not predict user-visible pauses.',
+    '',
     'Release measurements follow awaited disposal and GC. Excess heap is calculated against the same worker’s baseline before aggregation; it can be signed, so it is shown without a percentage.',
     '',
     '| Point | Stock after release MiB | Scoped after release MiB | Stock excess MiB | Scoped excess MiB | Δ excess MiB |',
@@ -348,6 +401,8 @@ export function compareLocal(
       (row) =>
         `| ${point(row)} | ${format(row.afterReleaseHeapMiB.stock.median)} | ${format(row.afterReleaseHeapMiB.scoped.median)} | ${format(row.releaseMinusBaselineMiB.stock.median)} | ${format(row.releaseMinusBaselineMiB.scoped.median)} | ${format(row.releaseMinusBaselineMiB.delta)} |`,
     ),
+    '',
+    "Post-release excess shows what remains above each worker's own warmup baseline after awaited disposal and collection. Near-baseline heap is useful lifecycle evidence, but a single release measurement cannot prove the absence of a slow leak.",
     '',
     '## Appendix: resident memory',
     '',
@@ -360,7 +415,17 @@ export function compareLocal(
     '',
     'RSS includes allocator/native behaviour and peak RSS includes discarded warmup. A high released RSS alone does not demonstrate a retained JavaScript leak. These finite synthetic workloads do not establish indefinite bounds or characterize every schema family.',
     '',
+    '## Correctness coverage and limits',
+    '',
+    `The recorded preflights ran the correctness suite before measurement. [HTTP integration tests](${link(projectPath('test', 'integration.test.ts'))}) check concurrent tenant/user RLS isolation, transaction-local settings, hidden cross-schema types and functions, range/array values, inheritance, hidden-root exclusion, plan-cache growth and replay, NOTIFY rebuilds after DDL, and release waiting for an aborted client\'s running SQL. [Lifecycle tests](${link(projectPath('test', 'core.test.ts'))}) cover coalescing, request leases, eviction and release ordering.`,
+    '',
+    `[Scoped integration tests](${link(projectPath('test', 'scoped-integration.test.ts'))}) compare SDL and inspect dependency closure, including transitive types, functions, relations, indexes, partitions and extension capabilities. That separate fixture uses \`catalogTypes=dependency-closure\` and \`pg_trgm\`; its direct Stock/Scoped execution equality check is only \`{ __typename }\`. It is broader configuration coverage, not the measured \`catalogTypes=all\` configuration or an exhaustive query-equivalence test. [Scoped query tests](${link(projectPath('test', 'scoped-introspection.test.ts'))}) and [service tests](${link(projectPath('test', 'scoped-service.test.ts'))}) check option handling and defensive service configuration.`,
+    '',
+    'These synthetic tests and the invariant A SDL are correctness gates for this reproduction, not proof of full production compatibility or isolation for every schema, extension, mutation or subscription. Worker warmup runs the bounded smoke query and checks errors and request identity; it does not repeat all integration assertions. Cached-operation growth, rotation and snapshot ownership remain outside these A/B measurements even where related behavior has test coverage. No separate PR3 or plan-memory overhaul is benchmarked.',
+    '',
     '## Verified run identity',
+    '',
+    'The source and build hashes below identify the measured implementation. Regenerating this report from the same raw files does not replace them with the current documentation or report-generator revision.',
     '',
     `Source commit: \`${stock.verification.sourceSha}\`. Compiler: \`${reference.build.compiler}\`.`,
     '',
@@ -377,8 +442,8 @@ export function compareLocal(
     ),
     '',
     ...groups.map(
-      (group) =>
-        `- ${group.verification.comparisonProfile}: [memory manifest](${link(group.manifestPath)}), [correctness preflight](${link(group.preflightPath)}), [run verification](${link(resolve(group.dir, 'verification.json'))}).`,
+      (group, index) =>
+        `- ${index === 0 ? 'Stock' : 'Scoped'} (\`${group.verification.comparisonProfile}\`): [memory manifest](${link(group.manifestPath)}), [correctness preflight](${link(group.preflightPath)}), [run verification](${link(resolve(group.dir, 'verification.json'))}).`,
     ),
     '',
     `Exact medians, ranges and deltas: [metrics](${link(resolve(destination, 'local-metrics.json'))}). Input hashes and verification summary: [comparison receipt](${link(resolve(destination, 'comparison-verification.json'))}).`,

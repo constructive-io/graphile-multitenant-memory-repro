@@ -138,11 +138,23 @@ export function compare(
   const lines = [
     '# Crystal scoped-introspection comparison',
     '',
+    'This optional checkout comparison separates unrelated schema growth (A) from retaining more tenant instances (B), then examines rotation, cached operations and build snapshots. Assess memory alongside build time and correctness; these finite runs do not establish production capacity or indefinite boundedness.',
+    '',
     'Both groups use the same benchmark source, synthetic SQL, query family, GC protocol, dependency versions, PostgreSQL configuration and three fresh processes per point. Each group completes all 42 workers. Registry-stock runs are outside this checkout comparison and may use different transitive dependency versions.',
+    '',
+    'Here **Base** means the `common-base` Crystal checkout and **PR2** means the `pr2` Crystal checkout. The separate published-dependency comparison uses **Stock** (`stock`) and **Scoped** (`local-scoped`); those names do not identify the checkout groups below.',
     '',
     `Shared merge-base: \`${expectedShas[0]}\`. Identical upstream yarn.lock blob: \`30ce8fb20d27a304158469c1cf4ccb98d8e2320d\`.`,
     '',
     'PR2 is the sole scoped candidate and enables direct integration with catalogTypes=all and no capability extensions.',
+    '',
+    '## Reading the metrics',
+    '',
+    '- **Incremental heap** is the within-process increase in used JavaScript heap after GC (`heapDelta`). A/B subtract `baseline.heapUsed` from `retained.heapUsed`; C subtracts `planBaseline.heapUsed`. Shared runtime and cache costs remain included.',
+    '- **Total heap** is all used JavaScript heap at the retained measurement (`retained.heapUsed`), including the baseline. It is not V8 allocated heap capacity (`heapTotal`).',
+    '- **RSS** is resident memory for the whole process (`retained.rss`), including JavaScript heap, native allocations, code and stacks. Detailed run reports also show the lifetime peak RSS, which includes warmup.',
+    '- A reduction in incremental heap does not imply the same reduction in total heap or RSS. The A table below calculates its percentages from total heap; B reports incremental heap directly.',
+    '- Three fresh processes per point are a limited sample. Medians describe these runs, not confidence intervals. Build time is a separate tradeoff, so lower memory must not be read as faster construction.',
     '',
     '## Provenance',
     '',
@@ -164,17 +176,19 @@ export function compare(
     ]),
   );
   lines.push(
-    `Benchmark source: \`${reference.verification.sourceSha}\`. Identical SDL SHA-256: \`${reference.verification.sdlHash}\`. All correctness suites passed before these measurements.`,
+    `Benchmark source: \`${reference.verification.sourceSha}\`. Identical SDL SHA-256: \`${reference.verification.sdlHash}\`. Each recorded correctness preflight passed before its measurements. Follow the detailed reports above to audit the raw files and run provenance.`,
     '',
-    '## A: one target with unrelated tenants',
+    '## A: Unrelated schema growth',
+    '',
+    '**Fixed:** one live target instance and its schema. **Varied:** the number of other tenant schemas in the database. **Purpose:** measure how unrelated catalog growth affects that target. The measured target is built but unqueried; the separate discarded warmup runs the smoke query.',
     '',
   );
   table(
     [
-      'Other tenants',
-      'Base heap MiB',
-      'PR2 heap MiB',
-      'PR2 heap reduction',
+      'Other schemas',
+      'Base total heap MiB',
+      'PR2 total heap MiB',
+      'PR2 total heap reduction',
       'Base / PR2 build ms',
     ],
     [1, 20, 60, 150].map((n) => {
@@ -190,17 +204,19 @@ export function compare(
     }),
   );
   lines.push(
-    'Percent reductions use total process post-GC heap with the target live. Detailed reports also expose baseline-subtracted increments, RSS, peak RSS and post-release heap.',
+    'Read across each row to compare the two checkouts at the same catalog size, and down the table to see the effect of unrelated schema growth. Percent reductions use total process post-GC heap with the target live. Detailed reports also expose baseline-subtracted incremental heap, RSS, peak RSS and post-release heap. Compare the build-time column separately from memory.',
     '',
-    '## B: simultaneous instances',
+    '## B: Retained tenant instances',
+    '',
+    '**Fixed:** a catalog of 60 tenant schemas and the bounded smoke query. **Varied:** the number of tenant instances retained together. **Purpose:** measure the memory cost of retaining more tenant runtimes, then releasing them.',
     '',
   );
   table(
     [
-      'Instances',
-      'Base increment MiB',
-      'PR2 increment MiB',
-      'Base / PR2 MiB per instance',
+      'Tenant instances',
+      'Base incremental heap MiB',
+      'PR2 incremental heap MiB',
+      'Base / PR2 incremental heap per instance MiB',
       'Base / PR2 total build ms',
       'Base / PR2 after-release heap MiB',
     ],
@@ -216,9 +232,16 @@ export function compare(
         .join(' / '),
     ]),
   );
-  lines.push('### Capacity-10 rotation', '');
+  lines.push(
+    'Read down the table to see the cost of more live instances without growing the catalog. Per-instance values divide the process incremental heap by the instance count and include shared costs; they are not isolated object sizes. Build times sum instance construction times. After-release heap is distinct from RSS and does not show that all process memory returns to baseline.',
+    '',
+    '### Capacity-10 rotation',
+    '',
+    '**Fixed:** 60 tenant schemas and capacity for 10 live instances. **Varied:** completed builds across five full passes. **Purpose:** observe settling and drift during repeated eviction and rebuilding.',
+    '',
+  );
   table(
-    ['Completed builds', 'Base heap MiB', 'PR2 heap MiB'],
+    ['Completed builds', 'Base total heap MiB', 'PR2 total heap MiB'],
     [0, 1, 2, 3, 4].map((i) => [
       (i + 1) * 60,
       ...groups.map((g) =>
@@ -226,11 +249,18 @@ export function compare(
       ),
     ]),
   );
-  lines.push('## C: distinct cached operations', '');
+  lines.push(
+    'A flatter series indicates less observed drift over these 300 builds. Five passes cannot establish indefinite boundedness or rule out slower growth.',
+    '',
+    '## C: distinct cached operations',
+    '',
+    '**Fixed:** two tenant schemas, one live target and one warmup plan. **Varied:** K additional distinct operations, with cache capacity K+100 to retain them. **Purpose:** measure retained operation-cache growth and verify replay reuse.',
+    '',
+  );
   table(
     [
       'New operations K',
-      'Base / PR2 increment MiB',
+      'Base / PR2 incremental heap MiB',
       'Base / PR2 KiB per operation',
       'Base / PR2 forced-GC ms',
     ],
@@ -246,13 +276,15 @@ export function compare(
     ]),
   );
   lines.push(
-    'C verifies K additional successful plans and replay reuse for every group. This candidate changes introspection, not Grafast plan-memory design. Any differences here are indirect; this does not test a plan-memory overhaul.',
+    'C verifies K additional successful plans and replay reuse for every group. Its incremental heap includes ASTs, parsing, plans, SQL strings, generated JavaScript and cache overhead. Forced-GC times are explicit full-collection wall times, not automatic-GC percentiles. This candidate changes introspection, not Grafast plan-memory design. Any differences here are indirect; this does not test a plan-memory overhaul.',
     '',
     '## D and interpretation limits',
     '',
-    'Each detailed report contains six separately collected snapshots, full constructor summaries and heuristic catalog/build-object retention signatures. Different retained-size rows overlap and must not be summed. Snapshot-perturbed release measurements are excluded from ordinary release comparisons.',
+    '**Fixed:** one built, unqueried target instance. **Varied:** other tenant schemas at 1 and 150. **Purpose:** inspect reachable catalog and build objects after construction. Each detailed report contains six separately collected snapshots, full constructor summaries and heuristic catalog/build-object retention signatures. Different retained-size rows overlap and must not be summed. Snapshot-perturbed release measurements are excluded from ordinary release comparisons.',
     '',
-    'A/B/D address scoped or progressive introspection motivation. Cross-schema dependencies, RLS, SDL and query behavior are correctness gates; dropping functionality is not counted as a memory improvement. RSS remaining high after release is not evidence of a JS leak. Rotation covers 300 builds and cannot establish indefinite boundedness. No separate Benjie development branch or plan-memory overhaul was tested.',
+    'A/B/D address scoped or progressive introspection motivation. The HTTP integration suite checks concurrent tenant/user isolation, RLS, transaction-local setting cleanup, cross-schema types and ranges, hidden roots, invalid requests, plan reuse, DDL invalidation and release after a client abort. The discarded warmup checks a narrower smoke query and request identity. Consult each recorded preflight and validation log for the suites used with that checkout.',
+    '',
+    'SDL equality and passing synthetic fixtures do not prove equivalence for every PostgreSQL schema, extension, mutation, subscription or production workload. RSS remaining high after release is not evidence of a JS leak. No separate Benjie development branch or plan-memory overhaul was tested.',
     '',
   );
   lines.push('### Build-only signatures at N=150', '');
