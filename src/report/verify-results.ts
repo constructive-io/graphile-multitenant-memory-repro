@@ -147,11 +147,31 @@ export function verifyResults(
       samples.length,
       'Each sample must have an independent worker PID',
     );
+    const workerFlags = ['--expose-gc', '--max-old-space-size=10000'];
+    const { postgraphileSource, multipass } = samples[0].comparisonActivation;
     for (const row of samples) {
-      assert.deepEqual(row.environment.execArgv, [
-        '--expose-gc',
-        '--max-old-space-size=10000',
-      ]);
+      assert.equal(
+        row.comparisonActivation.postgraphileSource,
+        postgraphileSource,
+        'Do not mix PostGraphile sources in one run',
+      );
+      assert.equal(
+        row.comparisonActivation.multipass,
+        multipass,
+        'Do not mix multipass modes in one run',
+      );
+      if (postgraphileSource === 'upstream-snapshot') {
+        // Snapshot workers also load the snapshot selector (see runIsolated).
+        const execArgv = row.environment.execArgv ?? [];
+        const [selector, ...rest] = execArgv.slice(2);
+        assert.deepEqual(execArgv.slice(0, 2), workerFlags);
+        assert.equal(selector, '--import');
+        assert.equal(rest.length, 1);
+        assert.match(
+          rest[0],
+          /^file:\/\/.*\/dist\/src\/runtime\/use-upstream-snapshot\.js$/,
+        );
+      } else assert.deepEqual(row.environment.execArgv, workerFlags);
       assert.deepEqual(
         row.environment.build,
         first.build,

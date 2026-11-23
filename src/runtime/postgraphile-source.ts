@@ -1,8 +1,8 @@
-import { existsSync } from 'node:fs';
+import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { registerHooks } from 'node:module';
 import { pathToFileURL } from 'node:url';
-import { projectPath } from '../paths.js';
+import { projectPath, testPath } from '../paths.js';
 
 /**
  * Where `postgraphile` (and with it the whole Graphile package graph) is loaded
@@ -59,4 +59,28 @@ export function postgraphileSourceArgs(): string[] {
           .href,
       ]
     : [];
+}
+
+/**
+ * Test files that exercise only the default graph: the stock/local-scoped
+ * activation matrix and the local PR2 candidate written against its internals.
+ */
+export const defaultGraphOnlyTests = [
+  'activation.test.js',
+  'scoped-integration.test.js',
+  'scoped-introspection.test.js',
+  'scoped-service.test.js',
+];
+
+/** `node --test` file arguments for the selected PostGraphile source. */
+export function selectedTestFiles(): string[] {
+  if (postgraphileSource() === 'default') return [testPath];
+  const directory = projectPath('dist/test');
+  return readdirSync(directory)
+    .filter(
+      (file) =>
+        file.endsWith('.test.js') && !defaultGraphOnlyTests.includes(file),
+    )
+    .sort()
+    .map((file) => join(directory, file));
 }
