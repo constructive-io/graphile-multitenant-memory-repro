@@ -22,8 +22,10 @@ const pgl = instance.pgl;
 try {
   const preset = pgl.getResolvedPreset();
   const activation = verifyComparisonPreset(preset);
-  const root = createRequire(import.meta.url);
-  const published = createRequire(root.resolve('postgraphile'));
+  // ESM resolution follows the selected PostGraphile source (default or upstream snapshot).
+  const published = createRequire(
+    fileURLToPath(import.meta.resolve('postgraphile')),
+  );
   const pgBuild = createRequire(published.resolve('graphile-build-pg'));
   const graphileBuild = createRequire(published.resolve('graphile-build'));
   const graphql = createRequire(published.resolve('grafast'));
@@ -75,7 +77,9 @@ try {
       'graphile-config',
     ].map((name) => [name, realpathSync(published.resolve(name))]),
   );
-  const before = root('postgraphile/graphile-build-pg').PgIntrospectionPlugin;
+  const before = published(
+    'postgraphile/graphile-build-pg',
+  ).PgIntrospectionPlugin;
   assert.equal(before.name, 'PgIntrospectionPlugin');
   const source = readFileSync(published.resolve('graphile-build-pg'), 'utf8');
   assert(!source.includes('LocalPgIntrospectionPlugin'));
