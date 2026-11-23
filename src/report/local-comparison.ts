@@ -4,7 +4,7 @@ import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { relative, resolve } from 'node:path';
 import { projectPath } from '../paths.js';
 import { object, string, readJson } from '../json.js';
-import { readSample } from './read.js';
+import { readSample, validatedMode } from './read.js';
 import { verifyResults } from './verify-results.js';
 import type { WorkerResult } from '../benchmark/results.js';
 
@@ -118,6 +118,12 @@ export function compareLocal(
     const receipt = object(readJson(preflightPath));
     assert.equal(receipt.status, verification.status);
     assert.equal(receipt.profile, profiles[index]);
+    for (const sample of samples)
+      assert.deepEqual(
+        validatedMode(receipt),
+        validatedMode(sample.comparisonActivation),
+        'Preflight must validate the same PostGraphile source and multipass mode',
+      );
     assert.equal(
       receipt.crystal,
       null,

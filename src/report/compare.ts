@@ -1,7 +1,12 @@
 import assert from 'node:assert/strict';
 import { existsSync, readdirSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, relative } from 'node:path';
-import { readSample, readAnalysis, readVerification } from './read.js';
+import {
+  readSample,
+  readAnalysis,
+  readVerification,
+  validatedMode,
+} from './read.js';
 import type { WorkerResult } from '../benchmark/results.js';
 import type { Scenario } from '../benchmark/scenarios.js';
 import { object, string, number, readJson } from '../json.js';
@@ -66,6 +71,12 @@ export function compare(
     );
     assert.equal(string(receipt.status), 'passed');
     assert.equal(string(receipt.profile), group.verification.comparisonProfile);
+    for (const sample of group.samples)
+      assert.deepEqual(
+        validatedMode(receipt),
+        validatedMode(sample.comparisonActivation),
+        'Preflight must validate the same PostGraphile source and multipass mode',
+      );
     assert.equal(number(receipt.testExitCode), 0);
     assert.equal(
       string(receipt.benchmarkSha),

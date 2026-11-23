@@ -1,7 +1,11 @@
 import assert from 'node:assert/strict';
 import { mkdirSync, existsSync, writeFileSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
-import { comparisonProfile } from '../runtime/comparison.js';
+import {
+  comparisonProfile,
+  dependencySource,
+  multipass,
+} from '../runtime/comparison.js';
 import { dependencies, git, sourcePaths } from '../measurement/provenance.js';
 import { readCrystalState } from '../runtime/state.js';
 import { projectPath, projectRoot } from '../paths.js';
@@ -108,6 +112,10 @@ export function preflight(name: string, review = false): void {
         reviewOnly: sourceDirty,
         build,
         profile: comparisonProfile,
+        // Recorded only for the upstream snapshot, as in comparisonActivation.
+        ...(multipass === null
+          ? {}
+          : { postgraphileSource: dependencySource, multipass }),
         testExitCode: run.status,
         benchmarkSha,
         sourceDirty,

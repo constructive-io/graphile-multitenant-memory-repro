@@ -342,6 +342,14 @@ test('memory comparison requires complete selected workers, unique processes, an
         }),
     },
     {
+      name: 'preflight validated another PostGraphile mode',
+      change: (run) =>
+        edit(join(run.stock, 'preflight.json'), (row) => {
+          row.postgraphileSource = 'upstream-snapshot';
+          row.multipass = true;
+        }),
+    },
+    {
       name: 'preflight checkout',
       change: (run) =>
         edit(join(run.scoped, 'preflight.json'), (row) => {
