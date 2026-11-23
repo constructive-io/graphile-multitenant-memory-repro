@@ -1,5 +1,6 @@
 import { spawn } from 'node:child_process';
 import { cliPath, projectRoot } from '../paths.js';
+import { postgraphileSourceArgs } from '../runtime/postgraphile-source.js';
 
 export function workerEnvironment(): NodeJS.ProcessEnv {
   // Heap snapshots must not inherit credentials or application settings from the host.
@@ -8,7 +9,12 @@ export function workerEnvironment(): NodeJS.ProcessEnv {
     NODE_ENV: 'production',
     GRAPHILE_ENV: 'production',
   };
-  for (const key of ['BENCH_PG_PORT', 'BENCH_DATABASE_URL', 'BENCH_PROFILE'])
+  for (const key of [
+    'BENCH_PG_PORT',
+    'BENCH_DATABASE_URL',
+    'BENCH_PROFILE',
+    'BENCH_MULTIPASS',
+  ])
     if (process.env[key]) env[key] = process.env[key];
   return env;
 }
@@ -22,6 +28,8 @@ export function runIsolated(
       [
         '--expose-gc',
         '--max-old-space-size=10000',
+        // Workers load PostGraphile from the same source as the parent.
+        ...postgraphileSourceArgs(),
         cliPath(entrypoint),
         ...args,
       ],

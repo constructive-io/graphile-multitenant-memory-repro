@@ -6,6 +6,7 @@ import type { MemorySample } from '../measurement/memory.js';
 import type { CacheStats } from '../runtime/lru.js';
 import type { CacheCounts } from '../measurement/cache-probe.js';
 import type { ComparisonActivation } from '../runtime/comparison.js';
+import type { PostgraphileSource } from '../runtime/postgraphile-source.js';
 import type {
   RecordedEnvironment,
   Dependencies,
@@ -110,7 +111,19 @@ function activation(value: unknown): ComparisonActivation {
     pluginPresent: boolean(row.pluginPresent),
     catalogTypes: row.catalogTypes,
     capabilityExtensions: array(row.capabilityExtensions).map(string),
+    // Present only in runs that selected the upstream snapshot.
+    ...(row.postgraphileSource === undefined
+      ? {}
+      : { postgraphileSource: postgraphileSource(row.postgraphileSource) }),
+    ...(row.multipass === undefined
+      ? {}
+      : { multipass: boolean(row.multipass) }),
   };
+}
+function postgraphileSource(value: unknown): PostgraphileSource {
+  if (value !== 'default' && value !== 'upstream-snapshot')
+    throw new Error('Unsupported PostGraphile source');
+  return value;
 }
 export function readSample(path: string): WorkerResult {
   const row = object(readJson(path)),

@@ -75,6 +75,61 @@ database. `BENCH_PG_PORT` changes the Compose host port/default connection strin
 `BENCH_DATABASE_URL` permits the same guarded database on a local PostgreSQL
 installation. `pnpm db:down` preserves its benchmark volume.
 
+## Upstream PostGraphile snapshot
+
+The same checkout can also run against an upstream PostGraphile prerelease, with
+multipass introspection off or on. The snapshot is a separate pnpm project in
+[`upstream-snapshot/`](upstream-snapshot/package.json) with its own lockfile; the
+default dependency graph, its lockfile and the recorded results are unchanged.
+
+| | Pinned version |
+| --- | --- |
+| `postgraphile` | `5.3.0-aardvark.next-20261122144925` (npm `snapshot-next` on 2026-11-23; gitHead `e8ed613`) |
+| `graphile-build-pg` | `5.3.0-aardvark.next-20261122144925` |
+| `pg-introspection` | `2.0.0-aardvark.next-20261122144925` |
+| `grafast`, `@dataplan/pg` | `1.3.0-aardvark.next-20261122144925` |
+| `graphile-build` | `5.2.1-aardvark.next-20261122144925` |
+| `graphile-utils` | `5.2.0-aardvark.next-20261122144925` |
+
+From a clean checkout:
+
+```sh
+pnpm install --frozen-lockfile
+pnpm upstream:install          # pnpm --dir upstream-snapshot install --frozen-lockfile
+pnpm build
+pnpm db:up
+BENCH_MULTIPASS=0 NODE_ENV=production GRAPHILE_ENV=production pnpm test:upstream
+BENCH_MULTIPASS=1 NODE_ENV=production GRAPHILE_ENV=production pnpm test:upstream
+```
+
+- **Selection.** Starting Node with `--import ./dist/src/runtime/use-upstream-snapshot.js`
+  makes `postgraphile` resolve from `upstream-snapshot/`, so every Graphile package
+  comes from that one graph. Benchmark workers inherit the selection. Without the
+  flag, the default graph (PostGraphile 5.1.5) is used exactly as before.
+- **One variable.** With the snapshot, `BENCH_MULTIPASS=0` or `1` is required and
+  sets only `gather.pgMultipassIntrospection`; database, fixture, preset and
+  plugins are otherwise identical. The snapshot runs only with `BENCH_PROFILE=stock`
+  (the upstream `PgIntrospectionPlugin`; the local PR2 candidate is never loaded),
+  and `BENCH_MULTIPASS` without the snapshot is rejected.
+- **What runs.** `test:upstream` runs every test except `activation.test.js` (the
+  stock/local-scoped matrix of the default graph) and the `scoped-*.test.js` files
+  (the local PR2 candidate, written against the default graph's internals).
+  `upstream-snapshot.test.js` checks that the resolved packages are the pinned
+  snapshot, that multipass off issues a single catalogue query while multipass on
+  runs the upstream multipass policies over several passes, and that a child
+  process resolves one package graph. Under `pnpm test` the same file checks the
+  default graph.
+- **Benchmarks.** `BENCH_MULTIPASS=1 NODE_ENV=production GRAPHILE_ENV=production
+  node --import ./dist/src/runtime/use-upstream-snapshot.js dist/src/cli/bench.js memory`
+  measures the snapshot; results record `postgraphileSource` and `multipass` in
+  `comparisonActivation`.
+- **Newer snapshots.** Check `npm view postgraphile dist-tags`, update the versions in
+  `upstream-snapshot/package.json` and the exact entries in
+  `upstream-snapshot/pnpm-workspace.yaml`, run `pnpm --dir upstream-snapshot install`
+  and commit the lockfile. Only those exact releases skip pnpm's minimum release
+  age check; `core.test.js` checks that the pins share one snapshot and match the
+  exemptions.
+
 ## Focused comparison
 
 `bench:memory` runs only these seven points, three fresh workers per point:
@@ -189,7 +244,9 @@ environment and timing limitations.
 
 All maintained implementation, CLIs and tests are TypeScript, compiled with strict
 NodeNext/ES2023 settings. Local source is typechecked; external declarations use
-`skipLibCheck`. Runtime dependencies remain `postgraphile`, `pg` and `express`.
+`skipLibCheck`. Runtime dependencies remain `postgraphile`, `pg` and `express`;
+the optional `upstream-snapshot/` project pins an upstream prerelease graph
+separately and is loaded only when selected.
 No CNC code, dependencies, production data or application logic is included.
 
 - `src/runtime/`: Amber instances, Host routing, request leases, serialized LRU
@@ -203,7 +260,8 @@ No CNC code, dependencies, production data or application logic is included.
   attributed local PR2 sources. [UPSTREAM.md](UPSTREAM.md) records adaptations,
   licences and pinned refs.
 - `test/`: lifecycle, concurrency, RLS, release, invalidation, cache, scoped query,
-  service configuration, package identity and reporting checks. Tests use synthetic
+  service configuration, package identity, PostGraphile source selection and
+  reporting checks. Tests use synthetic
   fixtures and do not require previous measurement files.
 
 Run `pnpm build` after changing source. Commands use emitted `dist/` files; build

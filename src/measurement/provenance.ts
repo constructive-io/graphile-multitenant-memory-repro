@@ -2,6 +2,7 @@ import type { Pool } from 'pg';
 import { createRequire } from 'node:module';
 import { realpathSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import { comparisonProfile } from '../runtime/comparison.js';
 import { readCrystalState } from '../runtime/state.js';
@@ -23,12 +24,17 @@ export const sourcePaths = [
   'pnpm-lock.yaml',
   'tsconfig.json',
   'compose.yaml',
+  'upstream-snapshot/package.json',
+  'upstream-snapshot/pnpm-lock.yaml',
+  'upstream-snapshot/pnpm-workspace.yaml',
 ];
 export const git = (args: string[]) =>
   execFileSync('git', args, { cwd: projectRoot, encoding: 'utf8' }).trim();
 export function dependencies() {
   const root = createRequire(import.meta.url);
-  const pgl = createRequire(root.resolve('postgraphile'));
+  // ESM resolution honours the selected PostGraphile source; require.resolve does not.
+  const postgraphileEntry = fileURLToPath(import.meta.resolve('postgraphile'));
+  const pgl = createRequire(postgraphileEntry);
   const result: Dependencies = {};
   for (const name of [
     'postgraphile',
@@ -42,9 +48,12 @@ export function dependencies() {
     'pg',
     'express',
   ]) {
-    const req = ['express', 'pg', 'postgraphile'].includes(name) ? root : pgl;
+    const entry =
+      name === 'postgraphile'
+        ? postgraphileEntry
+        : (['express', 'pg'].includes(name) ? root : pgl).resolve(name);
     // Some packages export only their entry point. Search upward for their manifest.
-    let resolved = realpathSync(req.resolve(name));
+    let resolved = realpathSync(entry);
     let dir = resolved.slice(0, resolved.lastIndexOf('/'));
     while (true) {
       try {
