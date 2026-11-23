@@ -265,3 +265,17 @@ function parseBuild(value: unknown) {
     emittedSha256: string(row.emittedSha256),
   };
 }
+
+/**
+ * The PostGraphile source and multipass mode recorded by a preflight receipt or a
+ * worker's comparisonActivation; absent fields mean the default graph.
+ */
+export function validatedMode(row: {
+  postgraphileSource?: unknown;
+  multipass?: unknown;
+}) {
+  return {
+    postgraphileSource: row.postgraphileSource ?? 'default',
+    multipass: row.multipass ?? null,
+  };
+}
