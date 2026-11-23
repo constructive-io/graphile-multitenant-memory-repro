@@ -1,10 +1,11 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readdirSync, readFileSync } from 'node:fs';
 import { TenantLRU } from '../src/runtime/lru.js';
 import { assertSyntheticDatabase, tenantName } from '../src/runtime/config.js';
 import { readJson, object, string } from '../src/json.js';
 import { projectPath } from '../src/paths.js';
+import { defaultGraphOnlyTests } from '../src/runtime/postgraphile-source.js';
 const pause = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 // Each dependency path is checked on its own, so a failure in one cannot hide the others.
 test('default manifest: private, exact minimal runtime dependencies', () => {
@@ -58,6 +59,25 @@ test('upstream snapshot manifest: one exact prerelease graph, narrowly exempted'
   );
   const exempt = [...workspace.matchAll(/^ {2}- "(.+)"$/gm)].map((m) => m[1]);
   assert.deepEqual(exempt.sort(), exact.sort());
+});
+test('test:upstream runs every test file except the default-graph-only ones', () => {
+  const scripts = object(object(readJson(projectPath('package.json'))).scripts);
+  const script = string(scripts['test:upstream']);
+  assert(
+    script.startsWith(
+      'node --import ./dist/src/runtime/use-upstream-snapshot.js --test --test-concurrency=1 ',
+    ),
+  );
+  const listed = [...script.matchAll(/dist\/test\/([\w.-]+\.test\.js)/g)].map(
+    (match) => match[1],
+  );
+  const compiled = readdirSync(projectPath('dist/test')).filter((file) =>
+    file.endsWith('.test.js'),
+  );
+  assert.deepEqual(
+    listed.sort(),
+    compiled.filter((file) => !defaultGraphOnlyTests.includes(file)).sort(),
+  );
 });
 test('database guard and tenant names', () => {
   assert.throws(() =>

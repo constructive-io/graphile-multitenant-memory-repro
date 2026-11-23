@@ -4,7 +4,11 @@ import { spawnSync } from 'node:child_process';
 import { comparisonProfile } from '../runtime/comparison.js';
 import { dependencies, git, sourcePaths } from '../measurement/provenance.js';
 import { readCrystalState } from '../runtime/state.js';
-import { projectPath, projectRoot, testPath } from '../paths.js';
+import { projectPath, projectRoot } from '../paths.js';
+import {
+  postgraphileSourceArgs,
+  selectedTestFiles,
+} from '../runtime/postgraphile-source.js';
 import { verifiedBuild } from '../measurement/build.js';
 
 export function preflight(name: string, review = false): void {
@@ -62,7 +66,13 @@ export function preflight(name: string, review = false): void {
   const startedAt = new Date().toISOString();
   const run = spawnSync(
     process.execPath,
-    ['--test', '--test-concurrency=1', testPath],
+    // Validate with the same PostGraphile source and its applicable tests.
+    [
+      ...postgraphileSourceArgs(),
+      '--test',
+      '--test-concurrency=1',
+      ...selectedTestFiles(),
+    ],
     {
       cwd: projectRoot,
       encoding: 'utf8',

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {
   existsSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   writeFileSync,
   rmSync,
@@ -243,5 +244,57 @@ test('verification CLI accepts memory flags and rejects malformed options', () =
       ]);
       assert.notEqual(result.status, 0);
     }
+  });
+});
+
+// Snapshot workers carry the snapshot selector after the two worker flags.
+const snapshotSelector = [
+  '--import',
+  'file:///synthetic/checkout/dist/src/runtime/use-upstream-snapshot.js',
+];
+function asSnapshotRun(
+  directory: string,
+  multipass: (file: string) => boolean,
+) {
+  for (const file of readdirSync(directory).filter((name) =>
+    /^[a-z]+-\d+-r\d+\.json$/.test(name),
+  ))
+    editJson(join(directory, file), (row) => {
+      const environment = object(row.environment);
+      environment.execArgv = [
+        ...array(environment.execArgv),
+        ...snapshotSelector,
+      ];
+      const activation = object(row.comparisonActivation);
+      activation.postgraphileSource = 'upstream-snapshot';
+      activation.multipass = multipass(file);
+    });
+}
+test('memory verification accepts snapshot workers in either multipass mode', () => {
+  for (const multipass of [false, true])
+    withResults((directory) => {
+      asSnapshotRun(directory, () => multipass);
+      const verification = verifyResults(directory, false);
+      assert.equal(verification.status, 'passed');
+      assert.equal(verification.workers, 21);
+    });
+});
+test('memory verification rejects mixed or misattributed snapshot workers', () => {
+  withResults((directory) => {
+    asSnapshotRun(directory, (file) => file !== 'a-1-r1.json');
+    assert.throws(
+      () => verifyResults(directory, false),
+      /Do not mix multipass modes/,
+    );
+  });
+  withResults((directory) => {
+    editJson(join(directory, 'a-1-r1.json'), (row) => {
+      const environment = object(row.environment);
+      environment.execArgv = [
+        ...array(environment.execArgv),
+        ...snapshotSelector,
+      ];
+    });
+    assert.throws(() => verifyResults(directory, false));
   });
 });
