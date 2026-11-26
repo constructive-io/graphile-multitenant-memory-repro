@@ -84,12 +84,12 @@ default dependency graph, its lockfile and the recorded results are unchanged.
 
 | | Pinned version |
 | --- | --- |
-| `postgraphile` | `5.3.0-aardvark.next-20261122144925` (npm `snapshot-next` on 2026-11-23; gitHead `e8ed613`) |
-| `graphile-build-pg` | `5.3.0-aardvark.next-20261122144925` |
-| `pg-introspection` | `2.0.0-aardvark.next-20261122144925` |
-| `grafast`, `@dataplan/pg` | `1.3.0-aardvark.next-20261122144925` |
-| `graphile-build` | `5.2.1-aardvark.next-20261122144925` |
-| `graphile-utils` | `5.2.0-aardvark.next-20261122144925` |
+| `postgraphile` | `5.3.0-aardvark.next-20261126000638` (npm `snapshot-next` on 2026-11-26; gitHead `517e762`) |
+| `graphile-build-pg` | `5.3.0-aardvark.next-20261126000638` |
+| `pg-introspection` | `2.0.0-aardvark.next-20261126000638` |
+| `grafast`, `@dataplan/pg` | `1.3.0-aardvark.next-20261126000638` |
+| `graphile-build` | `5.2.1-aardvark.next-20261126000638` |
+| `graphile-utils` | `5.2.0-aardvark.next-20261126000638` |
 
 From a clean checkout:
 
