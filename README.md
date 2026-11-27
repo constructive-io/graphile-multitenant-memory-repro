@@ -123,6 +123,15 @@ BENCH_MULTIPASS=1 NODE_ENV=production GRAPHILE_ENV=production pnpm test:upstream
   node --import ./dist/src/runtime/use-upstream-snapshot.js dist/src/cli/bench.js memory`
   measures the snapshot; results record `postgraphileSource` and `multipass` in
   `comparisonActivation`.
+- **Multipass enum regression test.** `test/multipass-enum-field.test.ts` exposes
+  a schema whose only object is a function returning an enum from an unexposed
+  schema, then checks over HTTP that `Query.currentMood` exists and returns
+  `ALERT`, with the same assertions in both modes. It reproduced
+  [graphile/crystal#3288](https://github.com/graphile/crystal/issues/3288), where
+  the field was missing with multipass on; the fix shipped in
+  `5.3.0-aardvark.next-20261126000638`, so it now passes in both modes. Run it
+  alone with `BENCH_MULTIPASS=0` or `1` and
+  `NODE_ENV=production GRAPHILE_ENV=production pnpm repro:enum-field`.
 - **Newer snapshots.** Check `npm view postgraphile dist-tags`, update the versions in
   `upstream-snapshot/package.json` and the exact entries in
   `upstream-snapshot/pnpm-workspace.yaml`, run `pnpm --dir upstream-snapshot install`
